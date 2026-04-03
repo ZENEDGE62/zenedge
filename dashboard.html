@@ -203,8 +203,7 @@ body::before{content:'';position:fixed;inset:0;background-image:linear-gradient(
 
 <script>
 // Auth check
-const user = JSON.parse(localStorage.getItem('ze_user')||'null');
-if(!user) window.location.href='login.html';
+const user = JSON.parse(localStorage.getItem('ze_user')||'{"name":"Mehmon","username":"mehmon","plan":"free"}');
 else {
   document.getElementById('userName').textContent=user.name||user.username;
   document.getElementById('pageUserName').textContent=user.name||user.username;

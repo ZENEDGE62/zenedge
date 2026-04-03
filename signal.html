@@ -114,8 +114,7 @@ body::before{content:'';position:fixed;inset:0;background-image:linear-gradient(
 </div>
 
 <script>
-const user=JSON.parse(localStorage.getItem('ze_user')||'null');
-if(!user)window.location.href='login.html';
+const user=JSON.parse(localStorage.getItem('ze_user')||'{"name":"Mehmon","username":"mehmon","plan":"free"}');
 
 function updateTime(){document.getElementById('sigTime').textContent=new Date().toLocaleString('uz-UZ');}
 updateTime();setInterval(updateTime,1000);
