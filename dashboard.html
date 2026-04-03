@@ -6,35 +6,28 @@
 <title>ZEN|EDGE — Dashboard</title>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;600;700&family=Rajdhani:wght@400;500;600;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet"/>
 <style>
-:root{--bg:#080706;--bg2:#0e0c09;--card:#111009;--border:#1e1a12;--gold:#c8a96e;--gold2:#e8c87a;--goldDim:#6b5a38;--text:#e8e2d6;--sec:#8a7e6a;--dim:#3a3228;--buy:#4daa70;--sell:#c94040;--info:#4d8eaa;}
+:root{--bg:#080706;--bg2:#0e0c09;--card:#111009;--border:#1e1a12;--gold:#c8a96e;--goldDim:#6b5a38;--text:#e8e2d6;--sec:#8a7e6a;--dim:#3a3228;--buy:#4daa70;--sell:#c94040;}
 *{margin:0;padding:0;box-sizing:border-box;}
 body{background:var(--bg);color:var(--text);font-family:'Rajdhani',sans-serif;min-height:100vh;}
 body::before{content:'';position:fixed;inset:0;background-image:linear-gradient(rgba(200,169,110,0.02) 1px,transparent 1px),linear-gradient(90deg,rgba(200,169,110,0.02) 1px,transparent 1px);background-size:60px 60px;pointer-events:none;z-index:0;}
-
-/* SIDEBAR */
 .sidebar{position:fixed;left:0;top:0;bottom:0;width:220px;background:var(--bg2);border-right:1px solid var(--border);z-index:100;display:flex;flex-direction:column;}
 .sidebar-logo{padding:24px 20px;border-bottom:1px solid var(--border);font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:700;letter-spacing:2px;}
 .sidebar-logo span{color:var(--gold);}
 .sidebar-user{padding:16px 20px;border-bottom:1px solid var(--border);}
-.sidebar-user-name{font-size:14px;font-weight:600;color:var(--text);}
+.sidebar-user-name{font-size:14px;font-weight:600;}
 .sidebar-user-plan{font-size:11px;letter-spacing:1px;color:var(--gold);text-transform:uppercase;margin-top:2px;}
 .nav-item{display:flex;align-items:center;gap:12px;padding:12px 20px;color:var(--sec);text-decoration:none;font-size:13px;letter-spacing:1px;text-transform:uppercase;transition:all 0.2s;border-left:2px solid transparent;}
 .nav-item:hover{color:var(--text);background:rgba(200,169,110,0.03);}
 .nav-item.active{color:var(--gold);border-left-color:var(--gold);background:rgba(200,169,110,0.05);}
-.nav-item .icon{font-size:16px;width:20px;text-align:center;}
 .nav-section{padding:16px 20px 8px;font-size:10px;letter-spacing:2px;color:var(--dim);text-transform:uppercase;}
 .sidebar-footer{margin-top:auto;padding:16px 20px;border-top:1px solid var(--border);}
 .logout-btn{width:100%;padding:10px;background:none;border:1px solid var(--border);color:var(--sec);font-family:'Rajdhani',sans-serif;font-size:12px;letter-spacing:2px;text-transform:uppercase;cursor:pointer;transition:all 0.3s;}
 .logout-btn:hover{border-color:var(--sell);color:var(--sell);}
-
-/* MAIN */
 .main{margin-left:220px;padding:32px;position:relative;z-index:1;}
 .page-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:32px;}
 .page-title{font-family:'Cormorant Garamond',serif;font-size:32px;font-weight:700;}
 .page-title span{color:var(--gold);}
 .live-time{font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--sec);}
-
-/* STATS */
 .stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:32px;}
 .stat-card{background:var(--bg2);border:1px solid var(--border);padding:20px;position:relative;overflow:hidden;}
 .stat-card::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--goldDim),transparent);}
@@ -44,14 +37,12 @@ body::before{content:'';position:fixed;inset:0;background-image:linear-gradient(
 .stat-value.buy{color:var(--buy);}
 .stat-value.sell{color:var(--sell);}
 .stat-sub{font-size:12px;color:var(--sec);margin-top:4px;}
-
-/* TOOLS GRID */
 .section-title{font-size:11px;letter-spacing:3px;color:var(--gold);text-transform:uppercase;margin-bottom:16px;display:flex;align-items:center;gap:8px;}
 .section-title::before{content:'';width:20px;height:1px;background:var(--goldDim);}
 .tools-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:32px;}
 .tool-card{background:var(--bg2);border:1px solid var(--border);padding:24px;text-decoration:none;color:inherit;display:block;transition:all 0.3s;position:relative;overflow:hidden;cursor:pointer;}
 .tool-card::after{content:'';position:absolute;bottom:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--gold),transparent);transform:scaleX(0);transition:transform 0.3s;transform-origin:left;}
-.tool-card:hover{border-color:var(--goldDim);background:rgba(200,169,110,0.03);}
+.tool-card:hover{border-color:var(--goldDim);}
 .tool-card:hover::after{transform:scaleX(1);}
 .tool-num{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--dim);margin-bottom:12px;}
 .tool-icon{font-size:24px;margin-bottom:12px;}
@@ -61,8 +52,6 @@ body::before{content:'';position:fixed;inset:0;background-image:linear-gradient(
 .badge-live{background:rgba(77,170,112,0.15);border:1px solid rgba(77,170,112,0.3);color:var(--buy);}
 .badge-ai{background:rgba(200,169,110,0.1);border:1px solid var(--goldDim);color:var(--gold);}
 .badge-soon{background:rgba(58,50,40,0.5);border:1px solid var(--border);color:var(--dim);}
-
-/* SIGNAL PANEL */
 .signal-panel{background:var(--bg2);border:1px solid var(--border);padding:24px;margin-bottom:32px;position:relative;}
 .signal-panel::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,var(--buy),transparent);}
 .signal-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;}
@@ -76,14 +65,12 @@ body::before{content:'';position:fixed;inset:0;background-image:linear-gradient(
 .sig-val.buy{color:var(--buy);}
 .sig-val.gold{color:var(--gold);}
 .sig-val.sell{color:var(--sell);}
-
 @media(max-width:768px){
   .sidebar{width:60px;}
   .sidebar-logo,.sidebar-user,.nav-item span,.nav-section,.logout-btn{display:none;}
   .nav-item{justify-content:center;padding:16px;}
   .main{margin-left:60px;padding:16px;}
-  .stats-grid{grid-template-columns:repeat(2,1fr);}
-  .tools-grid{grid-template-columns:repeat(2,1fr);}
+  .stats-grid,.tools-grid{grid-template-columns:repeat(2,1fr);}
   .signal-grid{grid-template-columns:repeat(2,1fr);}
 }
 </style>
@@ -102,7 +89,6 @@ body::before{content:'';position:fixed;inset:0;background-image:linear-gradient(
   <div class="nav-section"><span>Ta'lim</span></div>
   <a href="kitob.html" class="nav-item"><span class="icon">📚</span><span>Kitob</span></a>
   <a href="https://t.me/Zenedge_trade" target="_blank" class="nav-item"><span class="icon">✈</span><span>Telegram</span></a>
-  <div class="nav-section"><span>Asosiy sayt</span></div>
   <a href="index.html" class="nav-item"><span class="icon">🏠</span><span>Landing</span></a>
   <div class="sidebar-footer">
     <button class="logout-btn" onclick="logout()">Chiqish</button>
@@ -114,13 +100,11 @@ body::before{content:'';position:fixed;inset:0;background-image:linear-gradient(
     <div class="page-title">Xush kelibsiz, <span id="pageUserName">—</span></div>
     <div class="live-time" id="liveTime">—</div>
   </div>
-
-  <!-- STATS -->
   <div class="stats-grid">
     <div class="stat-card">
       <div class="stat-label">XAUUSD Narxi</div>
-      <div class="stat-value gold" id="xauPrice">$3,124.50</div>
-      <div class="stat-sub" id="xauChg">+0.28% bugun</div>
+      <div class="stat-value gold" id="xauPrice">Yuklanmoqda...</div>
+      <div class="stat-sub" id="xauChg">Forex narxi</div>
     </div>
     <div class="stat-card">
       <div class="stat-label">Signal</div>
@@ -138,22 +122,18 @@ body::before{content:'';position:fixed;inset:0;background-image:linear-gradient(
       <div class="stat-sub">O'rtacha R:R</div>
     </div>
   </div>
-
-  <!-- LIVE SIGNAL -->
   <div class="signal-panel">
     <div class="signal-header">
       <div class="signal-live"><span class="signal-dot"></span> Jonli Signal</div>
       <div style="font-size:11px;color:var(--dim);font-family:'JetBrains Mono',monospace;" id="sigTime">—</div>
     </div>
     <div class="signal-grid">
-      <div class="sig-item"><div class="sig-label">Entry</div><div class="sig-val gold" id="sigEntry">$3,118.50</div></div>
-      <div class="sig-item"><div class="sig-label">Take Profit</div><div class="sig-val buy" id="sigTp">$3,145.00</div></div>
-      <div class="sig-item"><div class="sig-label">Stop Loss</div><div class="sig-val sell" id="sigSl">$3,108.00</div></div>
+      <div class="sig-item"><div class="sig-label">Entry</div><div class="sig-val gold" id="sigEntry">—</div></div>
+      <div class="sig-item"><div class="sig-label">Take Profit</div><div class="sig-val buy" id="sigTp">—</div></div>
+      <div class="sig-item"><div class="sig-label">Stop Loss</div><div class="sig-val sell" id="sigSl">—</div></div>
       <div class="sig-item"><div class="sig-label">R:R Nisbat</div><div class="sig-val gold">1:2.5</div></div>
     </div>
   </div>
-
-  <!-- TOOLS -->
   <div class="section-title">Vositalar</div>
   <div class="tools-grid">
     <a href="aikoz.html" class="tool-card">
@@ -181,7 +161,7 @@ body::before{content:'';position:fixed;inset:0;background-image:linear-gradient(
       <div class="tool-num">04</div>
       <div class="tool-icon">💬</div>
       <div class="tool-name">AI Chat</div>
-      <div class="tool-desc">ZEN|EDGE AI maslahatchi — savol bering, javob oling</div>
+      <div class="tool-desc">ZEN|EDGE AI maslahatchi</div>
       <span class="tool-badge badge-soon">Tez Kunda</span>
     </div>
     <div class="tool-card" style="opacity:0.5;cursor:not-allowed;">
@@ -202,51 +182,49 @@ body::before{content:'';position:fixed;inset:0;background-image:linear-gradient(
 </div>
 
 <script>
-// Auth check
-const user = JSON.parse(localStorage.getItem('ze_user')||'{"name":"Mehmon","username":"mehmon","plan":"free"}');
-document.getElementById('userName').textContent=user.name||user.username;
-document.getElementById('pageUserName').textContent=user.name||user.username;
-document.getElementById('userPlan').textContent=(user.plan||'free').toUpperCase()+' Plan';
+var user = JSON.parse(localStorage.getItem('ze_user') || '{"name":"Mehmon","username":"mehmon","plan":"free"}');
+document.getElementById('userName').textContent = user.name || user.username;
+document.getElementById('pageUserName').textContent = user.name || user.username;
+document.getElementById('userPlan').textContent = (user.plan || 'free').toUpperCase() + ' Plan';
 
-function logout(){localStorage.removeItem('ze_user');window.location.href='login.html';}
-
-// Live time
-function updateTime(){
-  const n=new Date();
-  document.getElementById('liveTime').textContent=n.toLocaleTimeString('uz-UZ')+' • Toshkent';
-  document.getElementById('sigTime').textContent=n.toLocaleString('uz-UZ');
+function logout() {
+  localStorage.removeItem('ze_user');
+  window.location.href = 'login.html';
 }
-updateTime();setInterval(updateTime,1000);
 
-// Price simulation
-async function fetchAndUpdatePrice(){
-  let price=null;
-  try{
-    const r=await fetch('https://cdn.jsdelivr.net/npm/@fawazahmed0/currency-api@latest/v1/currencies/xau.min.json',{cache:'no-cache'});
-    const d=await r.json();
-    const xau=parseFloat(d?.xau?.usd);
-    if(xau&&xau>0){price=parseFloat((1/xau).toFixed(2));}
-  }catch{}
-  if(!price){
-    try{
-      const today=new Date().toISOString().split('T')[0];
-      const r=await fetch(`https://cdn.jsdelivr.net/npm/@fawazahmed0/currency-api@${today}/v1/currencies/xau.min.json`,{cache:'no-cache'});
-      const d=await r.json();
-      const xau=parseFloat(d?.xau?.usd);
-      if(xau&&xau>0){price=parseFloat((1/xau).toFixed(2));}
-    }catch{}
-  }
-  if(price&&price>2000&&price<8000){
-    document.getElementById('xauPrice').textContent='$'+price.toLocaleString('en',{minimumFractionDigits:2,maximumFractionDigits:2});
-    const signal=price>3100?'BUY':'SELL';
-    const sigEl=document.getElementById('currentSignal');
-    sigEl.textContent=signal;
-    sigEl.className='stat-value '+(signal==='BUY'?'buy':'sell');
-    document.getElementById('xauChg').textContent='✓ Forex narxi';
+function updateTime() {
+  var n = new Date();
+  document.getElementById('liveTime').textContent = n.toLocaleTimeString('uz-UZ') + ' • Toshkent';
+  document.getElementById('sigTime').textContent = n.toLocaleString('uz-UZ');
+}
+updateTime();
+setInterval(updateTime, 1000);
+
+async function loadPrice() {
+  try {
+    var r = await fetch('https://cdn.jsdelivr.net/npm/@fawazahmed0/currency-api@latest/v1/currencies/xau.min.json');
+    var d = await r.json();
+    var xau = parseFloat(d.xau.usd);
+    if (xau > 0) {
+      var price = parseFloat((1 / xau).toFixed(2));
+      if (price > 2000 && price < 8000) {
+        document.getElementById('xauPrice').textContent = '$' + price.toLocaleString('en', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+        document.getElementById('xauChg').textContent = 'Forex real narx';
+        document.getElementById('sigEntry').textContent = '$' + (price - 5).toFixed(2);
+        document.getElementById('sigTp').textContent = '$' + (price + 25).toFixed(2);
+        document.getElementById('sigSl').textContent = '$' + (price - 12).toFixed(2);
+        var sig = document.getElementById('currentSignal');
+        sig.textContent = 'BUY';
+        sig.className = 'stat-value buy';
+      }
+    }
+  } catch(e) {
+    document.getElementById('xauChg').textContent = 'Narx yuklanmadi';
   }
 }
-fetchAndUpdatePrice();
-setInterval(fetchAndUpdatePrice,30000);
+
+loadPrice();
+setInterval(loadPrice, 60000);
 </script>
 </body>
 </html>
