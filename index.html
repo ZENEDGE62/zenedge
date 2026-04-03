@@ -1243,12 +1243,31 @@ let basePrice=3124.50;
 let currentPct=0.28;
 
 async function fetchRealPrice(){
+  // 1-urinish: fawazahmed0 - XAU/USD real forex narx
   try{
-    const r=await fetch('https://api.twelvedata.com/price?symbol=XAU/USD&apikey=1c93dd7752f841eaab0f40642e5c5346');
+    const r=await fetch('https://cdn.jsdelivr.net/npm/@fawazahmed0/currency-api@latest/v1/currencies/xau.min.json');
     const d=await r.json();
-    const p=parseFloat(d?.price);
+    const xauInUsd=parseFloat(d?.xau?.usd);
+    if(xauInUsd&&xauInUsd>0){
+      // xau = 1 troy ounce, usd qiymati
+      const price=parseFloat((1/xauInUsd).toFixed(2));
+      if(price>2000&&price<8000){basePrice=price;return price;}
+    }
+  }catch(e){}
+  // 2-urinish: GoldPrice API
+  try{
+    const r=await fetch('https://data-asg.goldprice.org/dbXRates/USD');
+    const d=await r.json();
+    const p=parseFloat(d?.items?.[0]?.xauPrice);
     if(p&&p>2000&&p<8000){basePrice=p;return p;}
-  }catch{}
+  }catch(e){}
+  // 3-urinish: metals.live
+  try{
+    const r=await fetch('https://metals.live/api/spot');
+    const d=await r.json();
+    const p=parseFloat(d?.gold);
+    if(p&&p>2000&&p<8000){basePrice=p;return p;}
+  }catch(e){}
   return null;
 }
 
