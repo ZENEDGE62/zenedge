@@ -204,11 +204,9 @@ body::before{content:'';position:fixed;inset:0;background-image:linear-gradient(
 <script>
 // Auth check
 const user = JSON.parse(localStorage.getItem('ze_user')||'{"name":"Mehmon","username":"mehmon","plan":"free"}');
-else {
-  document.getElementById('userName').textContent=user.name||user.username;
-  document.getElementById('pageUserName').textContent=user.name||user.username;
-  document.getElementById('userPlan').textContent=(user.plan||'free').toUpperCase()+' Plan';
-}
+document.getElementById('userName').textContent=user.name||user.username;
+document.getElementById('pageUserName').textContent=user.name||user.username;
+document.getElementById('userPlan').textContent=(user.plan||'free').toUpperCase()+' Plan';
 
 function logout(){localStorage.removeItem('ze_user');window.location.href='login.html';}
 
