@@ -1,0 +1,1311 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>ZEN|EDGE Maxsus Darsliklari</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600;700&family=Rajdhani:wght@400;500;600;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet"/>
+<style>
+:root{
+  --bg:#080706; --bg2:#0e0c09; --card:#111009; --border:#1e1a12;
+  --gold:#c8a96e; --gold2:#e8c87a; --goldDim:#6b5a38; --goldBg:#140f04;
+  --text:#e8e2d6; --sec:#8a7e6a; --dim:#3a3228;
+  --buy:#4daa70; --sell:#c94040; --info:#4d8eaa;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{background:var(--bg);color:var(--text);font-family:'Rajdhani',sans-serif;line-height:1.7;}
+
+/* SCROLLBAR */
+::-webkit-scrollbar{width:5px;}
+::-webkit-scrollbar-track{background:var(--bg);}
+::-webkit-scrollbar-thumb{background:var(--goldDim);border-radius:3px;}
+
+/* SIDEBAR */
+.sidebar{
+  position:fixed;top:0;left:0;width:280px;height:100vh;
+  background:var(--bg2);border-right:1px solid var(--border);
+  overflow-y:auto;z-index:100;padding:0;
+}
+.sidebar-logo{
+  padding:28px 24px;border-bottom:1px solid var(--border);
+  position:sticky;top:0;background:var(--bg2);z-index:10;
+}
+.logo-text{
+  font-family:'Cormorant Garamond',serif;font-size:26px;font-weight:700;
+  color:var(--text);letter-spacing:1px;
+}
+.logo-text span{color:var(--gold);}
+.logo-sub{font-size:10px;color:var(--dim);letter-spacing:3px;text-transform:uppercase;margin-top:4px;}
+.sidebar-nav{padding:16px 0;}
+.nav-section{margin-bottom:4px;}
+.nav-section-title{
+  font-size:9px;letter-spacing:3px;color:var(--goldDim);
+  text-transform:uppercase;padding:12px 24px 6px;font-weight:700;
+}
+.nav-link{
+  display:block;padding:9px 24px;font-size:13px;color:var(--sec);
+  text-decoration:none;transition:all 0.2s;
+  border-left:2px solid transparent;font-weight:500;
+}
+.nav-link:hover,.nav-link.active{
+  color:var(--gold);background:rgba(200,169,110,0.06);
+  border-left-color:var(--gold);
+}
+.nav-link .num{
+  font-family:'JetBrains Mono',monospace;font-size:10px;
+  color:var(--goldDim);margin-right:8px;
+}
+
+/* MAIN */
+.main{margin-left:280px;min-height:100vh;}
+
+/* COVER */
+.cover{
+  min-height:100vh;display:flex;flex-direction:column;
+  justify-content:center;align-items:flex-start;
+  padding:80px 80px;position:relative;overflow:hidden;
+  background:
+    radial-gradient(ellipse 80% 60% at 80% 50%,rgba(200,169,110,0.07) 0%,transparent 70%),
+    radial-gradient(ellipse 40% 80% at 10% 80%,rgba(77,170,112,0.04) 0%,transparent 60%);
+}
+.cover::before{
+  content:'';position:absolute;inset:0;
+  background-image:
+    linear-gradient(rgba(200,169,110,0.04) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(200,169,110,0.04) 1px,transparent 1px);
+  background-size:50px 50px;
+}
+.cover-tag{
+  display:inline-flex;align-items:center;gap:8px;
+  border:1px solid var(--goldDim);padding:6px 16px;
+  font-size:11px;letter-spacing:3px;color:var(--gold);
+  text-transform:uppercase;margin-bottom:40px;position:relative;
+}
+.cover-tag::before{
+  content:'';width:7px;height:7px;background:var(--buy);
+  border-radius:50%;animation:blink 2s infinite;
+}
+@keyframes blink{0%,100%{opacity:1;}50%{opacity:0.3;}}
+.cover-vol{
+  font-family:'JetBrains Mono',monospace;font-size:12px;
+  color:var(--goldDim);letter-spacing:2px;margin-bottom:16px;position:relative;
+}
+.cover-title{
+  font-family:'Cormorant Garamond',serif;
+  font-size:clamp(56px,6vw,88px);font-weight:700;
+  line-height:0.95;letter-spacing:-1px;margin-bottom:16px;position:relative;
+}
+.cover-title .gold{color:var(--gold);}
+.cover-title .outline{-webkit-text-stroke:1px var(--goldDim);color:transparent;}
+.cover-subtitle{
+  font-size:18px;color:var(--sec);letter-spacing:3px;
+  text-transform:uppercase;margin-bottom:32px;position:relative;font-weight:500;
+}
+.cover-desc{
+  font-size:16px;color:var(--sec);line-height:1.8;
+  max-width:560px;margin-bottom:48px;position:relative;
+}
+.cover-meta{
+  display:flex;gap:48px;position:relative;
+}
+.cover-meta-item{}
+.cover-meta-val{
+  font-family:'Cormorant Garamond',serif;font-size:36px;
+  font-weight:700;color:var(--gold);line-height:1;
+}
+.cover-meta-lbl{font-size:10px;letter-spacing:2px;color:var(--dim);text-transform:uppercase;margin-top:4px;}
+.cover-disc{
+  position:absolute;bottom:40px;left:80px;
+  font-size:11px;color:var(--dim);max-width:500px;line-height:1.5;
+}
+
+/* CONTENT */
+.content-page{padding:64px 80px;border-bottom:1px solid var(--border);}
+.content-page:last-child{border-bottom:none;}
+
+/* CHAPTER HEADER */
+.chapter-header{margin-bottom:48px;}
+.chapter-num{
+  font-family:'JetBrains Mono',monospace;font-size:11px;
+  color:var(--goldDim);letter-spacing:3px;text-transform:uppercase;
+  display:flex;align-items:center;gap:12px;margin-bottom:16px;
+}
+.chapter-num::before{content:'';flex:0 0 40px;height:1px;background:var(--goldDim);}
+.chapter-title{
+  font-family:'Cormorant Garamond',serif;
+  font-size:clamp(36px,4vw,56px);font-weight:700;
+  line-height:1.05;color:var(--text);
+}
+.chapter-title .gold{color:var(--gold);}
+.chapter-intro{
+  font-size:16px;color:var(--sec);line-height:1.8;
+  max-width:680px;margin-top:20px;padding-top:20px;
+  border-top:1px solid var(--border);
+}
+
+/* LESSON CARDS */
+.lesson{
+  background:var(--card);border:1px solid var(--border);
+  padding:36px;margin-bottom:24px;position:relative;overflow:hidden;
+}
+.lesson::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:2px;
+  background:linear-gradient(90deg,var(--gold),transparent);
+}
+.lesson-header{display:flex;align-items:flex-start;gap:16px;margin-bottom:24px;}
+.lesson-icon{
+  width:48px;height:48px;background:rgba(200,169,110,0.1);
+  border:1px solid var(--goldDim);display:flex;align-items:center;
+  justify-content:center;font-size:22px;flex-shrink:0;border-radius:2px;
+}
+.lesson-meta{flex:1;}
+.lesson-num{font-size:10px;letter-spacing:2px;color:var(--goldDim);text-transform:uppercase;margin-bottom:4px;font-family:'JetBrains Mono',monospace;}
+.lesson-title{font-family:'Cormorant Garamond',serif;font-size:26px;font-weight:700;color:var(--text);}
+.lesson-body{font-size:15px;color:var(--sec);line-height:1.8;}
+.lesson-body p{margin-bottom:14px;}
+.lesson-body p:last-child{margin-bottom:0;}
+
+/* HIGHLIGHT BOX */
+.highlight{
+  border:1px solid var(--goldDim);background:rgba(200,169,110,0.05);
+  padding:20px 24px;margin:20px 0;position:relative;
+}
+.highlight::before{
+  content:'';position:absolute;left:0;top:0;bottom:0;
+  width:3px;background:var(--gold);
+}
+.highlight-title{font-size:11px;letter-spacing:2px;color:var(--gold);text-transform:uppercase;margin-bottom:10px;font-weight:700;}
+.highlight p{font-size:14px;color:var(--sec);line-height:1.7;margin:0;}
+
+/* INFO BOX */
+.infobox{
+  border:1px solid var(--infoBr,#1a3550);background:rgba(77,142,170,0.06);
+  padding:20px 24px;margin:20px 0;
+}
+.infobox-title{font-size:11px;letter-spacing:2px;color:var(--info);text-transform:uppercase;margin-bottom:10px;font-weight:700;}
+
+/* WARNING BOX */
+.warnbox{
+  border:1px solid rgba(201,64,64,0.3);background:rgba(201,64,64,0.06);
+  padding:20px 24px;margin:20px 0;
+}
+.warnbox-title{font-size:11px;letter-spacing:2px;color:var(--sell);text-transform:uppercase;margin-bottom:10px;font-weight:700;}
+
+/* RULES LIST */
+.rules{list-style:none;display:flex;flex-direction:column;gap:10px;margin:16px 0;}
+.rules li{
+  display:flex;align-items:flex-start;gap:12px;
+  padding:12px 16px;background:rgba(200,169,110,0.04);
+  border:1px solid var(--border);font-size:14px;color:var(--sec);
+}
+.rules li::before{
+  content:'→';color:var(--gold);font-weight:700;flex-shrink:0;margin-top:1px;
+}
+.rules li strong{color:var(--text);}
+
+/* GRID CARDS */
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:20px 0;}
+.grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;margin:20px 0;}
+.mini-card{
+  background:var(--bg2);border:1px solid var(--border);
+  padding:20px;transition:border-color 0.3s;
+}
+.mini-card:hover{border-color:var(--goldDim);}
+.mini-card-icon{font-size:24px;margin-bottom:10px;}
+.mini-card-title{font-size:14px;font-weight:700;color:var(--text);margin-bottom:6px;}
+.mini-card-desc{font-size:13px;color:var(--sec);line-height:1.6;}
+
+/* BADGE */
+.badge{
+  display:inline-block;padding:4px 12px;font-size:10px;
+  letter-spacing:2px;font-weight:700;text-transform:uppercase;
+  border:1px solid;border-radius:2px;
+}
+.badge-gold{color:var(--gold);border-color:var(--goldDim);background:rgba(200,169,110,0.1);}
+.badge-buy{color:var(--buy);border-color:rgba(77,170,112,0.4);background:rgba(77,170,112,0.1);}
+.badge-sell{color:var(--sell);border-color:rgba(201,64,64,0.4);background:rgba(201,64,64,0.1);}
+.badge-info{color:var(--info);border-color:rgba(77,142,170,0.4);background:rgba(77,142,170,0.1);}
+
+/* FORMULA BOX */
+.formula{
+  background:var(--bg);border:1px solid var(--goldDim);
+  padding:20px 24px;margin:16px 0;font-family:'JetBrains Mono',monospace;
+  font-size:14px;color:var(--gold);position:relative;
+}
+.formula-label{font-size:9px;letter-spacing:2px;color:var(--dim);text-transform:uppercase;margin-bottom:8px;}
+
+/* STEP LIST */
+.steps{counter-reset:step;list-style:none;display:flex;flex-direction:column;gap:12px;margin:16px 0;}
+.steps li{
+  counter-increment:step;display:flex;align-items:flex-start;gap:16px;
+  padding:14px 18px;border:1px solid var(--border);font-size:14px;color:var(--sec);
+}
+.steps li::before{
+  content:counter(step);
+  width:28px;height:28px;background:var(--gold);color:var(--bg);
+  border-radius:50%;display:flex;align-items:center;justify-content:center;
+  font-weight:700;font-size:12px;flex-shrink:0;font-family:'JetBrains Mono',monospace;
+}
+.steps li strong{color:var(--text);}
+
+/* DIVIDER */
+.divider{height:1px;background:var(--border);margin:32px 0;}
+.divider-gold{height:1px;background:linear-gradient(90deg,transparent,var(--goldDim),transparent);margin:32px 0;}
+
+/* TABLE */
+.table-wrap{overflow-x:auto;margin:16px 0;}
+table{width:100%;border-collapse:collapse;}
+th{
+  background:rgba(200,169,110,0.1);border:1px solid var(--border);
+  padding:10px 16px;text-align:left;font-size:11px;letter-spacing:2px;
+  color:var(--gold);text-transform:uppercase;
+}
+td{
+  border:1px solid var(--border);padding:10px 16px;
+  font-size:14px;color:var(--sec);
+}
+tr:hover td{background:rgba(200,169,110,0.03);}
+td strong{color:var(--text);}
+
+/* QUOTE */
+.quote{
+  border-left:3px solid var(--gold);padding:20px 24px;
+  background:rgba(200,169,110,0.04);margin:24px 0;
+}
+.quote-text{
+  font-family:'Cormorant Garamond',serif;font-size:22px;
+  font-style:italic;color:var(--text);line-height:1.5;
+}
+.quote-author{font-size:12px;letter-spacing:2px;color:var(--goldDim);text-transform:uppercase;margin-top:12px;}
+
+/* TOC */
+.toc{padding:64px 80px;border-bottom:1px solid var(--border);}
+.toc-title{
+  font-family:'Cormorant Garamond',serif;font-size:42px;font-weight:700;
+  margin-bottom:40px;
+}
+.toc-title span{color:var(--gold);}
+.toc-grid{display:grid;grid-template-columns:1fr 1fr;gap:2px;background:var(--border);}
+.toc-item{
+  background:var(--card);padding:20px 24px;
+  display:flex;align-items:center;gap:16px;
+  text-decoration:none;transition:background 0.2s;
+}
+.toc-item:hover{background:rgba(200,169,110,0.06);}
+.toc-item-num{
+  font-family:'JetBrains Mono',monospace;font-size:18px;
+  font-weight:700;color:var(--goldDim);width:32px;flex-shrink:0;
+}
+.toc-item-title{font-size:15px;font-weight:600;color:var(--text);}
+.toc-item-sub{font-size:12px;color:var(--dim);margin-top:2px;}
+
+/* BACK TO TOP */
+.back-top{
+  position:fixed;bottom:32px;right:32px;
+  width:44px;height:44px;background:var(--goldBg);
+  border:1px solid var(--goldDim);display:flex;align-items:center;
+  justify-content:center;cursor:pointer;font-size:18px;z-index:200;
+  opacity:0;transition:opacity 0.3s;text-decoration:none;color:var(--gold);
+}
+.back-top.show{opacity:1;}
+
+/* PRINT */
+@media print{
+  .sidebar,.back-top{display:none!important;}
+  .main{margin-left:0!important;}
+  .cover,.content-page,.toc{padding:40px!important;}
+}
+
+/* MOBILE */
+@media(max-width:900px){
+  .sidebar{transform:translateX(-100%);transition:transform 0.3s;}
+  .sidebar.open{transform:translateX(0);}
+  .main{margin-left:0;}
+  .cover,.content-page,.toc{padding:40px 24px;}
+  .grid-2,.grid-3,.toc-grid{grid-template-columns:1fr;}
+}
+</style>
+</head>
+<body>
+
+<!-- SIDEBAR -->
+<nav class="sidebar" id="sidebar">
+  <div class="sidebar-logo">
+    <div class="logo-text">ZEN<span>|</span>EDGE</div>
+    <div class="logo-sub">Maxsus Darsliklari</div>
+  </div>
+  <div class="sidebar-nav">
+    <div class="nav-section">
+      <div class="nav-section-title">Kirish</div>
+      <a href="#cover" class="nav-link active"><span class="num">00</span>Muqova</a>
+      <a href="#toc" class="nav-link"><span class="num">—</span>Mundarija</a>
+    </div>
+    <div class="nav-section">
+      <div class="nav-section-title">I Bo'lim — Asoslar</div>
+      <a href="#bob1" class="nav-link"><span class="num">01</span>SNR — Qo'llab-quvvatlash va Qarshilik</a>
+      <a href="#bob2" class="nav-link"><span class="num">02</span>SNR dan To'g'ri Foydalanish</a>
+      <a href="#bob3" class="nav-link"><span class="num">03</span>SNR va 2-Harakat</a>
+    </div>
+    <div class="nav-section">
+      <div class="nav-section-title">II Bo'lim — Talab va Taklif</div>
+      <a href="#bob4" class="nav-link"><span class="num">04</span>SND — Talab va Taklif</a>
+      <a href="#bob5" class="nav-link"><span class="num">05</span>Asosiy Yutish (Engulfing)</a>
+      <a href="#bob6" class="nav-link"><span class="num">06</span>SNR va SND ni Birlashtirish</a>
+    </div>
+    <div class="nav-section">
+      <div class="nav-section-title">III Bo'lim — Professional Setaplar</div>
+      <a href="#bob7" class="nav-link"><span class="num">07</span>Teskari Setaplar</a>
+      <a href="#bob8" class="nav-link"><span class="num">08</span>Quasimodo (QMR)</a>
+      <a href="#bob9" class="nav-link"><span class="num">09</span>Manipulyatsiya Setapi</a>
+      <a href="#bob10" class="nav-link"><span class="num">10</span>Blindspot Setapi</a>
+    </div>
+    <div class="nav-section">
+      <div class="nav-section-title">IV Bo'lim — Davomiy Setaplar</div>
+      <a href="#bob11" class="nav-link"><span class="num">11</span>Quasimodo Davomi (QMC)</a>
+      <a href="#bob12" class="nav-link"><span class="num">12</span>SNR Davomi 1 va 2</a>
+    </div>
+    <div class="nav-section">
+      <div class="nav-section-title">V Bo'lim — Ilg'or Mavzular</div>
+      <a href="#bob13" class="nav-link"><span class="num">13</span>Ko'p Timeframe Tahlili</a>
+      <a href="#bob14" class="nav-link"><span class="num">14</span>5SOP Tizimi</a>
+      <a href="#bob15" class="nav-link"><span class="num">15</span>Buzilgan Zona va Skalping</a>
+    </div>
+    <div class="nav-section">
+      <div class="nav-section-title">Xulosa</div>
+      <a href="#xulosa" class="nav-link"><span class="num">16</span>Yakuniy Xulosa</a>
+    </div>
+  </div>
+</nav>
+
+<!-- MAIN -->
+<main class="main">
+
+  <!-- COVER -->
+  <section class="cover" id="cover">
+    <div class="cover-tag">ZEN|EDGE · O'zbek Tilida · 2025</div>
+    <div class="cover-vol">1-JILD · TO'LIQ QO'LLANMA</div>
+    <h1 class="cover-title">
+      ZEN<span class="gold">|</span>EDGE<br>
+      <span class="outline">MAXSUS</span><br>
+      <span class="gold">DARSLIKLARI</span>
+    </h1>
+    <p class="cover-subtitle">XAUUSD · Institutsional Savdo Tizimi</p>
+    <p class="cover-desc">
+      SNR, SND, Quasimodo, Manipulyatsiya, Blindspot va 5SOP tizimi asosida professional savdo. Boshlang'ichdan professional darajagacha — o'zbek tilida, to'liq qo'llanma.
+    </p>
+    <div class="cover-meta">
+      <div class="cover-meta-item">
+        <div class="cover-meta-val">15+</div>
+        <div class="cover-meta-lbl">Darslik</div>
+      </div>
+      <div class="cover-meta-item">
+        <div class="cover-meta-val">5SOP</div>
+        <div class="cover-meta-lbl">Asosiy Tizim</div>
+      </div>
+      <div class="cover-meta-item">
+        <div class="cover-meta-val">100%</div>
+        <div class="cover-meta-lbl">O'zbek tilida</div>
+      </div>
+    </div>
+    <div class="cover-disc">⚠️ Ushbu darsliklar faqat ta'lim maqsadida. Investitsiya maslahati emas. Savdo qilishda katta moliyaviy xavflar mavjud.</div>
+  </section>
+
+  <!-- MUNDARIJA -->
+  <section class="toc" id="toc">
+    <h2 class="toc-title">Mundarija — <span>Darslar</span></h2>
+    <div class="toc-grid">
+      <a href="#bob1" class="toc-item"><div class="toc-item-num">01</div><div><div class="toc-item-title">SNR — Qo'llab-quvvatlash va Qarshilik</div><div class="toc-item-sub">Asosiy tushunchalar, darajalar, qoidalar</div></div></a>
+      <a href="#bob2" class="toc-item"><div class="toc-item-num">02</div><div><div class="toc-item-title">SNR dan To'g'ri Foydalanish</div><div class="toc-item-sub">HTF → LTF yo'nalish va kirish</div></div></a>
+      <a href="#bob3" class="toc-item"><div class="toc-item-num">03</div><div><div class="toc-item-title">SNR va 2-Harakat</div><div class="toc-item-sub">Zonani to'g'ri belgilash usuli</div></div></a>
+      <a href="#bob4" class="toc-item"><div class="toc-item-num">04</div><div><div class="toc-item-title">SND — Talab va Taklif</div><div class="toc-item-sub">RBR, DBD, RBD, DBR naqshlari</div></div></a>
+      <a href="#bob5" class="toc-item"><div class="toc-item-num">05</div><div><div class="toc-item-title">Asosiy Yutish (Engulfing)</div><div class="toc-item-sub">3 tur: Type 1, Type 2, Type 3</div></div></a>
+      <a href="#bob6" class="toc-item"><div class="toc-item-num">06</div><div><div class="toc-item-title">SNR va SND ni Birlashtirish</div><div class="toc-item-sub">Chap SNR + O'ng SND strategiyasi</div></div></a>
+      <a href="#bob7" class="toc-item"><div class="toc-item-num">07</div><div><div class="toc-item-title">Teskari Setaplar</div><div class="toc-item-sub">QMR, Manipulyatsiya, Blindspot</div></div></a>
+      <a href="#bob8" class="toc-item"><div class="toc-item-num">08</div><div><div class="toc-item-title">Quasimodo (QMR)</div><div class="toc-item-sub">Kirish, Stop Loss, Take Profit</div></div></a>
+      <a href="#bob9" class="toc-item"><div class="toc-item-num">09</div><div><div class="toc-item-title">Manipulyatsiya Setapi</div><div class="toc-item-sub">HTF Engulfing + LTF kirish</div></div></a>
+      <a href="#bob10" class="toc-item"><div class="toc-item-num">10</div><div><div class="toc-item-title">Blindspot Setapi</div><div class="toc-item-sub">Ko'r burilish zonasi</div></div></a>
+      <a href="#bob11" class="toc-item"><div class="toc-item-num">11</div><div><div class="toc-item-title">Quasimodo Davomi (QMC)</div><div class="toc-item-sub">3 Drive bilan davomiy setap</div></div></a>
+      <a href="#bob12" class="toc-item"><div class="toc-item-num">12</div><div><div class="toc-item-title">SNR Davomi 1 va 2</div><div class="toc-item-sub">RBR/DBD va RBD/DBR kirishlar</div></div></a>
+      <a href="#bob13" class="toc-item"><div class="toc-item-num">13</div><div><div class="toc-item-title">Ko'p Timeframe Tahlili</div><div class="toc-item-sub">HTF→LTF va LTF→HTF usullari</div></div></a>
+      <a href="#bob14" class="toc-item"><div class="toc-item-num">14</div><div><div class="toc-item-title">5SOP Tizimi</div><div class="toc-item-sub">5 qadam: Zona, Og'ish, Tasdiqlash...</div></div></a>
+      <a href="#bob15" class="toc-item"><div class="toc-item-num">15</div><div><div class="toc-item-title">Buzilgan Zona va Skalping</div><div class="toc-item-sub">Chiqib ketish zonasi, oltin skalping</div></div></a>
+      <a href="#xulosa" class="toc-item"><div class="toc-item-num">16</div><div><div class="toc-item-title">Yakuniy Xulosa</div><div class="toc-item-sub">Asosiy tamoyillar va hayot falsafasi</div></div></a>
+    </div>
+  </section>
+
+  <!-- BOB 1 -->
+  <section class="content-page" id="bob1">
+    <div class="chapter-header">
+      <div class="chapter-num">Birinchi Bob</div>
+      <h2 class="chapter-title">SNR — <span class="gold">Qo'llab-quvvatlash va Qarshilik</span></h2>
+      <p class="chapter-intro">Forex savdosining eng asosiy tushunchasi — Support (Qo'llab-quvvatlash) va Resistance (Qarshilik) darajalari. Bu zonalar bozorda katta buyurtmalar to'planadigan va narx reaksiya ko'rsatadigan muhim nuqtalar hisoblanadi.</p>
+    </div>
+
+    <div class="lesson">
+      <div class="lesson-header">
+        <div class="lesson-icon">📐</div>
+        <div class="lesson-meta">
+          <div class="lesson-num">Dars 01.1</div>
+          <div class="lesson-title">SNR Nima?</div>
+        </div>
+      </div>
+      <div class="lesson-body">
+        <p><strong>Qo'llab-quvvatlash (Support)</strong> — narx pastga tushayotganda to'xtab, yuqoriga qaytadigan "pol" darajasi. Bu joyda xaridorlar kuchli bo'lib, buy buyurtmalar to'plangan.</p>
+        <p><strong>Qarshilik (Resistance)</strong> — narx yuqoriga ko'tarilayotganda to'xtab, pastga qaytadigan "shift" darajasi. Bu joyda sotuvchilar kuchli bo'lib, sell buyurtmalar to'plangan.</p>
+        <div class="grid-2">
+          <div class="mini-card">
+            <div class="mini-card-icon">📈</div>
+            <div class="mini-card-title">Support (S) — Qo'llab-quvvatlash</div>
+            <div class="mini-card-desc">Narx shu darajaga yetib, yuqoriga qaytadi. Buy buyurtmalar joyi. "Pol" vazifasini bajaradi.</div>
+          </div>
+          <div class="mini-card">
+            <div class="mini-card-icon">📉</div>
+            <div class="mini-card-title">Resistance (R) — Qarshilik</div>
+            <div class="mini-card-desc">Narx shu darajaga yetib, pastga qaytadi. Sell buyurtmalar joyi. "Shift" vazifasini bajaradi.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="lesson">
+      <div class="lesson-header">
+        <div class="lesson-icon">⚠️</div>
+        <div class="lesson-meta">
+          <div class="lesson-num">Dars 01.2</div>
+          <div class="lesson-title">SNR Darajalari — Muhim Qoidalar</div>
+        </div>
+      </div>
+      <div class="lesson-body">
+        <p>Barcha SNR darajalari bir xil kuchga ega emas. Quyidagi qoidalarni yodlang:</p>
+        <ul class="rules">
+          <li>Narx odatda SNR darajasida o'ynaydi, chunki bu joyda xaridorlar yoki sotuvchilarning katta buyurtmalari joylashgan</li>
+          <li><strong>Agar SNR darajasi ko'p marta ta'sirlangan bo'lsa</strong> — tasdiqlash bo'lsa ham, kirish xavfli. Ehtiyot bo'ling!</li>
+          <li><strong>Qanchalik ko'p tegilsa, SNR shunchalik zaiflashadi</strong> — har safar yangi buyurtmalar kamayib boradi</li>
+          <li><strong>Biz doimo tegilmagan (yangi) SNRni tanlashimiz kerak</strong> — bu eng kuchli va ishonchli zona</li>
+        </ul>
+        <div class="highlight">
+          <div class="highlight-title">💡 Asosiy Qoida</div>
+          <p>Birinchi marta tegilgan SNR eng kuchli. Ikkinchi marta — o'rtacha. Uchunchi va undan ko'p tegilsa — zaif va xavfli zona!</p>
+        </div>
+        <div class="grid-3">
+          <div class="mini-card">
+            <div class="mini-card-icon">✅</div>
+            <div class="mini-card-title">Tegilmagan SNR</div>
+            <div class="mini-card-desc">Eng kuchli zona. Birinchi marta tegilyapti. Kirish xavfsiz.</div>
+          </div>
+          <div class="mini-card">
+            <div class="mini-card-icon">⚠️</div>
+            <div class="mini-card-title">1 marta tegilgan</div>
+            <div class="mini-card-desc">Tasdiqlash bo'lsa ham ehtiyot bo'ling. O'rtacha kuchli zona.</div>
+          </div>
+          <div class="mini-card">
+            <div class="mini-card-icon">❌</div>
+            <div class="mini-card-title">Ko'p marta tegilgan</div>
+            <div class="mini-card-desc">Xavfli zona! Buyurtmalar tugagan. Kirmaslik yaxshiroq.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- BOB 2 -->
+  <section class="content-page" id="bob2">
+    <div class="chapter-header">
+      <div class="chapter-num">Ikkinchi Bob</div>
+      <h2 class="chapter-title">SNR dan <span class="gold">To'g'ri Foydalanish</span></h2>
+      <p class="chapter-intro">SNR darajalarini aniqlash yetarli emas — ulardan qanday foydalanishni bilish muhimroq. Ko'p timeframe tahlili orqali to'g'ri yo'nalish va kirish nuqtasini topamiz.</p>
+    </div>
+
+    <div class="lesson">
+      <div class="lesson-header">
+        <div class="lesson-icon">🗺️</div>
+        <div class="lesson-meta">
+          <div class="lesson-num">Dars 02.1</div>
+          <div class="lesson-title">HTF da Yo'nalishni Aniqlash</div>
+        </div>
+      </div>
+      <div class="lesson-body">
+        <p>SNR dan foydalanishda eng muhim qoida — katta timeframelarda yo'nalish aniqlash, kichik timeframelarda kirish topish.</p>
+        <ol class="steps">
+          <li><strong>W1 (Haftalik) da zona belgilash</strong> — Bu joyda biz katta qo'llab-quvvatlash va qarshilik maydonlarini belgilaymiz</li>
+          <li><strong>D1 da qayta belgilash</strong> — W1 darajalarini D1 da aniqlaymiz va kirish zonasini tayyorlaymiz</li>
+          <li><strong>Yo'nalishni aniqlash</strong> — Faqat ikkita yo'nalish bor: UZOQ SOTISH va QISQA SOTIB OLISH yoki UZOQ SOTIB OLISH va QISQA SOTISH</li>
+          <li><strong>Tasdiqlovchi naqsh kutish</strong> — Narx yo'nalishini o'zgartirganini tasdiqlash uchun yutish naqshi paydo bo'lishini kuting</li>
+          <li><strong>Kichik timeframeda kirish</strong> — H4 yoki H1 da setap topib, kirish amalga oshiriladi</li>
+        </ol>
+
+        <div class="highlight">
+          <div class="highlight-title">⏱ Timeframe Tartibi</div>
+          <p><strong>Yo'nalish:</strong> MN → W1 → D1<br>
+          <strong>Tasdiqlash:</strong> D1 → H4<br>
+          <strong>Kirish setapi:</strong> H4 → H1 → M30 → M15 → M5</p>
+        </div>
+
+        <div class="divider-gold"></div>
+
+        <div class="infobox">
+          <div class="infobox-title">📊 2 ta Asosiy Yo'nalish</div>
+          <div class="grid-2">
+            <div>
+              <span class="badge badge-sell">SELL Yo'nalishi</span>
+              <p style="font-size:14px;color:var(--sec);margin-top:8px;">W1 QARSHILIKDAN → UZOQ SOTISH, QISQA SOTIB OLING. Narx W1 qarshiligiga yaqinlashganda D1 darajasida sotib olish setapi qidirish</p>
+            </div>
+            <div>
+              <span class="badge badge-buy">BUY Yo'nalishi</span>
+              <p style="font-size:14px;color:var(--sec);margin-top:8px;">W1 QUVVATDAN → UZOQ SOTIB OLING, QISQA SOTING. Narx W1 qo'llab-quvvatlashiga yaqinlashganda D1 darajasida sotish setapi qidirish</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- BOB 3 -->
+  <section class="content-page" id="bob3">
+    <div class="chapter-header">
+      <div class="chapter-num">Uchinchi Bob</div>
+      <h2 class="chapter-title">SNR va <span class="gold">2-Harakat</span></h2>
+      <p class="chapter-intro">Zonani to'g'ri belgilash — savdoning yarmi. 2-harakat (2nd Move) yordamida xavfli va xavfsiz zonalarni ajratishni o'rganamiz.</p>
+    </div>
+
+    <div class="lesson">
+      <div class="lesson-header">
+        <div class="lesson-icon">🔄</div>
+        <div class="lesson-meta">
+          <div class="lesson-num">Dars 03.1</div>
+          <div class="lesson-title">2-Harakat (2nd Move) Nima?</div>
+        </div>
+      </div>
+      <div class="lesson-body">
+        <p>2-harakat — bu narxning SNR zonasiga ikkinchi marta yaqinlashishidir. Bu bizga zona ichidagi buyurtmalar hali ham faol ekanligini va zona to'g'ri ekanligini tasdiqlaydi.</p>
+
+        <div class="warnbox">
+          <div class="warnbox-title">❌ Nima uchun 2-harakat kerak?</div>
+          <p style="font-size:14px;color:var(--sec);">Biz xavfli zona yoki trend oxirini tanlamasligimiz uchun. 2-harakatsiz zona ko'pincha noto'g'ri yoki zaif bo'ladi.</p>
+        </div>
+
+        <ul class="rules">
+          <li><strong>Qo'llab-quvvatlash zonasi uchun</strong> — 2-harakatni pastdan yoki eng past narxdan tanlang</li>
+          <li><strong>Qarshilik zonasi uchun</strong> — 2-harakatni cho'qqilardan yoki eng yuqori narxdan tanlang</li>
+          <li>2-harakat bozorda ko'p shakllarga ega — yuqori, o'rta, pastki qismda bo'lishi mumkin</li>
+          <li>Eng muhimi — 2-harakat aniq ko'rinib turishi kerak, qayerda ekanini aytmasa ham bo'ladi</li>
+        </ul>
+
+        <div class="highlight">
+          <div class="highlight-title">✅ To'g'ri Zona vs ❌ Noto'g'ri Zona</div>
+          <p><strong>To'g'ri:</strong> Zona tagida yoki tepasida aniq 2-harakat ko'rinib turadi<br>
+          <strong>Noto'g'ri:</strong> Zonada 2-harakat yo'q — bu zona savdoga yaroqsiz!</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- BOB 4 -->
+  <section class="content-page" id="bob4">
+    <div class="chapter-header">
+      <div class="chapter-num">To'rtinchi Bob</div>
+      <h2 class="chapter-title">SND — <span class="gold">Talab va Taklif</span></h2>
+      <p class="chapter-intro">Supply and Demand (Talab va Taklif) — bu SNR ning chuqurroq versiyasi. Narxning to'rt xil harakati: RBR, DBD, RBD, DBR.</p>
+    </div>
+
+    <div class="lesson">
+      <div class="lesson-header">
+        <div class="lesson-icon">⚡</div>
+        <div class="lesson-meta">
+          <div class="lesson-num">Dars 04.1</div>
+          <div class="lesson-title">To'rt Xil SND Naqshi</div>
+        </div>
+      </div>
+      <div class="lesson-body">
+        <p>SND tasdiqlash to'rt turga bo'linadi. Har biri bozor yo'nalishi haqida muhim ma'lumot beradi:</p>
+
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr><th>Naqsh</th><th>Ma'nosi</th><th>Yo'nalish</th><th>Turi</th></tr>
+            </thead>
+            <tbody>
+              <tr><td><strong>RBR</strong></td><td>Rally-Base-Rally</td><td>Narx yuqoriga davom etish niyatida</td><td><span class="badge badge-buy">DAVOM</span></td></tr>
+              <tr><td><strong>DBD</strong></td><td>Drop-Base-Drop</td><td>Narx pastga davom etish niyatida</td><td><span class="badge badge-sell">DAVOM</span></td></tr>
+              <tr><td><strong>RBD</strong></td><td>Rally-Base-Drop</td><td>Narx yuqoridan pastga yo'nalish o'zgarishi</td><td><span class="badge badge-sell">TESKARI</span></td></tr>
+              <tr><td><strong>DBR</strong></td><td>Drop-Base-Rally</td><td>Narx pastdan yuqoriga yo'nalish o'zgarishi</td><td><span class="badge badge-buy">TESKARI</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="grid-2" style="margin-top:20px;">
+          <div class="mini-card">
+            <div class="mini-card-icon">🔵</div>
+            <div class="mini-card-title">Davomiy (RBR / DBD)</div>
+            <div class="mini-card-desc">Narx mavjud yo'nalishda davom etadi. Trend bilan birga savdo qilish imkoniyati.</div>
+          </div>
+          <div class="mini-card">
+            <div class="mini-card-icon">🔴</div>
+            <div class="mini-card-title">Teskari (RBD / DBR)</div>
+            <div class="mini-card-desc">Narx yo'nalishi o'zgaradi. Trend qaytishi — reversal savdo imkoniyati.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- BOB 5 -->
+  <section class="content-page" id="bob5">
+    <div class="chapter-header">
+      <div class="chapter-num">Beshinchi Bob</div>
+      <h2 class="chapter-title">Asosiy Yutish — <span class="gold">Engulfing</span></h2>
+      <p class="chapter-intro">Yutish (Engulfing) — bir shamning boshqa shamni "yeyishi". Bu bozorda kuchli xaridorlar yoki sotuvchilar paydo bo'lganini ko'rsatadi va kirish uchun tasdiq sifatida ishlatiladi.</p>
+    </div>
+
+    <div class="lesson">
+      <div class="lesson-header">
+        <div class="lesson-icon">🕯️</div>
+        <div class="lesson-meta">
+          <div class="lesson-num">Dars 05.1</div>
+          <div class="lesson-title">Engulfing — 3 Turi</div>
+        </div>
+      </div>
+      <div class="lesson-body">
+        <p>Yutish ichida odatda yashirin o'rnatish (Hidden Setup) mavjud. U uch turga bo'linadi:</p>
+
+        <div class="grid-3">
+          <div class="mini-card">
+            <div class="mini-card-icon">1️⃣</div>
+            <div class="mini-card-title">1-Tur (Type 1)</div>
+            <div class="mini-card-desc">Bitta sham bitta shamni yutadi. Eng oddiy va keng tarqalgan shakl.</div>
+          </div>
+          <div class="mini-card">
+            <div class="mini-card-icon">2️⃣</div>
+            <div class="mini-card-title">2-Tur (Type 2)</div>
+            <div class="mini-card-desc">Bitta shamni ikkita sham yutadi. Kuchliroq tasdiq.</div>
+          </div>
+          <div class="mini-card">
+            <div class="mini-card-icon">3️⃣</div>
+            <div class="mini-card-title">3-Tur (Type 3)</div>
+            <div class="mini-card-desc">Bitta shamni uchta sham yutadi yoki "Bo'sh sham" deb ataladi. Eng kuchli signal.</div>
+          </div>
+        </div>
+
+        <div class="highlight">
+          <div class="highlight-title">📌 Bullish vs Bearish Engulfing</div>
+          <p><strong>Bullish Engulfing (Talab Zonasi):</strong> Ko'k sham yopilishi qizil shamning soyasini sindirishi kerak<br>
+          <strong>Bearish Engulfing (Taklif Zonasi):</strong> Qizil sham yopilishi ko'k shamning soyasini sindirishi kerak</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- BOB 6 -->
+  <section class="content-page" id="bob6">
+    <div class="chapter-header">
+      <div class="chapter-num">Oltinchi Bob</div>
+      <h2 class="chapter-title">SNR va SND ni <span class="gold">Birlashtirish</span></h2>
+      <p class="chapter-intro">SNR va SND alohida kuchli, lekin birgalikda ular juda kuchli tizim hosil qiladi. Chap SNR yo'nalish bersa, O'ng SND kirish nuqtasini ko'rsatadi.</p>
+    </div>
+
+    <div class="lesson">
+      <div class="lesson-header">
+        <div class="lesson-icon">🔗</div>
+        <div class="lesson-meta">
+          <div class="lesson-num">Dars 06.1</div>
+          <div class="lesson-title">Chap SNR + O'ng SND Strategiyasi</div>
+        </div>
+      </div>
+      <div class="lesson-body">
+        <ul class="rules">
+          <li><strong>SNR</strong> — odatda grafikning chap tomonida joylashadi va yo'nalish beradi</li>
+          <li><strong>SND</strong> — odatda grafikning o'ng tomonida joylashadi va kirish nuqtasini ko'rsatadi</li>
+          <li>Narx SNR zonasiga kirganda va SND rad etish hamda yutish hosil qilganda — kirish</li>
+          <li>Faqat rad etish (rejection) VA yutish (engulfing) ikkalasi bo'lganda kirish to'g'ri</li>
+        </ul>
+
+        <div class="infobox">
+          <div class="infobox-title">🎯 Qoidalar</div>
+          <p style="font-size:14px;color:var(--sec);">
+          ✅ SNR mavjud + SND rad etish + Yutish = KIRISH<br>
+          ❌ Faqat SNR mavjud, yutish yo'q = KIRMASLIK<br>
+          ❌ Yutish bor, lekin SNR yo'q = KIRMASLIK
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- BOB 7 -->
+  <section class="content-page" id="bob7">
+    <div class="chapter-header">
+      <div class="chapter-num">Yettinchi Bob</div>
+      <h2 class="chapter-title"><span class="gold">Teskari Setaplar</span> — 3 Tur</h2>
+      <p class="chapter-intro">Teskari setaplar narxning yo'nalishini o'zgartiradigan kuchli naqshlardir. Uchta asosiy teskari setap mavjud: Quasimodo (QMR), Manipulyatsiya va Blindspot.</p>
+    </div>
+
+    <div class="lesson">
+      <div class="lesson-header">
+        <div class="lesson-icon">🎯</div>
+        <div class="lesson-meta">
+          <div class="lesson-num">Dars 07.1</div>
+          <div class="lesson-title">3 Teskari Setap Haqida Umumiy Ma'lumot</div>
+        </div>
+      </div>
+      <div class="lesson-body">
+        <div class="grid-3">
+          <div class="mini-card">
+            <div class="mini-card-icon">🏔️</div>
+            <div class="mini-card-title">Quasimodo (QMR)</div>
+            <div class="mini-card-desc">Ikki tendentsiyani o'z ichiga olgan naqsh. Yuqori xavfli, lekin aniq kirish nuqtasi.</div>
+          </div>
+          <div class="mini-card">
+            <div class="mini-card-icon">🎭</div>
+            <div class="mini-card-title">Manipulyatsiya</div>
+            <div class="mini-card-desc">QMR dan ham xavfliroq. HTF Engulfing ichiga kiradi va LTF da setap hosil qiladi.</div>
+          </div>
+          <div class="mini-card">
+            <div class="mini-card-icon">🦯</div>
+            <div class="mini-card-title">Blindspot</div>
+            <div class="mini-card-desc">Ko'r zonaga kirish. Yutish muvaffaqiyatsiz tugagandan so'ng hosil bo'ladi.</div>
+          </div>
+        </div>
+        <div class="highlight">
+          <div class="highlight-title">⚠️ Xavf Darajasi</div>
+          <p>Manipulyatsiya = Eng yuqori xavf ❌❌<br>
+          Quasimodo (QMR) = Yuqori xavf ❌<br>
+          Blindspot = O'rtacha xavf ⚠️</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- BOB 8 -->
+  <section class="content-page" id="bob8">
+    <div class="chapter-header">
+      <div class="chapter-num">Sakkizinchi Bob</div>
+      <h2 class="chapter-title">Quasimodo — <span class="gold">QMR Setapi</span></h2>
+      <p class="chapter-intro">Quasimodo (QM) — ikki tendentsiyani o'z ichiga olgan murakkab, lekin aniq savdo setapi. Yelka, bosh va yelka naqshiga o'xshash tuzilishga ega.</p>
+    </div>
+
+    <div class="lesson">
+      <div class="lesson-header">
+        <div class="lesson-icon">🏔️</div>
+        <div class="lesson-meta">
+          <div class="lesson-num">Dars 08.1</div>
+          <div class="lesson-title">QMR Tuzilishi va Kirish Usuli</div>
+        </div>
+      </div>
+      <div class="lesson-body">
+        <p>Quasimodo setapida aniq 3 ta element bo'lishi kerak:</p>
+        <ol class="steps">
+          <li><strong>Yelkadan kirish (Shoulder Entry)</strong> — Narx yelkaga yetganda kirish nuqtasi</li>
+          <li><strong>Stop Loss joylash</strong> — Sotish QMR da: Stop Loss = HH (eng yuqori) ning ustida. Sotib olish QMR da: Stop Loss = LL (eng past) ning ostida</li>
+          <li><strong>Majburiy Take Profit</strong> — Sotish QMR da: TP = LL darajasi. Sotib olish QMR da: TP = HH darajasi</li>
+        </ol>
+
+        <div class="formula">
+          <div class="formula-label">QMR SOTISH KIRISH FORMULASI</div>
+          Kirish: Yelka (H) darajasida<br>
+          Stop Loss: HH (eng yuqori) ning tepasida<br>
+          Take Profit: LL (eng past) darajasi
+        </div>
+
+        <div class="formula">
+          <div class="formula-label">QMR SOTIB OLISH KIRISH FORMULASI</div>
+          Kirish: Yelka (L) darajasida<br>
+          Stop Loss: LL (eng past) ning ostida<br>
+          Take Profit: HH (eng yuqori) darajasi
+        </div>
+
+        <div class="infobox">
+          <div class="infobox-title">🔄 HTF + LTF Kombinatsiyasi</div>
+          <p style="font-size:14px;color:var(--sec);">
+            <strong>QMR Sotish:</strong> HTF Bearish Engulfing + LTF QMR Setapi<br>
+            <strong>QMR Sotib olish:</strong> HTF Bullish Engulfing + LTF QMR Setapi
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- BOB 9 -->
+  <section class="content-page" id="bob9">
+    <div class="chapter-header">
+      <div class="chapter-num">To'qqizinchi Bob</div>
+      <h2 class="chapter-title"><span class="gold">Manipulyatsiya</span> Setapi</h2>
+      <p class="chapter-intro">Manipulyatsiya — barcha teskari setaplar ichida eng yuqori xavfli, lekin eng kuchli. Katta o'yinchilar (banklar va institutlar) tomonidan narxni harakatlantirishda ishlatiladi.</p>
+    </div>
+
+    <div class="lesson">
+      <div class="lesson-header">
+        <div class="lesson-icon">🎭</div>
+        <div class="lesson-meta">
+          <div class="lesson-num">Dars 09.1</div>
+          <div class="lesson-title">Manipulyatsiya Qanday Ishlaydi?</div>
+        </div>
+      </div>
+      <div class="lesson-body">
+        <p>Manipulyatsiya odatda katta timeframe Engulfing shamining ichiga kirib boradi:</p>
+
+        <ul class="rules">
+          <li><strong>Engulfing → Double Maru → RBR/DBD</strong> — Eng kuchli manipulyatsiya tuzilishi</li>
+          <li><strong>Engulfing → RBR/DBD</strong> — Oddiy manipulyatsiya tuzilishi</li>
+          <li>RBR setap HTF Engulfing ichida joylashadi (Sotib olish uchun)</li>
+          <li>DBD setap HTF Engulfing ichida joylashadi (Sotish uchun)</li>
+        </ul>
+
+        <div class="warnbox">
+          <div class="warnbox-title">⚠️ Yuqori Xavf!</div>
+          <p style="font-size:14px;color:var(--sec);">Manipulyatsiya setapi QMR ga qaraganda ham xavfliroq. Faqat 5SOP tizimi bilan birgalikda ishlatilishi kerak. Stop Loss odatda 30 pip atrofida bo'ladi.</p>
+        </div>
+
+        <div class="formula">
+          <div class="formula-label">MANIPULYATSIYA SOTISH</div>
+          HTF: Bearish Engulfing sham<br>
+          LTF: DBD yoki Bearish Engulfing ichida<br>
+          Stop Loss: ~30 pip<br>
+          Kirish: LTF Manipulyatsiya setapidan
+        </div>
+
+        <div class="formula">
+          <div class="formula-label">MANIPULYATSIYA SOTIB OLISH</div>
+          HTF: Bullish Engulfing sham<br>
+          LTF: RBR yoki Bullish Engulfing ichida<br>
+          Stop Loss: ~30 pip<br>
+          Kirish: LTF Manipulyatsiya setapidan
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- BOB 10 -->
+  <section class="content-page" id="bob10">
+    <div class="chapter-header">
+      <div class="chapter-num">O'ninchi Bob</div>
+      <h2 class="chapter-title">Blindspot — <span class="gold">Ko'r Burilish Zonasi</span></h2>
+      <p class="chapter-intro">Blindspot — "ko'r zona" deb ham ataladi. Yutish muvaffaqiyatsiz tugagandan va muhim qoida buzilgandan so'ng hosil bo'ladi. Bu asl yo'nalishga qarama-qarshi bo'lgani uchun "ko'r burilish" deyiladi.</p>
+    </div>
+
+    <div class="lesson">
+      <div class="lesson-header">
+        <div class="lesson-icon">🦯</div>
+        <div class="lesson-meta">
+          <div class="lesson-num">Dars 10.1</div>
+          <div class="lesson-title">Blindspot Shartlari va Kirish</div>
+        </div>
+      </div>
+      <div class="lesson-body">
+        <p>Blindspot hosil bo'lishi uchun ikkita shart bajarilishi kerak:</p>
+
+        <div class="grid-2">
+          <div class="mini-card">
+            <div class="mini-card-icon">❌</div>
+            <div class="mini-card-title">Shart 1: Yutish Muvaffaqiyatsiz</div>
+            <div class="mini-card-desc">Engulfing (Yutish) naqshi to'liq shakllanmadi va muvaffaqiyatsiz tugadi</div>
+          </div>
+          <div class="mini-card">
+            <div class="mini-card-icon">💥</div>
+            <div class="mini-card-title">Shart 2: Muhim Qoida Buzildi</div>
+            <div class="mini-card-desc">Narx muhim support yoki resistance darajasini sindirdi (Break of Structure)</div>
+          </div>
+        </div>
+
+        <div class="formula">
+          <div class="formula-label">BLINDSPOT SOTISH KIRISH</div>
+          Yutish muvaffaqiyatsiz + Muhim yutuq (Break) bo'ldi<br>
+          Kirish: Break bo'lgan joydan<br>
+          Stop Loss: ~30 pip
+        </div>
+
+        <div class="formula">
+          <div class="formula-label">BLINDSPOT SOTIB OLISH KIRISH</div>
+          Yutish muvaffaqiyatsiz + Muhim tanaffus bo'ldi<br>
+          Kirish: Tanaffus bo'lgan joydan<br>
+          Stop Loss: ~30 pip
+        </div>
+
+        <div class="infobox">
+          <div class="infobox-title">💡 HTF + LTF Blindspot</div>
+          <p style="font-size:14px;color:var(--sec);">
+            <strong>Sotish:</strong> HTF Bearish Engulfing + LTF Blindspot<br>
+            <strong>Sotib olish:</strong> HTF Bullish Engulfing + LTF Blindspot
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- BOB 11 -->
+  <section class="content-page" id="bob11">
+    <div class="chapter-header">
+      <div class="chapter-num">O'n Birinchi Bob</div>
+      <h2 class="chapter-title">Quasimodo Davomi — <span class="gold">QMC Setapi</span></h2>
+      <p class="chapter-intro">QMC (Quasimodo Continuation) — QMR ga o'xshash, lekin unda 3 Drive (3 ta haydovchi) mavjud. Davomiy holatlarda qo'llaniladi.</p>
+    </div>
+
+    <div class="lesson">
+      <div class="lesson-header">
+        <div class="lesson-icon">🔁</div>
+        <div class="lesson-meta">
+          <div class="lesson-num">Dars 11.1</div>
+          <div class="lesson-title">QMC Tuzilishi</div>
+        </div>
+      </div>
+      <div class="lesson-body">
+        <p>QMC deyarli QMR bilan bir xil, ammo asosiy farqi — <strong>3 Drive (Uchta haydovchi)</strong> mavjudligi:</p>
+
+        <ol class="steps">
+          <li><strong>Drive 1 (Birinchi haydovchi)</strong> — Narxning birinchi kuchli harakati</li>
+          <li><strong>Drive 2 (Ikkinchi haydovchi)</strong> — Narxning ikkinchi kuchli harakati (HH yoki LL hosil qiladi)</li>
+          <li><strong>Drive 3 (Uchinchi haydovchi)</strong> — Narxning uchinchi harakati — bu yerda kirish amalga oshiriladi</li>
+        </ol>
+
+        <div class="highlight">
+          <div class="highlight-title">🎯 QMC Kirishi</div>
+          <p>QMC ga eng yaxshi kirish — teskari o'zgarishlardan (reversallardan) keyin.<br>
+          <strong>Sotib olish QMC:</strong> HTF Bullish Engulfing + LTF QM Davomi<br>
+          <strong>Sotish QMC:</strong> HTF Bearish Engulfing + LTF QM Davomi</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- BOB 12 -->
+  <section class="content-page" id="bob12">
+    <div class="chapter-header">
+      <div class="chapter-num">O'n Ikkinchi Bob</div>
+      <h2 class="chapter-title">SNR Davomi — <span class="gold">SNRC 1 va SNRC 2</span></h2>
+      <p class="chapter-intro">SNR Continuation (SNRC) setaplari davomiy harakatlar uchun. SNRC 1 RBR/DBD tasdiqlash bilan, SNRC 2 esa RBD/DBR tasdiqlash bilan ishlaydi.</p>
+    </div>
+
+    <div class="lesson">
+      <div class="lesson-header">
+        <div class="lesson-icon">➡️</div>
+        <div class="lesson-meta">
+          <div class="lesson-num">Dars 12.1</div>
+          <div class="lesson-title">SNRC 1 — Birinchi Davomiy Setap</div>
+        </div>
+      </div>
+      <div class="lesson-body">
+        <ul class="rules">
+          <li><strong>Kirish nuqtasi:</strong> RBR (Sotib olish) yoki DBD (Sotish) tasdiqlash</li>
+          <li><strong>Qo'llab-quvvatlash + DBD:</strong> Sotish uchun kuchli signal</li>
+          <li><strong>Qarshilik + RBR:</strong> Sotib olish uchun kuchli signal</li>
+          <li>HTF da tasdiqlash qidiring — xavfli zonaga tegmagan burilishni tanlang</li>
+        </ul>
+
+        <div class="divider"></div>
+
+        <div class="lesson-header">
+          <div class="lesson-icon">➡️</div>
+          <div class="lesson-meta">
+            <div class="lesson-num">Dars 12.2</div>
+            <div class="lesson-title">SNRC 2 — Ikkinchi Davomiy Setap</div>
+          </div>
+        </div>
+
+        <p>SNRC 2 SNRC 1 ning "singlisi" — asosiy farqi kirish nuqtasida:</p>
+        <ul class="rules">
+          <li><strong>Kirish nuqtasi:</strong> RBD (Sotish) yoki DBR (Sotib olish) tasdiqlash</li>
+          <li><strong>Kuchli qarshilik + DBR:</strong> Sotib olish uchun kuchli signal</li>
+          <li><strong>Kuchli quvvat + RBD:</strong> Sotish uchun kuchli signal</li>
+          <li>Stop Loss: ~30 pip masofasida</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- BOB 13 -->
+  <section class="content-page" id="bob13">
+    <div class="chapter-header">
+      <div class="chapter-num">O'n Uchinchi Bob</div>
+      <h2 class="chapter-title">Ko'p Timeframe — <span class="gold">MTF Tahlili</span></h2>
+      <p class="chapter-intro">Ko'p vaqtli kadrlar (Multi-TimeFrame) tahlili juda muhim — bu sizni katta o'yinchilar tomonidan manipulyatsiyadan himoya qiladi va to'g'ri yo'nalishni aniqlashga yordam beradi.</p>
+    </div>
+
+    <div class="lesson">
+      <div class="lesson-header">
+        <div class="lesson-icon">⏱️</div>
+        <div class="lesson-meta">
+          <div class="lesson-num">Dars 13.1</div>
+          <div class="lesson-title">2 ta MTF Usuli</div>
+        </div>
+      </div>
+      <div class="lesson-body">
+        <div class="grid-2">
+          <div class="mini-card">
+            <div class="mini-card-icon">⬇️</div>
+            <div class="mini-card-title">Usul 1: HTF → LTF</div>
+            <div class="mini-card-desc">Avval tasdiqlashni HTF da toping, so'ng kichik TF da setapni qidiring. D1→H4→H1→M30→M15→M5→M1</div>
+          </div>
+          <div class="mini-card">
+            <div class="mini-card-icon">⬆️</div>
+            <div class="mini-card-title">Usul 2: LTF → HTF</div>
+            <div class="mini-card-desc">Avval LTF da setapni toping, so'ng HTF da tasdiqlashni qidiring. M5→M15→M30→H1→H4→D1</div>
+          </div>
+        </div>
+
+        <div class="table-wrap" style="margin-top:20px;">
+          <table>
+            <thead>
+              <tr><th>Maqsad</th><th>Timeframe</th><th>Nima qilish</th></tr>
+            </thead>
+            <tbody>
+              <tr><td><strong>Zona belgilash</strong></td><td>D1, W1, MN</td><td>HTF da asosiy SNR darajalarini aniqlash</td></tr>
+              <tr><td><strong>Yo'nalish</strong></td><td>D1, H4</td><td>Tasdiqlash va yo'nalish aniqlash</td></tr>
+              <tr><td><strong>H4 Setapi</strong></td><td>H1, M30, M15, M5</td><td>LTF da kirish setapini qidirish</td></tr>
+              <tr><td><strong>Kirish</strong></td><td>M1, M5</td><td>Aniq kirish nuqtasini topish</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- BOB 14 -->
+  <section class="content-page" id="bob14">
+    <div class="chapter-header">
+      <div class="chapter-num">O'n To'rtinchi Bob</div>
+      <h2 class="chapter-title">5SOP — <span class="gold">Besh Qadam Tizimi</span></h2>
+      <p class="chapter-intro">5SOP (5 Step Of Process) — savdoning to'liq jarayonini tartibga soluvchi besh qadam tizimi. Bu tizim savdoni tasodifiy emas, rejali qiladi.</p>
+    </div>
+
+    <div class="lesson">
+      <div class="lesson-header">
+        <div class="lesson-icon">🗂️</div>
+        <div class="lesson-meta">
+          <div class="lesson-num">Dars 14.1</div>
+          <div class="lesson-title">5SOP — 5 Qadam</div>
+        </div>
+      </div>
+      <div class="lesson-body">
+        <ol class="steps">
+          <li>
+            <div>
+              <strong>ZONA (Zone)</strong>
+              <p style="font-size:13px;color:var(--dim);margin-top:4px;">Zona zarur, chunki zona ichida katta buyurtmalar bo'ladi. Katta buyurtmalar borligini bilish uchun bizga PSA 2 Waiver kerak.</p>
+            </div>
+          </li>
+          <li>
+            <div>
+              <strong>OG'ISH (Bias)</strong>
+              <p style="font-size:13px;color:var(--dim);margin-top:4px;">Biz katta buyurtmalar borligini bilishimiz uchun og'ish zarur. Rad etilgandan keyin kirishimiz mumkin emas — tasdiqni kutish kerak.</p>
+            </div>
+          </li>
+          <li>
+            <div>
+              <strong>TASDIQLASH (Confirmation)</strong>
+              <p style="font-size:13px;color:var(--dim);margin-top:4px;">Shamni tasdiqlash kerak — xaridor va sotuvchi pozitsiyaga kirganini bilamiz. Bullish Engulfing yoki Bearish Engulfing.</p>
+            </div>
+          </li>
+          <li>
+            <div>
+              <strong>MOSLASHTIRISH (Alignment)</strong>
+              <p style="font-size:13px;color:var(--dim);margin-top:4px;">Narx ko'pincha QMR, Manipulyatsiya, Blindspot kabi teskari setap yaratadi. SL, TP, PO ni to'g'ri joylashtirish uchun moslashtirish kerak.</p>
+            </div>
+          </li>
+          <li>
+            <div>
+              <strong>KIRISH (Entry)</strong>
+              <p style="font-size:13px;color:var(--dim);margin-top:4px;">Barcha 4 ta qoida bajarilgandan so'ng kirish amalga oshiriladi. Bu eng kam xavfli kirish (KAST — Kam Xavfli Kirish) hisoblanadi.</p>
+            </div>
+          </li>
+        </ol>
+
+        <div class="highlight">
+          <div class="highlight-title">🎯 5SOP Maqsadi</div>
+          <p>5SOP savdoni "yuqori xavfli" dan "kam xavfli"ga (KAST — Cast Xavf) aylantirishga yordam beradi. Har bir qadam bajarilmasdan kirish — yuqori xavf!</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="lesson">
+      <div class="lesson-header">
+        <div class="lesson-icon">🔴</div>
+        <div class="lesson-meta">
+          <div class="lesson-num">Dars 14.2</div>
+          <div class="lesson-title">Yuqori Xavfli Kirish (SNR Direct Entry)</div>
+        </div>
+      </div>
+      <div class="lesson-body">
+        <p>Bu yozuv 5SOP ishlatilmaganida yuqori xavfli deb tasniflanadi. Foydalanish shartlari:</p>
+        <ul class="rules">
+          <li>Faqat yuqoriroq vaqt freymlarida: MN (oylik), W1 (haftalik), D1 (kunlik)</li>
+          <li>D1 taymfreymdan pastroq ishlatilmasligi kerak</li>
+          <li>Faqat eng kuchli SNR ni topish kerak</li>
+          <li>Kirish SNR sham tanasida, Stop Loss SNR soyasi ostida/ustida bo'lishi kerak</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- BOB 15 -->
+  <section class="content-page" id="bob15">
+    <div class="chapter-header">
+      <div class="chapter-num">O'n Beshinchi Bob</div>
+      <h2 class="chapter-title">Buzilgan Zona va <span class="gold">Skalping</span></h2>
+      <p class="chapter-intro">Buzilgan zonalar va skalping — ilg'or mavzular. Chiqib ketish zonasi yangi kirish imkoniyatlarini hosil qiladi, skalping esa kichik timeframelarda tez foyda olishga yo'naltirilgan.</p>
+    </div>
+
+    <div class="lesson">
+      <div class="lesson-header">
+        <div class="lesson-icon">💥</div>
+        <div class="lesson-meta">
+          <div class="lesson-num">Dars 15.1</div>
+          <div class="lesson-title">Buzilgan Zona (Chiqib Ketish Zonasi)</div>
+        </div>
+      </div>
+      <div class="lesson-body">
+        <p>Buzilgan zona — support/resistance zonasi buzilganligi, zona ichida buyurtmalar tugaganligini anglatadi.</p>
+        <ul class="rules">
+          <li><strong>Agar zona buzilsa</strong> — bu zonada yangi buyurtma beriladi va kirish imkoniyati hosil bo'ladi</li>
+          <li><strong>Yangi buyurtmalar borligini bilish uchun</strong> — narx zonaga kirganida 5SOP qidiring</li>
+          <li><strong>1-Zona (Burilish bilan):</strong> Tasdiqdan so'ng QMR, Manipulyatsiya yoki Blindspot setapi</li>
+          <li><strong>2-Zona (Rad etishsiz):</strong> Faqat tasdiqlash bilan setap hosil bo'ladi</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="lesson">
+      <div class="lesson-header">
+        <div class="lesson-icon">⚡</div>
+        <div class="lesson-meta">
+          <div class="lesson-num">Dars 15.2</div>
+          <div class="lesson-title">Oltin Skalping (Gold Scalping)</div>
+        </div>
+      </div>
+      <div class="lesson-body">
+        <p>Skalping — kichik vaqt oralig'ida tezkor foyda olish usuli. XAUUSD (Oltin) uchun maxsus skalping qoidalari:</p>
+        <ul class="rules">
+          <li>SNR Mini + QM teskari kombinatsiyasi ishlatiladi</li>
+          <li>Skalping uchun <strong>faqat H1 va H4</strong> vaqt oralig'ida SNR maydoni qidiring</li>
+          <li>Yuqoriroq vaqt oralig'ida yo'nalish kerak emas — faqat H1/H4 SNR kifoya</li>
+          <li>H1/H4 zonalari <strong>2-harakatga ega</strong> bo'lishi kerak</li>
+          <li>Narx zonaga kirganda <strong>M1 yoki M5</strong> ga o'tib QMR/Manipulyatsiya setapini qidiring</li>
+          <li>Ko'pincha skalping: <strong>20/50/100 pip</strong> foyda olish maqsadi</li>
+        </ul>
+
+        <div class="formula">
+          <div class="formula-label">SKALPING KIRISH FORMULASI</div>
+          Vaqt oralig'i: H1 yoki H4 da SNR aniqlash<br>
+          2-Harakat: Zona ichida 2-harakat bo'lishi kerak<br>
+          Kirish: M1/M5 da QMR yoki Manipulyatsiya setapi<br>
+          Maqsad: 20–100 pip foyda
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- XULOSA -->
+  <section class="content-page" id="xulosa">
+    <div class="chapter-header">
+      <div class="chapter-num">Xulosa</div>
+      <h2 class="chapter-title">Yakuniy <span class="gold">Xulosa</span></h2>
+      <p class="chapter-intro">Barcha darslarni o'rganib bo'lgandan so'ng, muvaffaqiyatli treyder bo'lish uchun eng muhim tamoyillar.</p>
+    </div>
+
+    <div class="lesson">
+      <div class="lesson-header">
+        <div class="lesson-icon">🏆</div>
+        <div class="lesson-meta">
+          <div class="lesson-num">16.1</div>
+          <div class="lesson-title">Asosiy Tamoyillar</div>
+        </div>
+      </div>
+      <div class="lesson-body">
+        <div class="grid-3">
+          <div class="mini-card">
+            <div class="mini-card-icon">📐</div>
+            <div class="mini-card-title">SNR + 2-Harakat</div>
+            <div class="mini-card-desc">Har doim tegilmagan va 2-harakatga ega SNR zonasini tanlang</div>
+          </div>
+          <div class="mini-card">
+            <div class="mini-card-icon">⏱️</div>
+            <div class="mini-card-title">Ko'p Timeframe</div>
+            <div class="mini-card-desc">HTF da yo'nalish, LTF da kirish. Hech qachon bir TF bilan kifoyalanmang</div>
+          </div>
+          <div class="mini-card">
+            <div class="mini-card-icon">🗂️</div>
+            <div class="mini-card-title">5SOP Tizimi</div>
+            <div class="mini-card-desc">Har bir savdoda 5 qadamni bajaring: Zona → Og'ish → Tasdiqlash → Moslashtirish → Kirish</div>
+          </div>
+          <div class="mini-card">
+            <div class="mini-card-icon">🎯</div>
+            <div class="mini-card-title">To'g'ri Setap</div>
+            <div class="mini-card-desc">QMR, Manipulyatsiya yoki Blindspot — faqat eng aniq setapni tanlang</div>
+          </div>
+          <div class="mini-card">
+            <div class="mini-card-icon">🛡️</div>
+            <div class="mini-card-title">Risk Boshqarish</div>
+            <div class="mini-card-desc">Stop Loss har doim. Hech qachon SL siz savdo qilmang!</div>
+          </div>
+          <div class="mini-card">
+            <div class="mini-card-icon">🧠</div>
+            <div class="mini-card-title">Intizom</div>
+            <div class="mini-card-desc">Sabr va intizom — eng muhim sifat. Setap yo'q bo'lsa, o'tirish ham savdo!</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="quote">
+      <div class="quote-text">"Eng yaxshi intizom bilan yaratilgan oddiy tizimlar eng daromadli bo'lishi mumkin."</div>
+      <div class="quote-author">— Nadjmi Firdaus, Forex Savdo Ustozi</div>
+    </div>
+
+    <div class="lesson">
+      <div class="lesson-header">
+        <div class="lesson-icon">📊</div>
+        <div class="lesson-meta">
+          <div class="lesson-num">16.2</div>
+          <div class="lesson-title">ZEN|EDGE Maxsus Darsliklari Bilan Davom Eting</div>
+        </div>
+      </div>
+      <div class="lesson-body">
+        <p>Bu kitobdagi bilimlarni o'zlashtirdingiz. Endi amaliyotga o'ting:</p>
+        <ul class="rules">
+          <li><strong>Demo hisobda mashq qiling</strong> — Haqiqiy pul bilan boshlashdan oldin kamida 3 oy demo da sinab ko'ring</li>
+          <li><strong>Kundalik yuring</strong> — Har bir savdoni yozing: kirish, chiqish, sabab va natija</li>
+          <li><strong>Backtest qiling</strong> — O'tgan grafikda setaplarni toping va o'rganing</li>
+          <li><strong>ZEN|EDGE ilovasini ishlating</strong> — Real vaqt signal, AI tahlil va boshqa vositalar</li>
+          <li><strong>@Zenedge_trade kanaliga qo'shiling</strong> — Kunlik signallar va tahlillar bepul!</li>
+        </ul>
+
+        <div style="text-align:center;margin-top:40px;padding:40px;background:rgba(200,169,110,0.05);border:1px solid var(--goldDim);">
+          <div style="font-family:'Cormorant Garamond',serif;font-size:36px;font-weight:700;margin-bottom:8px;">ZEN<span style="color:var(--gold);">|</span>EDGE</div>
+          <div style="font-size:12px;letter-spacing:3px;color:var(--dim);text-transform:uppercase;margin-bottom:24px;">Maxsus Darsliklari · O'zbek tilida</div>
+          <a href="https://t.me/Zenedge_trade" style="display:inline-block;background:#229ED9;color:#fff;padding:14px 40px;font-family:'Rajdhani',sans-serif;font-size:13px;font-weight:700;letter-spacing:2px;text-transform:uppercase;text-decoration:none;">✈ @Zenedge_trade ga Qo'shiling</a>
+        </div>
+
+        <div style="margin-top:24px;padding:16px;background:var(--bg2);border:1px solid var(--border);font-size:12px;color:var(--dim);line-height:1.6;text-align:center;">
+          ⚠️ Ushbu darsliklar faqat ta'lim maqsadida tayyorlangan. ZEN|EDGE investitsiya maslahati bermaydi. Forex va CFD savdosi katta xavf taşıydi. Faqat yo'qotishga tayyor bo'lgan mablag'ingiz bilan savdo qiling.
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<!-- BACK TO TOP -->
+<a href="#cover" class="back-top" id="backTop">↑</a>
+
+<script>
+// Active nav link
+const sections=document.querySelectorAll('[id]');
+const navLinks=document.querySelectorAll('.nav-link');
+const observer=new IntersectionObserver(entries=>{
+  entries.forEach(e=>{
+    if(e.isIntersecting){
+      navLinks.forEach(l=>l.classList.remove('active'));
+      const active=document.querySelector(`.nav-link[href="#${e.target.id}"]`);
+      if(active)active.classList.add('active');
+    }
+  });
+},{threshold:0.3});
+sections.forEach(s=>observer.observe(s));
+
+// Back to top
+const bt=document.getElementById('backTop');
+window.addEventListener('scroll',()=>{
+  bt.classList.toggle('show',window.scrollY>400);
+});
+</script>
+</body>
+</html>

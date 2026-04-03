@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>ZEN|EDGE — Signal</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;600;700&family=Rajdhani:wght@400;500;600;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet"/>
+<style>
+:root{--bg:#080706;--bg2:#0e0c09;--card:#111009;--border:#1e1a12;--gold:#c8a96e;--goldDim:#6b5a38;--text:#e8e2d6;--sec:#8a7e6a;--dim:#3a3228;--buy:#4daa70;--sell:#c94040;--info:#4d8eaa;}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{background:var(--bg);color:var(--text);font-family:'Rajdhani',sans-serif;min-height:100vh;}
+body::before{content:'';position:fixed;inset:0;background-image:linear-gradient(rgba(200,169,110,0.02) 1px,transparent 1px),linear-gradient(90deg,rgba(200,169,110,0.02) 1px,transparent 1px);background-size:60px 60px;pointer-events:none;z-index:0;}
+.sidebar{position:fixed;left:0;top:0;bottom:0;width:220px;background:var(--bg2);border-right:1px solid var(--border);z-index:100;display:flex;flex-direction:column;}
+.sidebar-logo{padding:24px 20px;border-bottom:1px solid var(--border);font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:700;letter-spacing:2px;}
+.sidebar-logo span{color:var(--gold);}
+.nav-item{display:flex;align-items:center;gap:12px;padding:12px 20px;color:var(--sec);text-decoration:none;font-size:13px;letter-spacing:1px;text-transform:uppercase;transition:all 0.2s;border-left:2px solid transparent;}
+.nav-item:hover{color:var(--text);}
+.nav-item.active{color:var(--gold);border-left-color:var(--gold);background:rgba(200,169,110,0.05);}
+.nav-section{padding:16px 20px 8px;font-size:10px;letter-spacing:2px;color:var(--dim);text-transform:uppercase;}
+.sidebar-footer{margin-top:auto;padding:16px 20px;border-top:1px solid var(--border);}
+.logout-btn{width:100%;padding:10px;background:none;border:1px solid var(--border);color:var(--sec);font-family:'Rajdhani',sans-serif;font-size:12px;letter-spacing:2px;text-transform:uppercase;cursor:pointer;transition:all 0.3s;}
+.logout-btn:hover{border-color:var(--sell);color:var(--sell);}
+.main{margin-left:220px;padding:32px;position:relative;z-index:1;}
+.page-title{font-family:'Cormorant Garamond',serif;font-size:32px;font-weight:700;margin-bottom:8px;}
+.page-title span{color:var(--gold);}
+.page-sub{color:var(--sec);font-size:14px;margin-bottom:32px;}
+
+.main-signal{background:var(--bg2);border:1px solid var(--border);padding:32px;margin-bottom:24px;position:relative;overflow:hidden;}
+.main-signal::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;}
+.main-signal.buy-signal::before{background:linear-gradient(90deg,var(--buy),transparent);}
+.main-signal.sell-signal::before{background:linear-gradient(90deg,var(--sell),transparent);}
+.signal-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:24px;}
+.signal-badge{padding:8px 24px;font-size:18px;font-weight:700;letter-spacing:3px;}
+.badge-buy{background:rgba(77,170,112,0.15);border:1px solid rgba(77,170,112,0.4);color:var(--buy);}
+.badge-sell{background:rgba(201,64,64,0.15);border:1px solid rgba(201,64,64,0.4);color:var(--sell);}
+.signal-time{font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--dim);}
+.levels{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;}
+.level-box{background:var(--bg);border:1px solid var(--border);padding:16px;text-align:center;}
+.level-lbl{font-size:10px;letter-spacing:2px;color:var(--dim);text-transform:uppercase;margin-bottom:6px;}
+.level-val{font-family:'JetBrains Mono',monospace;font-size:16px;font-weight:700;}
+.level-val.entry{color:var(--gold);}
+.level-val.tp{color:var(--buy);}
+.level-val.sl{color:var(--sell);}
+.level-val.rr{color:var(--gold);}
+
+.history-title{font-size:11px;letter-spacing:3px;color:var(--gold);text-transform:uppercase;margin:24px 0 16px;display:flex;align-items:center;gap:8px;}
+.history-title::before{content:'';width:20px;height:1px;background:var(--goldDim);}
+.history-table{width:100%;border-collapse:collapse;}
+.history-table th{background:var(--bg2);border:1px solid var(--border);padding:10px 16px;font-size:10px;letter-spacing:2px;color:var(--dim);text-transform:uppercase;text-align:left;}
+.history-table td{border:1px solid var(--border);padding:12px 16px;font-size:13px;font-family:'JetBrains Mono',monospace;}
+.history-table tr:hover td{background:rgba(200,169,110,0.02);}
+.tag-buy{color:var(--buy);}
+.tag-sell{color:var(--sell);}
+.tag-win{color:var(--buy);}
+.tag-loss{color:var(--sell);}
+.tag-pending{color:var(--gold);}
+
+@media(max-width:768px){
+  .sidebar{width:60px;}
+  .sidebar-logo,.nav-item span,.nav-section,.logout-btn{display:none;}
+  .nav-item{justify-content:center;padding:16px;}
+  .main{margin-left:60px;padding:16px;}
+  .levels{grid-template-columns:repeat(2,1fr);}
+}
+</style>
+</head>
+<body>
+<div class="sidebar">
+  <div class="sidebar-logo">ZEN<span>|</span>EDGE</div>
+  <div class="nav-section"><span>Asosiy</span></div>
+  <a href="dashboard.html" class="nav-item"><span>⊞</span><span>Dashboard</span></a>
+  <a href="signal.html" class="nav-item active"><span>📡</span><span>Signal</span></a>
+  <a href="aikoz.html" class="nav-item"><span>👁</span><span>AI Ko'z</span></a>
+  <div class="nav-section"><span>Ta'lim</span></div>
+  <a href="kitob.html" class="nav-item"><span>📚</span><span>Kitob</span></a>
+  <a href="https://t.me/Zenedge_trade" target="_blank" class="nav-item"><span>✈</span><span>Telegram</span></a>
+  <a href="index.html" class="nav-item"><span>🏠</span><span>Landing</span></a>
+  <div class="sidebar-footer">
+    <button class="logout-btn" onclick="localStorage.removeItem('ze_user');window.location.href='login.html'">Chiqish</button>
+  </div>
+</div>
+
+<div class="main">
+  <div class="page-title">Jonli <span>Signal</span></div>
+  <div class="page-sub">XAUUSD real vaqt signallari — FU, HCS, Likvidlik asosida</div>
+
+  <div class="main-signal buy-signal" id="mainSignal">
+    <div class="signal-top">
+      <span class="signal-badge badge-buy" id="sigBadge">● BUY</span>
+      <span class="signal-time" id="sigTime">—</span>
+    </div>
+    <div class="levels">
+      <div class="level-box"><div class="level-lbl">Entry Zona</div><div class="level-val entry" id="lvlEntry">$3,118.50</div></div>
+      <div class="level-box"><div class="level-lbl">Take Profit 1</div><div class="level-val tp" id="lvlTp1">$3,135.00</div></div>
+      <div class="level-box"><div class="level-lbl">Take Profit 2</div><div class="level-val tp" id="lvlTp2">$3,152.00</div></div>
+      <div class="level-box"><div class="level-lbl">Stop Loss</div><div class="level-val sl" id="lvlSl">$3,108.00</div></div>
+    </div>
+  </div>
+
+  <div class="history-title">Signal Tarixi</div>
+  <table class="history-table">
+    <thead>
+      <tr><th>Sana</th><th>Signal</th><th>Entry</th><th>TP</th><th>SL</th><th>Natija</th></tr>
+    </thead>
+    <tbody id="historyBody">
+      <tr><td>03.04.2026</td><td class="tag-buy">BUY</td><td>$3,098.50</td><td>$3,125.00</td><td>$3,088.00</td><td class="tag-win">✓ WIN</td></tr>
+      <tr><td>02.04.2026</td><td class="tag-sell">SELL</td><td>$3,112.00</td><td>$3,089.00</td><td>$3,122.00</td><td class="tag-win">✓ WIN</td></tr>
+      <tr><td>01.04.2026</td><td class="tag-buy">BUY</td><td>$3,078.50</td><td>$3,098.00</td><td>$3,068.00</td><td class="tag-win">✓ WIN</td></tr>
+      <tr><td>31.03.2026</td><td class="tag-buy">BUY</td><td>$3,055.00</td><td>$3,072.00</td><td>$3,045.00</td><td class="tag-loss">✗ LOSS</td></tr>
+      <tr><td>30.03.2026</td><td class="tag-sell">SELL</td><td>$3,068.00</td><td>$3,048.00</td><td>$3,078.00</td><td class="tag-win">✓ WIN</td></tr>
+      <tr><td>29.03.2026</td><td class="tag-buy">BUY</td><td>$3,042.00</td><td>$3,065.00</td><td>$3,032.00</td><td class="tag-pending">● Faol</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<script>
+const user=JSON.parse(localStorage.getItem('ze_user')||'null');
+if(!user)window.location.href='login.html';
+
+function updateTime(){document.getElementById('sigTime').textContent=new Date().toLocaleString('uz-UZ');}
+updateTime();setInterval(updateTime,1000);
+
+function updateSignal(){
+  const base=3118.50;const chg=(Math.random()-0.45)*3;
+  const entry=(base+chg).toFixed(2);
+  const isBuy=chg>0;
+  document.getElementById('lvlEntry').textContent='$'+entry;
+  document.getElementById('lvlTp1').textContent='$'+(parseFloat(entry)+(isBuy?16:−14)).toFixed(2);
+  document.getElementById('lvlTp2').textContent='$'+(parseFloat(entry)+(isBuy?33:−28)).toFixed(2);
+  document.getElementById('lvlSl').textContent='$'+(parseFloat(entry)+(isBuy?-10:8)).toFixed(2);
+  const badge=document.getElementById('sigBadge');
+  const panel=document.getElementById('mainSignal');
+  badge.textContent=isBuy?'● BUY':'● SELL';
+  badge.className='signal-badge '+(isBuy?'badge-buy':'badge-sell');
+  panel.className='main-signal '+(isBuy?'buy-signal':'sell-signal');
+}
+setInterval(updateSignal,10000);
+</script>
+</body>
+</html>

@@ -1,0 +1,1324 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>ZEN|EDGE — XAUUSD AI Trading Platformasi</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;600;700&family=Rajdhani:wght@400;500;600;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet"/>
+<style>
+:root {
+  --bg:      #080706;
+  --bg2:     #0e0c09;
+  --card:    #111009;
+  --border:  #1e1a12;
+  --gold:    #c8a96e;
+  --gold2:   #e8c87a;
+  --goldDim: #6b5a38;
+  --text:    #e8e2d6;
+  --sec:     #8a7e6a;
+  --dim:     #3a3228;
+  --buy:     #4daa70;
+  --sell:    #c94040;
+  --info:    #4d8eaa;
+}
+
+*{margin:0;padding:0;box-sizing:border-box;}
+
+html{scroll-behavior:smooth;}
+
+body{
+  background:var(--bg);
+  color:var(--text);
+  font-family:'Rajdhani',sans-serif;
+  overflow-x:hidden;
+}
+
+/* CUSTOM CURSOR */
+.cursor{
+  width:10px;height:10px;
+  background:var(--gold);
+  border-radius:50%;
+  position:fixed;top:0;left:0;
+  pointer-events:none;
+  z-index:9999;
+  transition:transform 0.1s ease;
+  mix-blend-mode:difference;
+}
+.cursor-ring{
+  width:36px;height:36px;
+  border:1px solid var(--goldDim);
+  border-radius:50%;
+  position:fixed;top:0;left:0;
+  pointer-events:none;
+  z-index:9998;
+  transition:all 0.15s ease;
+}
+
+/* NOISE TEXTURE */
+body::before{
+  content:'';
+  position:fixed;inset:0;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+  pointer-events:none;z-index:1;opacity:0.5;
+}
+
+/* GRID LINES */
+body::after{
+  content:'';
+  position:fixed;inset:0;
+  background-image:
+    linear-gradient(rgba(200,169,110,0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(200,169,110,0.03) 1px, transparent 1px);
+  background-size:60px 60px;
+  pointer-events:none;z-index:0;
+}
+
+/* NAV */
+nav{
+  position:fixed;top:0;left:0;right:0;
+  z-index:100;
+  padding:20px 40px;
+  display:flex;align-items:center;justify-content:space-between;
+  border-bottom:1px solid transparent;
+  transition:all 0.4s;
+  backdrop-filter:blur(0px);
+}
+nav.scrolled{
+  background:rgba(8,7,6,0.92);
+  border-bottom-color:var(--border);
+  backdrop-filter:blur(20px);
+}
+.nav-logo{
+  font-family:'Cormorant Garamond',serif;
+  font-size:28px;font-weight:700;
+  letter-spacing:2px;color:var(--text);
+}
+.nav-logo span{color:var(--gold);}
+.nav-links{display:flex;gap:32px;list-style:none;}
+.nav-links a{
+  font-size:13px;font-weight:600;letter-spacing:2px;
+  color:var(--sec);text-decoration:none;text-transform:uppercase;
+  transition:color 0.3s;
+}
+.nav-links a:hover{color:var(--gold);}
+.nav-cta{
+  background:transparent;
+  border:1px solid var(--goldDim);
+  color:var(--gold);
+  padding:10px 24px;
+  font-family:'Rajdhani',sans-serif;
+  font-size:13px;font-weight:700;letter-spacing:2px;
+  text-transform:uppercase;
+  cursor:pointer;
+  transition:all 0.3s;
+  text-decoration:none;
+}
+.nav-cta:hover{background:var(--gold);color:var(--bg);}
+
+/* HERO */
+.hero{
+  min-height:100vh;
+  display:flex;align-items:center;
+  position:relative;
+  padding:120px 40px 80px;
+  overflow:hidden;
+}
+.hero-bg{
+  position:absolute;inset:0;
+  pointer-events:none;
+  background:
+    radial-gradient(ellipse 60% 80% at 70% 50%, rgba(200,169,110,0.06) 0%, transparent 70%),
+    radial-gradient(ellipse 40% 60% at 20% 80%, rgba(77,170,112,0.04) 0%, transparent 60%);
+}
+.hero-lines{
+  position:absolute;inset:0;
+  overflow:hidden;
+  pointer-events:none;
+}
+.hero-line{
+  position:absolute;
+  width:1px;
+  background:linear-gradient(to bottom, transparent, rgba(200,169,110,0.15), transparent);
+  animation:lineFade 3s ease-in-out infinite;
+}
+@keyframes lineFade{
+  0%,100%{opacity:0;transform:scaleY(0);}
+  50%{opacity:1;transform:scaleY(1);}
+}
+.hero-content{position:relative;z-index:2;max-width:700px;}
+.hero-tag{
+  display:inline-flex;align-items:center;gap:8px;
+  border:1px solid var(--goldDim);
+  padding:6px 16px;
+  font-size:11px;letter-spacing:3px;color:var(--gold);
+  text-transform:uppercase;margin-bottom:32px;
+}
+.hero-tag::before{
+  content:'';width:6px;height:6px;
+  background:var(--buy);border-radius:50%;
+  animation:pulse 2s infinite;
+}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1);}50%{opacity:0.4;transform:scale(0.8);}}
+
+.hero-title{
+  font-family:'Cormorant Garamond',serif;
+  font-size:clamp(52px,7vw,96px);
+  font-weight:700;
+  line-height:0.95;
+  letter-spacing:-1px;
+  margin-bottom:8px;
+}
+.hero-title .gold{color:var(--gold);}
+.hero-title .outline{
+  -webkit-text-stroke:1px var(--goldDim);
+  color:transparent;
+}
+.hero-sub{
+  font-size:clamp(16px,2vw,22px);
+  color:var(--sec);letter-spacing:4px;
+  text-transform:uppercase;
+  margin-bottom:24px;
+  font-weight:500;
+}
+.hero-desc{
+  font-size:16px;color:var(--sec);
+  line-height:1.7;max-width:500px;
+  margin-bottom:40px;
+}
+
+/* LIVE PRICE */
+.hero-price{
+  display:inline-flex;align-items:center;gap:20px;
+  background:rgba(200,169,110,0.05);
+  border:1px solid var(--goldDim);
+  padding:16px 24px;
+  margin-bottom:40px;
+}
+.price-label{font-size:10px;letter-spacing:2px;color:var(--dim);text-transform:uppercase;}
+.price-val{
+  font-family:'JetBrains Mono',monospace;
+  font-size:28px;font-weight:700;color:var(--text);
+}
+.price-chg{
+  font-family:'JetBrains Mono',monospace;
+  font-size:14px;font-weight:700;
+  padding:4px 10px;
+  background:rgba(77,170,112,0.15);
+  border:1px solid rgba(77,170,112,0.3);
+  color:var(--buy);
+}
+.price-chg.neg{
+  background:rgba(201,64,64,0.15);
+  border-color:rgba(201,64,64,0.3);
+  color:var(--sell);
+}
+
+.hero-btns{display:flex;gap:16px;flex-wrap:wrap;}
+.btn-primary{
+  background:var(--gold);color:var(--bg);
+  padding:16px 40px;
+  font-family:'Rajdhani',sans-serif;
+  font-size:14px;font-weight:700;letter-spacing:3px;
+  text-transform:uppercase;
+  border:none;cursor:pointer;
+  text-decoration:none;display:inline-block;
+  transition:all 0.3s;
+  position:relative;overflow:hidden;
+}
+.btn-primary::after{
+  content:'';
+  position:absolute;inset:0;
+  background:rgba(255,255,255,0.1);
+  transform:translateX(-100%);
+  transition:transform 0.3s;
+}
+.btn-primary:hover::after{transform:translateX(0);}
+.btn-secondary{
+  background:transparent;
+  border:1px solid var(--goldDim);
+  color:var(--gold);
+  padding:16px 40px;
+  font-family:'Rajdhani',sans-serif;
+  font-size:14px;font-weight:700;letter-spacing:3px;
+  text-transform:uppercase;
+  cursor:pointer;text-decoration:none;
+  display:inline-block;transition:all 0.3s;
+}
+.btn-secondary:hover{background:rgba(200,169,110,0.1);}
+
+/* STATS */
+.hero-stats{
+  position:absolute;right:40px;top:50%;transform:translateY(-50%);
+  display:flex;flex-direction:column;gap:24px;
+  z-index:2;
+}
+.stat-item{text-align:right;}
+.stat-val{
+  font-family:'Cormorant Garamond',serif;
+  font-size:42px;font-weight:700;color:var(--gold);
+  line-height:1;
+}
+.stat-lbl{font-size:10px;letter-spacing:2px;color:var(--dim);text-transform:uppercase;margin-top:4px;}
+
+/* TICKER */
+.ticker{
+  background:var(--bg2);
+  border-top:1px solid var(--border);
+  border-bottom:1px solid var(--border);
+  padding:12px 0;overflow:hidden;
+  position:relative;z-index:2;
+}
+.ticker-inner{
+  display:flex;gap:48px;
+  animation:ticker 20s linear infinite;
+  white-space:nowrap;
+}
+@keyframes ticker{from{transform:translateX(0);}to{transform:translateX(-50%);}}
+.ticker-item{
+  display:flex;align-items:center;gap:10px;
+  font-family:'JetBrains Mono',monospace;font-size:12px;
+}
+.ticker-sym{color:var(--gold);font-weight:700;letter-spacing:1px;}
+.ticker-price{color:var(--text);}
+.ticker-chg{color:var(--buy);}
+.ticker-chg.neg{color:var(--sell);}
+.ticker-dot{width:1px;height:14px;background:var(--border);}
+
+/* SECTIONS */
+section{padding:100px 40px;position:relative;z-index:2;}
+.section-tag{
+  font-size:10px;letter-spacing:4px;color:var(--goldDim);
+  text-transform:uppercase;margin-bottom:16px;
+  display:flex;align-items:center;gap:12px;
+}
+.section-tag::before{content:'';flex:0 0 40px;height:1px;background:var(--goldDim);}
+.section-title{
+  font-family:'Cormorant Garamond',serif;
+  font-size:clamp(36px,5vw,64px);
+  font-weight:700;line-height:1.05;
+  margin-bottom:20px;
+}
+.section-title .gold{color:var(--gold);}
+
+/* SIGNAL SECTION */
+.signal-section{background:var(--bg2);border-top:1px solid var(--border);border-bottom:1px solid var(--border);}
+.signal-grid{
+  display:grid;grid-template-columns:1fr 1fr 1fr;
+  gap:1px;background:var(--border);
+  border:1px solid var(--border);
+  margin-top:60px;
+}
+.signal-card{
+  background:var(--card);
+  padding:32px;
+  transition:background 0.3s;
+}
+.signal-card:hover{background:rgba(200,169,110,0.05);}
+.signal-card-icon{font-size:28px;margin-bottom:16px;}
+.signal-card-title{
+  font-family:'Cormorant Garamond',serif;
+  font-size:22px;font-weight:700;
+  color:var(--text);margin-bottom:8px;
+}
+.signal-card-desc{font-size:14px;color:var(--sec);line-height:1.6;}
+.signal-badge{
+  display:inline-block;margin-top:16px;
+  padding:4px 12px;
+  font-size:11px;letter-spacing:2px;font-weight:700;
+  text-transform:uppercase;
+}
+.signal-badge.buy{background:rgba(77,170,112,0.15);color:var(--buy);border:1px solid rgba(77,170,112,0.3);}
+.signal-badge.sell{background:rgba(201,64,64,0.15);color:var(--sell);border:1px solid rgba(201,64,64,0.3);}
+.signal-badge.gold{background:rgba(200,169,110,0.15);color:var(--gold);border:1px solid var(--goldDim);}
+
+/* LIVE SIGNAL DISPLAY */
+.live-signal{
+  margin-top:60px;
+  background:var(--card);
+  border:1px solid var(--border);
+  padding:40px;
+  position:relative;overflow:hidden;
+}
+.live-signal::before{
+  content:'';
+  position:absolute;top:0;left:0;right:0;height:1px;
+  background:linear-gradient(90deg, transparent, var(--gold), transparent);
+}
+.live-signal-header{
+  display:flex;align-items:center;justify-content:space-between;
+  margin-bottom:32px;
+}
+.live-label{
+  font-size:11px;letter-spacing:3px;color:var(--dim);text-transform:uppercase;
+  display:flex;align-items:center;gap:8px;
+}
+.live-dot{
+  width:8px;height:8px;background:var(--buy);border-radius:50%;
+  animation:pulse 2s infinite;
+}
+.signal-display{display:grid;grid-template-columns:auto 1fr 1fr 1fr;gap:40px;align-items:center;}
+.big-signal{
+  font-family:'Cormorant Garamond',serif;
+  font-size:80px;font-weight:700;letter-spacing:4px;
+  line-height:1;
+}
+.big-signal.buy{color:var(--buy);}
+.big-signal.sell{color:var(--sell);}
+.big-signal.neutral{color:var(--gold);}
+.signal-level{border-left:1px solid var(--border);padding-left:32px;}
+.sl-label{font-size:10px;letter-spacing:2px;color:var(--dim);text-transform:uppercase;margin-bottom:8px;}
+.sl-val{
+  font-family:'JetBrains Mono',monospace;
+  font-size:20px;font-weight:700;
+}
+.sl-val.tp{color:var(--info);}
+.sl-val.sl{color:var(--sell);}
+.sl-val.entry{color:var(--text);}
+.sl-desc{font-size:12px;color:var(--dim);margin-top:4px;}
+
+/* FEATURES */
+.features-grid{
+  display:grid;grid-template-columns:repeat(3,1fr);gap:1px;
+  background:var(--border);border:1px solid var(--border);
+  margin-top:60px;
+}
+.feature-item{
+  background:var(--card);padding:40px 32px;
+  transition:all 0.3s;position:relative;overflow:hidden;
+}
+.feature-item::after{
+  content:'';
+  position:absolute;bottom:0;left:0;right:0;height:2px;
+  background:var(--gold);transform:scaleX(0);
+  transition:transform 0.3s;transform-origin:left;
+}
+.feature-item:hover::after{transform:scaleX(1);}
+.feature-item:hover{background:rgba(200,169,110,0.03);}
+.feature-num{
+  font-family:'JetBrains Mono',monospace;
+  font-size:11px;color:var(--goldDim);letter-spacing:2px;
+  margin-bottom:20px;
+}
+.feature-title{
+  font-family:'Cormorant Garamond',serif;
+  font-size:26px;font-weight:700;color:var(--text);
+  margin-bottom:12px;line-height:1.2;
+}
+.feature-desc{font-size:14px;color:var(--sec);line-height:1.7;}
+
+/* DARSLIK */
+.darslik-grid{
+  display:grid;grid-template-columns:repeat(2,1fr);gap:1px;
+  background:var(--border);border:1px solid var(--border);
+  margin-top:60px;
+}
+.dars-item{
+  background:var(--card);padding:32px;
+  display:flex;gap:20px;align-items:flex-start;
+  transition:background 0.3s;cursor:pointer;
+}
+.dars-item:hover{background:rgba(200,169,110,0.05);}
+.dars-icon{
+  width:48px;height:48px;
+  background:rgba(200,169,110,0.1);
+  border:1px solid var(--goldDim);
+  display:flex;align-items:center;justify-content:center;
+  font-size:22px;flex-shrink:0;
+}
+.dars-content{flex:1;}
+.dars-title{
+  font-family:'Cormorant Garamond',serif;
+  font-size:20px;font-weight:700;color:var(--text);
+  margin-bottom:6px;
+}
+.dars-desc{font-size:13px;color:var(--sec);line-height:1.5;}
+.dars-meta{
+  display:flex;gap:12px;margin-top:10px;
+}
+.dars-tag{
+  font-size:10px;letter-spacing:1px;font-weight:700;
+  padding:3px 10px;text-transform:uppercase;
+}
+.dars-tag.muhim{background:rgba(201,64,64,0.15);color:var(--sell);border:1px solid rgba(201,64,64,0.2);}
+.dars-tag.orta{background:rgba(200,169,110,0.15);color:var(--gold);border:1px solid var(--goldDim);}
+.dars-tag.boshlangich{background:rgba(77,170,112,0.15);color:var(--buy);border:1px solid rgba(77,170,112,0.2);}
+
+/* TELEGRAM */
+.tg-section{
+  background:linear-gradient(135deg, rgba(200,169,110,0.05) 0%, transparent 50%, rgba(77,170,112,0.03) 100%);
+  border-top:1px solid var(--border);
+  text-align:center;
+}
+.tg-card{
+  max-width:700px;margin:60px auto 0;
+  background:var(--card);border:1px solid var(--border);
+  padding:60px;position:relative;overflow:hidden;
+}
+.tg-card::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:1px;
+  background:linear-gradient(90deg, transparent, var(--gold), transparent);
+}
+.tg-icon{
+  width:80px;height:80px;
+  background:#229ED9;border-radius:20px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:36px;margin:0 auto 24px;
+}
+.tg-title{
+  font-family:'Cormorant Garamond',serif;
+  font-size:36px;font-weight:700;margin-bottom:12px;
+}
+.tg-desc{font-size:16px;color:var(--sec);line-height:1.6;margin-bottom:32px;}
+.tg-stats{display:flex;justify-content:center;gap:48px;margin-bottom:40px;}
+.tg-stat-val{
+  font-family:'Cormorant Garamond',serif;
+  font-size:36px;font-weight:700;color:var(--gold);
+}
+.tg-stat-lbl{font-size:11px;letter-spacing:2px;color:var(--dim);text-transform:uppercase;margin-top:4px;}
+.btn-tg{
+  background:#229ED9;color:#fff;
+  padding:18px 48px;
+  font-family:'Rajdhani',sans-serif;
+  font-size:14px;font-weight:700;letter-spacing:3px;
+  text-transform:uppercase;text-decoration:none;
+  display:inline-block;transition:all 0.3s;border:none;cursor:pointer;
+}
+.btn-tg:hover{background:#1a8bc4;}
+
+/* HAQIMIZDA */
+.about-grid{
+  display:grid;grid-template-columns:1fr 1fr;gap:80px;
+  align-items:center;margin-top:60px;
+}
+.about-text p{font-size:16px;color:var(--sec);line-height:1.8;margin-bottom:20px;}
+.about-vals{display:flex;flex-direction:column;gap:16px;margin-top:32px;}
+.about-val{
+  display:flex;align-items:center;gap:16px;
+  padding:16px 20px;
+  border:1px solid var(--border);
+  transition:border-color 0.3s;
+}
+.about-val:hover{border-color:var(--goldDim);}
+.about-val-icon{font-size:20px;}
+.about-val-text{font-size:14px;color:var(--sec);}
+.about-val-text strong{color:var(--text);display:block;margin-bottom:2px;}
+
+.about-visual{
+  position:relative;
+  background:var(--card);
+  border:1px solid var(--border);
+  padding:40px;
+}
+.about-visual::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:1px;
+  background:linear-gradient(90deg, transparent, var(--gold), transparent);
+}
+.chart-mock{position:relative;height:200px;margin-bottom:24px;}
+.chart-line{
+  position:absolute;bottom:0;left:0;right:0;
+  height:100%;
+}
+.chart-candles{
+  display:flex;align-items:flex-end;gap:4px;height:100%;
+  padding:10px 0;
+}
+.candle{
+  flex:1;position:relative;display:flex;flex-direction:column;align-items:center;gap:1px;
+}
+.candle-body{
+  width:70%;border-radius:1px;
+  min-height:8px;
+}
+.candle-body.bull{background:var(--buy);}
+.candle-body.bear{background:var(--sell);}
+.candle-wick{width:1px;background:rgba(255,255,255,0.2);}
+.about-levels{display:flex;flex-direction:column;gap:8px;}
+.level-row{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--border);}
+.level-lbl{font-size:11px;letter-spacing:1px;color:var(--dim);text-transform:uppercase;}
+.level-val{font-family:'JetBrains Mono',monospace;font-size:14px;font-weight:700;}
+.level-val.tp{color:var(--info);}
+.level-val.sl{color:var(--sell);}
+.level-val.entry{color:var(--gold);}
+
+/* FORM */
+.form-section{
+  background:var(--bg2);
+  border-top:1px solid var(--border);
+}
+.form-container{
+  max-width:600px;margin:60px auto 0;
+  background:var(--card);border:1px solid var(--border);
+  padding:50px;position:relative;overflow:hidden;
+}
+.form-container::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:1px;
+  background:linear-gradient(90deg, transparent, var(--gold), transparent);
+}
+.form-title{
+  font-family:'Cormorant Garamond',serif;
+  font-size:32px;font-weight:700;margin-bottom:8px;text-align:center;
+}
+.form-desc{font-size:14px;color:var(--sec);text-align:center;margin-bottom:32px;}
+.form-group{margin-bottom:16px;}
+.form-label{
+  font-size:11px;letter-spacing:2px;color:var(--dim);
+  text-transform:uppercase;display:block;margin-bottom:8px;
+}
+.form-input{
+  width:100%;background:var(--bg);
+  border:1px solid var(--border);
+  padding:14px 18px;
+  color:var(--text);font-family:'Rajdhani',sans-serif;
+  font-size:15px;outline:none;
+  transition:border-color 0.3s;
+}
+.form-input:focus{border-color:var(--goldDim);}
+.form-input::placeholder{color:var(--dim);}
+.form-select{
+  width:100%;background:var(--bg);
+  border:1px solid var(--border);
+  padding:14px 18px;
+  color:var(--text);font-family:'Rajdhani',sans-serif;
+  font-size:15px;outline:none;cursor:pointer;
+  transition:border-color 0.3s;
+  appearance:none;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%236b5a38' stroke-width='1.5' fill='none'/%3E%3C/svg%3E");
+  background-repeat:no-repeat;
+  background-position:right 16px center;
+}
+.form-select option{background:var(--bg2);}
+.form-submit{
+  width:100%;background:var(--gold);color:var(--bg);
+  padding:18px;margin-top:8px;
+  font-family:'Rajdhani',sans-serif;
+  font-size:14px;font-weight:700;letter-spacing:3px;
+  text-transform:uppercase;border:none;cursor:pointer;
+  transition:all 0.3s;
+}
+.form-submit:hover{background:var(--gold2);}
+.form-success{
+  display:none;text-align:center;padding:20px;
+  color:var(--buy);font-size:16px;font-weight:600;
+}
+
+/* FOOTER */
+footer{
+  background:var(--bg2);
+  border-top:1px solid var(--border);
+  padding:60px 40px 40px;
+}
+.footer-top{
+  display:grid;grid-template-columns:2fr 1fr 1fr 1fr;
+  gap:48px;margin-bottom:48px;
+}
+.footer-brand{
+  font-family:'Cormorant Garamond',serif;
+  font-size:32px;font-weight:700;margin-bottom:12px;
+}
+.footer-brand span{color:var(--gold);}
+.footer-desc{font-size:14px;color:var(--sec);line-height:1.7;max-width:280px;}
+.footer-col-title{
+  font-size:11px;letter-spacing:3px;color:var(--goldDim);
+  text-transform:uppercase;margin-bottom:20px;font-weight:700;
+}
+.footer-links{list-style:none;display:flex;flex-direction:column;gap:10px;}
+.footer-links a{font-size:14px;color:var(--sec);text-decoration:none;transition:color 0.3s;}
+.footer-links a:hover{color:var(--gold);}
+.footer-bottom{
+  display:flex;justify-content:space-between;align-items:center;
+  padding-top:32px;border-top:1px solid var(--border);
+}
+.footer-copy{font-size:12px;color:var(--dim);letter-spacing:1px;}
+.footer-disc{
+  font-size:11px;color:var(--dim);max-width:500px;text-align:right;line-height:1.5;
+}
+
+/* ANIMATIONS */
+.fade-up{
+  opacity:1;transform:translateY(0);
+  transition:opacity 0.7s ease, transform 0.7s ease;
+}
+.fade-up.visible{opacity:1;transform:translateY(0);}
+
+/* SCROLLBAR */
+::-webkit-scrollbar{width:4px;}
+::-webkit-scrollbar-track{background:var(--bg);}
+::-webkit-scrollbar-thumb{background:var(--goldDim);}
+
+/* RESPONSIVE */
+@media(max-width:1024px){
+  .hero-stats{display:none;}
+  .signal-grid,.features-grid{grid-template-columns:1fr;}
+  .darslik-grid,.about-grid,.footer-top{grid-template-columns:1fr;}
+  .signal-display{grid-template-columns:1fr 1fr;gap:24px;}
+  .big-signal{font-size:56px;}
+  nav{padding:16px 20px;}
+  .nav-links{display:none;}
+  section{padding:70px 20px;}
+  .hero{padding:100px 20px 60px;}
+  .live-signal{padding:24px;}
+  .tg-card,.form-container{padding:32px 24px;}
+  .about-visual{display:none;}
+}
+</style>
+</head>
+<body>
+
+<!-- Custom Cursor -->
+
+
+
+<!-- NAV -->
+<nav id="navbar">
+  <div class="nav-logo">ZEN<span>|</span>EDGE</div>
+  <ul class="nav-links">
+    <li><a href="#signal">Signal</a></li>
+    <li><a href="#features">Imkoniyatlar</a></li>
+    <li><a href="#darslik">Darslik</a></li>
+    <li><a href="#kitob">📚 Kitob</a></li>
+    <li><a href="#haqimizda">Haqimizda</a></li>
+    <li><a href="login.html">Kirish</a></li>
+  </ul>
+  <a href="https://t.me/Zenedge_trade" target="_blank" class="nav-cta">Telegram →</a>
+</nav>
+
+<!-- HERO -->
+<section class="hero" id="home">
+  <div class="hero-bg"></div>
+  <div class="hero-lines">
+    <div class="hero-line" style="left:20%;height:40%;top:30%;animation-delay:0s;animation-duration:4s;"></div>
+    <div class="hero-line" style="left:50%;height:60%;top:20%;animation-delay:1s;animation-duration:5s;"></div>
+    <div class="hero-line" style="left:80%;height:30%;top:40%;animation-delay:2s;animation-duration:3.5s;"></div>
+  </div>
+
+  <div class="hero-content">
+    <div class="hero-tag">
+      <span>Jonli savdo • O'zbek tilida</span>
+    </div>
+    <h1 class="hero-title">
+      ZEN<span class="gold">|</span>EDGE<br>
+      <span class="outline">XAUUSD</span><br>
+      <span class="gold">PLATFORMASI</span>
+    </h1>
+    <p class="hero-sub">AI Intelligence • Real Vaqt</p>
+    <p class="hero-desc">
+      Oltin bozorida institutsional darajada tahlil. ZEN|EDGE maxsus darsliklari asosida — FU, HCS, Likvidlik va Imbalance signallari.
+    </p>
+
+    <div class="hero-price">
+      <div>
+        <div class="price-label">XAUUSD • Jonli Narx</div>
+        <div class="price-val" id="heroPrice">$3,124.50</div>
+      </div>
+      <div>
+        <div class="price-label">O'zgarish</div>
+        <div class="price-chg" id="heroChg">+0.28%</div>
+      </div>
+      <div>
+        <div class="price-label">Signal</div>
+        <div class="price-chg" id="heroSignal" style="background:rgba(200,169,110,0.15);border-color:rgba(200,169,110,0.3);color:var(--gold);">NEUTRAL</div>
+      </div>
+    </div>
+
+    <div class="hero-btns">
+      <a href="login.html" class="btn-primary">Bepul Boshlash →</a>
+      <a href="https://t.me/Zenedge_trade" target="_blank" class="btn-secondary">✈ Telegram</a>
+    </div>
+  </div>
+
+  <div class="hero-stats">
+    <div class="stat-item">
+      <div class="stat-val">71%</div>
+      <div class="stat-lbl">Haftalik Aniqlik</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-val">1:4+</div>
+      <div class="stat-lbl">O'rtacha R:R</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-val">2K+</div>
+      <div class="stat-lbl">Foydalanuvchi</div>
+    </div>
+  </div>
+</section>
+
+<!-- TICKER -->
+<div class="ticker">
+  <div class="ticker-inner" id="tickerInner">
+    <div class="ticker-item"><span class="ticker-sym">XAUUSD</span><span class="ticker-price" id="t1">3124.50</span><span class="ticker-chg" id="t1c">+0.28%</span></div>
+    <div class="ticker-dot"></div>
+    <div class="ticker-item"><span class="ticker-sym">DXY</span><span class="ticker-price">99.30</span><span class="ticker-chg neg">-0.12%</span></div>
+    <div class="ticker-dot"></div>
+    <div class="ticker-item"><span class="ticker-sym">XAGUSD</span><span class="ticker-price">32.45</span><span class="ticker-chg">+0.44%</span></div>
+    <div class="ticker-dot"></div>
+    <div class="ticker-item"><span class="ticker-sym">EURUSD</span><span class="ticker-price">1.0842</span><span class="ticker-chg neg">-0.08%</span></div>
+    <div class="ticker-dot"></div>
+    <div class="ticker-item"><span class="ticker-sym">GBPUSD</span><span class="ticker-price">1.2634</span><span class="ticker-chg">+0.15%</span></div>
+    <div class="ticker-dot"></div>
+    <div class="ticker-item"><span class="ticker-sym">USDJPY</span><span class="ticker-price">151.82</span><span class="ticker-chg neg">-0.21%</span></div>
+    <div class="ticker-dot"></div>
+    <!-- Repeat for seamless loop -->
+    <div class="ticker-item"><span class="ticker-sym">XAUUSD</span><span class="ticker-price">3124.50</span><span class="ticker-chg">+0.28%</span></div>
+    <div class="ticker-dot"></div>
+    <div class="ticker-item"><span class="ticker-sym">DXY</span><span class="ticker-price">99.30</span><span class="ticker-chg neg">-0.12%</span></div>
+    <div class="ticker-dot"></div>
+    <div class="ticker-item"><span class="ticker-sym">XAGUSD</span><span class="ticker-price">32.45</span><span class="ticker-chg">+0.44%</span></div>
+    <div class="ticker-dot"></div>
+    <div class="ticker-item"><span class="ticker-sym">EURUSD</span><span class="ticker-price">1.0842</span><span class="ticker-chg neg">-0.08%</span></div>
+    <div class="ticker-dot"></div>
+    <div class="ticker-item"><span class="ticker-sym">GBPUSD</span><span class="ticker-price">1.2634</span><span class="ticker-chg">+0.15%</span></div>
+    <div class="ticker-dot"></div>
+    <div class="ticker-item"><span class="ticker-sym">USDJPY</span><span class="ticker-price">151.82</span><span class="ticker-chg neg">-0.21%</span></div>
+    <div class="ticker-dot"></div>
+  </div>
+</div>
+
+<!-- SIGNAL SECTION -->
+<section class="signal-section" id="signal">
+  <div class="section-tag fade-up">AI Signal Tizimi</div>
+  <h2 class="section-title fade-up">ZEN|EDGE <span class="gold">Maxsus Darsliklari</span> Asosida Aniq Signal</h2>
+  <p style="color:var(--sec);font-size:16px;max-width:560px;line-height:1.7;" class="fade-up">
+    ZEN|EDGE maxsus darsliklari — FU Sham, HCS, Likvidlik va Imbalance kontseptsiyalari asosida real vaqt signallari.
+  </p>
+
+  <!-- Live Signal Display -->
+  <div class="live-signal fade-up">
+    <div class="live-signal-header">
+      <div class="live-label">
+        <div class="live-dot"></div>
+        Jonli AI Signal • XAUUSD
+      </div>
+      <div style="font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--dim);" id="liveTime">--:--:--</div>
+    </div>
+    <div class="signal-display">
+      <div>
+        <div style="font-size:11px;letter-spacing:2px;color:var(--dim);margin-bottom:8px;">SIGNAL</div>
+        <div class="big-signal neutral" id="liveSignal">NEUTRAL</div>
+      </div>
+      <div class="signal-level">
+        <div class="sl-label">Kirish Zona</div>
+        <div class="sl-val entry" id="liveEntry">$3,121–3,128</div>
+        <div class="sl-desc">Institutsional zona</div>
+      </div>
+      <div class="signal-level">
+        <div class="sl-label">Take Profit</div>
+        <div class="sl-val tp" id="liveTp">$3,162.50</div>
+        <div class="sl-desc">FU maqsadi</div>
+      </div>
+      <div class="signal-level">
+        <div class="sl-label">Stop Loss</div>
+        <div class="sl-val sl" id="liveSl">$3,102.50</div>
+        <div class="sl-desc">Soyaning pastiga</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="signal-grid fade-up">
+    <div class="signal-card">
+      <div class="signal-card-icon">⚡</div>
+      <div class="signal-card-title">FU Sham Tahlili</div>
+      <div class="signal-card-desc">Institutsional shamlar orqali bozor manipulyatsiyasini aniqlab, to'g'ri yo'nalishda kirish.</div>
+      <div class="signal-badge gold">ZEN|EDGE Maxsus Darslik</div>
+    </div>
+    <div class="signal-card">
+      <div class="signal-card-icon">🏆</div>
+      <div class="signal-card-title">HCS — Eng Kuchli Signal</div>
+      <div class="signal-card-desc">High Confluence Setup — ikki karra manipulyatsiya natijasi. Eng ishonchli kirish nuqtasi.</div>
+      <div class="signal-badge buy">KUCHLI ✅</div>
+    </div>
+    <div class="signal-card">
+      <div class="signal-card-icon">💧</div>
+      <div class="signal-card-title">Likvidlik Tahlili</div>
+      <div class="signal-card-desc">Banklar stop-losslarni qayerda ovlashini aniqlang va ular bilan birga savdo qiling.</div>
+      <div class="signal-badge sell">MUHIM</div>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURES -->
+<section id="features">
+  <div class="section-tag fade-up">Imkoniyatlar</div>
+  <h2 class="section-title fade-up"><span class="gold">Professional</span> Vositalar</h2>
+
+  <div class="features-grid fade-up">
+    <div class="feature-item">
+      <div class="feature-num">01</div>
+      <div class="feature-title">Jonli XAUUSD Narx</div>
+      <div class="feature-desc">Twelve Data API orqali real vaqtda oltin narxi, kunlik yuqori/quyi, o'zgarish foizi va bozor holati.</div>
+    </div>
+    <a href="aikoz.html" class="feature-item" style="text-decoration:none;color:inherit;display:block;cursor:pointer;">
+      <div class="feature-num">02</div>
+      <div class="feature-title" style="color:var(--gold);">AI Ko'z — Grafik Tahlil ↗</div>
+      <div class="feature-desc">MetaTrader grafigini rasmga oling — ZEN|EDGE maxsus darsliklari asosida FU, HCS, Imbalance, Entry zona, TP va SL aniqlab beradi.</div>
+    </a>
+    <div class="feature-item">
+      <div class="feature-num">03</div>
+      <div class="feature-title">AI Chat Maslahatchi</div>
+      <div class="feature-desc">ZEN|EDGE maxsus darsliklari asosida ishlaydi. Likvidlik, FU, HCS, ATT FU, Manipulyatsiya haqida so'rang.</div>
+    </div>
+    <div class="feature-item">
+      <div class="feature-num">04</div>
+      <div class="feature-title">ORB + Elliott Signal</div>
+      <div class="feature-desc">Toshkent vaqtiga asoslangan Opening Range Breakout va Elliott to'lqin tahlili kombinatsiyasi.</div>
+    </div>
+    <div class="feature-item">
+      <div class="feature-num">05</div>
+      <div class="feature-title">Telegram Auto Signal</div>
+      <div class="feature-desc">Signal avtomatik @Zenedge_trade kanaliga yuboriladi. TP, SL, Entry zona va R:R nisbati bilan.</div>
+    </div>
+    <div class="feature-item">
+      <div class="feature-num">06</div>
+      <div class="feature-title">Bepul Darsliklar</div>
+      <div class="feature-desc">16 ta ZEN|EDGE maxsus darslik — boshlang'ichdan professional darajagacha. O'zbek tilida.</div>
+    </div>
+  </div>
+</section>
+
+<!-- DARSLIK -->
+<section style="background:var(--bg2);border-top:1px solid var(--border);" id="darslik">
+  <div class="section-tag fade-up">Bepul Ta'lim</div>
+  <h2 class="section-title fade-up">ZEN|EDGE <span class="gold">Maxsus Darsliklari</span></h2>
+  <p style="color:var(--sec);font-size:16px;max-width:560px;line-height:1.7;" class="fade-up">
+    ZEN|EDGE maxsus darsliklari — o'zbek tilida, bepul.
+  </p>
+
+  <div class="darslik-grid fade-up">
+    <div class="dars-item">
+      <div class="dars-icon">💧</div>
+      <div class="dars-content">
+        <div class="dars-title">Likvidlik</div>
+        <div class="dars-desc">Banklar stop-losslarni qanday ovlashini va bu bilim asosida qanday savdo qilishni o'rganing.</div>
+        <div class="dars-meta"><span class="dars-tag muhim">MUHIM</span><span style="font-size:11px;color:var(--dim);">20 daqiqa</span></div>
+      </div>
+    </div>
+    <div class="dars-item">
+      <div class="dars-icon">⚡</div>
+      <div class="dars-content">
+        <div class="dars-title">FU Sham</div>
+        <div class="dars-desc">Institutsional shamlarni aniqlash, retest kutish va sniper entry bilan kirish usuli.</div>
+        <div class="dars-meta"><span class="dars-tag muhim">MUHIM</span><span style="font-size:11px;color:var(--dim);">25 daqiqa</span></div>
+      </div>
+    </div>
+    <div class="dars-item">
+      <div class="dars-icon">🏆</div>
+      <div class="dars-content">
+        <div class="dars-title">HCS — High Confluence Setup</div>
+        <div class="dars-desc">Ikki karra manipulyatsiya — eng kuchli reversal signali. 1:10+ R:R imkoniyati.</div>
+        <div class="dars-meta"><span class="dars-tag muhim">MUHIM</span><span style="font-size:11px;color:var(--dim);">20 daqiqa</span></div>
+      </div>
+    </div>
+    <div class="dars-item">
+      <div class="dars-icon">📊</div>
+      <div class="dars-content">
+        <div class="dars-title">Imbalance</div>
+        <div class="dars-desc">Narx qaytishi kafolatlangan zonalar. 1 pip SL bilan 1:100 R:R imkoniyati.</div>
+        <div class="dars-meta"><span class="dars-tag muhim">MUHIM</span><span style="font-size:11px;color:var(--dim);">20 daqiqa</span></div>
+      </div>
+    </div>
+    <div class="dars-item">
+      <div class="dars-icon">🧠</div>
+      <div class="dars-content">
+        <div class="dars-title">Psixologiya</div>
+        <div class="dars-desc">Treydingning 80% psixologiya. FOMO, Revenge Trading va emotsiyalarni boshqarish.</div>
+        <div class="dars-meta"><span class="dars-tag muhim">MUHIM</span><span style="font-size:11px;color:var(--dim);">20 daqiqa</span></div>
+      </div>
+    </div>
+    <div class="dars-item">
+      <div class="dars-icon">🛡</div>
+      <div class="dars-content">
+        <div class="dars-title">Risk Menejment</div>
+        <div class="dars-desc">1-2% qoidasi, lot hisoblash formulasi va kapitalingizni himoya qilish usullari.</div>
+        <div class="dars-meta"><span class="dars-tag muhim">MUHIM</span><span style="font-size:11px;color:var(--dim);">20 daqiqa</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- HAQIMIZDA -->
+<section id="haqimizda">
+  <div class="section-tag fade-up">Haqimizda</div>
+  <h2 class="section-title fade-up">Nima Uchun <span class="gold">ZEN|EDGE?</span></h2>
+
+  <div class="about-grid fade-up">
+    <div class="about-text">
+      <p>ZEN|EDGE — O'zbekistonda birinchi bo'lib institutsional savdo metodologiyasini oddiy treyderlar uchun o'zbek tilida taqdim etuvchi AI-platform.</p>
+      <p>Biz ZEN|EDGE maxsus darsliklari va metodologiyasi asosida ishlab chiqilgan tizim orqali banklar kabi fikrlab, manipulyatsiyaga qarshi emas, balki u bilan birga savdo qilishni o'rgatamiz.</p>
+      <div class="about-vals">
+        <div class="about-val">
+          <div class="about-val-icon">🎯</div>
+          <div class="about-val-text">
+            <strong>71% Haftalik Aniqlik</strong>
+            Signal tarixi va natijalar ochiq ko'rsatiladi
+          </div>
+        </div>
+        <div class="about-val">
+          <div class="about-val-icon">📚</div>
+          <div class="about-val-text">
+            <strong>ZEN|EDGE Maxsus Darsliklari</strong>
+            ZEN|EDGE maxsus darsliklari metodologiyasi
+          </div>
+        </div>
+        <div class="about-val">
+          <div class="about-val-icon">🇺🇿</div>
+          <div class="about-val-text">
+            <strong>O'zbek tilida</strong>
+            To'liq mahalliy til qo'llab-quvvatlash
+          </div>
+        </div>
+        <div class="about-val">
+          <div class="about-val-icon">🤖</div>
+          <div class="about-val-text">
+            <strong>AI Texnologiya</strong>
+            ZEN|EDGE darsliklari + real vaqt narx tahlili
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="about-visual">
+      <div style="font-size:11px;letter-spacing:2px;color:var(--dim);margin-bottom:20px;text-transform:uppercase;">XAUUSD · 1H · Jonli Tahlil</div>
+      <div class="chart-mock">
+        <div class="chart-candles">
+          <div class="candle"><div class="candle-wick" style="height:20px;"></div><div class="candle-body bear" style="height:35px;"></div><div class="candle-wick" style="height:10px;"></div></div>
+          <div class="candle"><div class="candle-wick" style="height:12px;"></div><div class="candle-body bull" style="height:25px;"></div><div class="candle-wick" style="height:8px;"></div></div>
+          <div class="candle"><div class="candle-wick" style="height:8px;"></div><div class="candle-body bear" style="height:45px;"></div><div class="candle-wick" style="height:15px;"></div></div>
+          <div class="candle"><div class="candle-wick" style="height:6px;"></div><div class="candle-body bull" style="height:60px;"></div><div class="candle-wick" style="height:20px;"></div></div>
+          <div class="candle"><div class="candle-wick" style="height:14px;"></div><div class="candle-body bull" style="height:40px;"></div><div class="candle-wick" style="height:12px;"></div></div>
+          <div class="candle"><div class="candle-wick" style="height:10px;"></div><div class="candle-body bear" style="height:30px;"></div><div class="candle-wick" style="height:8px;"></div></div>
+          <div class="candle"><div class="candle-wick" style="height:18px;"></div><div class="candle-body bull" style="height:70px;"></div><div class="candle-wick" style="height:16px;"></div></div>
+          <div class="candle"><div class="candle-wick" style="height:8px;"></div><div class="candle-body bull" style="height:50px;"></div><div class="candle-wick" style="height:10px;"></div></div>
+        </div>
+      </div>
+      <div class="about-levels">
+        <div class="level-row"><span class="level-lbl">Take Profit</span><span class="level-val tp" id="aboutTp">$3,162.50</span></div>
+        <div class="level-row"><span class="level-lbl">Entry Zona</span><span class="level-val entry" id="aboutEntry">$3,121–3,128</span></div>
+        <div class="level-row"><span class="level-lbl">Stop Loss</span><span class="level-val sl" id="aboutSl">$3,102.50</span></div>
+        <div class="level-row"><span class="level-lbl">R:R Nisbat</span><span class="level-val" style="color:var(--gold);">1 : 1.8</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TELEGRAM -->
+<section class="tg-section" id="telegram">
+  <div class="section-tag fade-up" style="justify-content:center;">Telegram Kanal</div>
+  <h2 class="section-title fade-up" style="text-align:center;">Kanalga <span class="gold">Qo'shiling</span></h2>
+  <div class="tg-card fade-up">
+    <div class="tg-icon">✈️</div>
+    <div class="tg-title">@Zenedge_trade</div>
+    <div class="tg-desc">Kunlik XAUUSD signallari, ertalabki tahlil va TP/SL natijalari. O'zbek tilida. Bepul. Hoziroq qo'shiling!</div>
+    <div class="tg-stats">
+      <div><div class="tg-stat-val">71%</div><div class="tg-stat-lbl">Aniqlik</div></div>
+      <div><div class="tg-stat-val">2+</div><div class="tg-stat-lbl">Kunlik Signal</div></div>
+      <div><div class="tg-stat-val">$0</div><div class="tg-stat-lbl">Narx</div></div>
+    </div>
+    <a href="https://t.me/Zenedge_trade" target="_blank" class="btn-tg">✈ Kanalga Qo'shilish — BEPUL</a>
+    <div style="margin-top:16px;font-size:12px;color:var(--dim);">⚠️ Signallar faqat malumot uchun. Investitsiya maslahati emas.</div>
+  </div>
+</section>
+
+<!-- KITOB -->
+<section id="kitob" style="background:var(--bg2);border-top:1px solid var(--border);">
+  <div class="section-tag fade-up">To'liq Qo'llanma</div>
+  <h2 class="section-title fade-up">ZEN|EDGE <span class="gold">Maxsus Darsliklari</span></h2>
+  <p style="color:var(--sec);font-size:16px;max-width:560px;line-height:1.7;margin-bottom:48px;" class="fade-up">
+    35 ta darslik — SNR, SND, FU, HCS, ATT FU, Imbalance, Order Block, Manipulyatsiya, Risk Menejment va Psixologiya. O'zbek tilida. Bepul.
+  </p>
+
+  <!-- Kitob kartasi -->
+  <div style="display:grid;grid-template-columns:1fr 1.4fr;gap:32px;align-items:start;margin-bottom:48px;" class="fade-up">
+
+    <!-- Chap: Kitob cover -->
+    <div style="background:var(--goldBg);border:1px solid var(--goldDim);padding:40px;position:relative;overflow:hidden;">
+      <div style="position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--gold),transparent);"></div>
+      <div style="font-size:11px;letter-spacing:3px;color:var(--goldDim);margin-bottom:16px;text-transform:uppercase;">1-JILD · TO'LIQ NASHR</div>
+      <div style="font-family:'Cormorant Garamond',serif;font-size:42px;font-weight:700;line-height:1;margin-bottom:8px;">ZEN<span style="color:var(--gold)">|</span>EDGE</div>
+      <div style="font-size:18px;font-weight:700;color:var(--text);margin-bottom:4px;">MAXSUS DARSLIKLARI</div>
+      <div style="font-size:11px;color:var(--dim);letter-spacing:2px;margin-bottom:24px;">XAUUSD · PROFESSIONAL SAVDO</div>
+      <div style="height:1px;background:var(--goldDim);margin-bottom:24px;"></div>
+      <div style="display:flex;gap:24px;">
+        <div><div style="font-family:'Cormorant Garamond',serif;font-size:28px;font-weight:700;color:var(--gold);">35+</div><div style="font-size:9px;letter-spacing:2px;color:var(--dim);text-transform:uppercase;">Darslik</div></div>
+        <div><div style="font-family:'Cormorant Garamond',serif;font-size:28px;font-weight:700;color:var(--gold);">6</div><div style="font-size:9px;letter-spacing:2px;color:var(--dim);text-transform:uppercase;">Bo'lim</div></div>
+        <div><div style="font-family:'Cormorant Garamond',serif;font-size:28px;font-weight:700;color:var(--gold);">$0</div><div style="font-size:9px;letter-spacing:2px;color:var(--dim);text-transform:uppercase;">Narx</div></div>
+      </div>
+    </div>
+
+    <!-- O'ng: Yuklab olish va online o'qish -->
+    <div>
+      <!-- Online o'qish -->
+      <div style="background:var(--card);border:1px solid var(--border);padding:28px;margin-bottom:16px;position:relative;overflow:hidden;">
+        <div style="position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--info),transparent);"></div>
+        <div style="display:flex;align-items:center;gap:12;margin-bottom:16px;">
+          <div style="font-size:28px;margin-right:12px;">🌐</div>
+          <div>
+            <div style="font-size:14px;font-weight:700;color:var(--text);margin-bottom:4px;">Online O'qish</div>
+            <div style="font-size:12px;color:var(--sec);">Brauzerda to'liq interaktiv o'qish</div>
+          </div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:16px;">
+          <div style="background:var(--muted,#141209);border:1px solid var(--border);padding:8px 12px;font-size:12px;color:var(--sec);">✅ Sidebar navigatsiya</div>
+          <div style="background:var(--muted,#141209);border:1px solid var(--border);padding:8px 12px;font-size:12px;color:var(--sec);">✅ 35 bob</div>
+          <div style="background:var(--muted,#141209);border:1px solid var(--border);padding:8px 12px;font-size:12px;color:var(--sec);">✅ Formulalar</div>
+          <div style="background:var(--muted,#141209);border:1px solid var(--border);padding:8px 12px;font-size:12px;color:var(--sec);">✅ Jadvallar</div>
+        </div>
+        <a href="zenedge_toliq.html" target="_blank" style="display:block;background:var(--info);color:#fff;padding:14px;text-align:center;font-family:'Rajdhani',sans-serif;font-size:13px;font-weight:700;letter-spacing:2px;text-transform:uppercase;text-decoration:none;transition:opacity 0.3s;" onmouseover="this.style.opacity=0.85" onmouseout="this.style.opacity=1">
+          🌐 ONLINE O'QISH →
+        </a>
+      </div>
+
+      <!-- Yuklab olish -->
+      <div style="background:var(--card);border:1px solid var(--border);padding:28px;position:relative;overflow:hidden;">
+        <div style="position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--gold),transparent);"></div>
+        <div style="display:flex;align-items:center;gap:12;margin-bottom:16px;">
+          <div style="font-size:28px;margin-right:12px;">📥</div>
+          <div>
+            <div style="font-size:14px;font-weight:700;color:var(--text);margin-bottom:4px;">Yuklab Olish</div>
+            <div style="font-size:12px;color:var(--sec);">Qurilmaga saqlash · Oflayn o'qish</div>
+          </div>
+        </div>
+        <div style="display:flex;gap:8px;">
+          <a href="zenedge_toliq.html" download="ZEN-EDGE-Maxsus-Darsliklari.html"
+             style="flex:1;background:var(--goldBg);border:1px solid var(--goldDim);color:var(--gold);padding:13px;text-align:center;font-family:'Rajdhani',sans-serif;font-size:12px;font-weight:700;letter-spacing:1px;text-transform:uppercase;text-decoration:none;display:block;">
+            📄 HTML
+          </a>
+          <a href="zenedge_toliq.pdf" download="ZEN-EDGE-Maxsus-Darsliklari.pdf"
+             style="flex:1;background:var(--sellBg,#120707);border:1px solid var(--sellBr,#351414);color:var(--sell);padding:13px;text-align:center;font-family:'Rajdhani',sans-serif;font-size:12px;font-weight:700;letter-spacing:1px;text-transform:uppercase;text-decoration:none;display:block;">
+            📑 PDF
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Iframe preview -->
+  <div class="fade-up" style="border:1px solid var(--border);overflow:hidden;position:relative;">
+    <div style="background:var(--goldBg);border-bottom:1px solid var(--goldDim);padding:12px 20px;display:flex;align-items:center;gap:10;">
+      <div style="display:flex;gap:6px;"><div style="width:10px;height:10px;border-radius:50%;background:#ff5f57;"></div><div style="width:10px;height:10px;border-radius:50%;background:#febc2e;"></div><div style="width:10px;height:10px;border-radius:50%;background:#28c840;"></div></div>
+      <div style="flex:1;background:var(--bg);border:1px solid var(--border);border-radius:4px;padding:4px 12px;font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--dim);">zenedge.uz/kitob</div>
+      <a href="zenedge_toliq.html" target="_blank" style="font-size:11px;color:var(--gold);letter-spacing:1px;text-decoration:none;font-weight:700;">TO'LIQ OCHING →</a>
+    </div>
+    <iframe src="zenedge_toliq.html" style="width:100%;height:480px;border:none;display:block;" loading="lazy" title="ZEN|EDGE Maxsus Darsliklari"></iframe>
+  </div>
+
+  <!-- Bo'limlar qisqacha -->
+  <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--border);border:1px solid var(--border);margin-top:32px;" class="fade-up">
+    <div style="background:var(--card);padding:24px;">
+      <div style="font-size:20px;margin-bottom:8px;">📐</div>
+      <div style="font-size:13px;font-weight:700;color:var(--text);margin-bottom:4px;">I-II Bo'lim</div>
+      <div style="font-size:12px;color:var(--sec);line-height:1.6;">SNR, SND, Engulfing, Quasimodo, Manipulyatsiya, Blindspot</div>
+    </div>
+    <div style="background:var(--card);padding:24px;">
+      <div style="font-size:20px;margin-bottom:8px;">⚡</div>
+      <div style="font-size:13px;font-weight:700;color:var(--text);margin-bottom:4px;">III-IV Bo'lim</div>
+      <div style="font-size:12px;color:var(--sec);line-height:1.6;">5SOP, FU Sham, HCS, ATT FU, Imbalance, Order Block</div>
+    </div>
+    <div style="background:var(--card);padding:24px;">
+      <div style="font-size:20px;margin-bottom:8px;">🧠</div>
+      <div style="font-size:13px;font-weight:700;color:var(--text);margin-bottom:4px;">V-VI Bo'lim</div>
+      <div style="font-size:12px;color:var(--sec);line-height:1.6;">Risk Menejment, Psixologiya, Amaliy Misollar, NFP Savdo</div>
+    </div>
+  </div>
+</section>
+
+<!-- FORM -->
+<section class="form-section" id="royxat">
+  <div class="section-tag fade-up" style="justify-content:center;">Ro'yxatdan O'tish</div>
+  <h2 class="section-title fade-up" style="text-align:center;">Bepul <span class="gold">Boshlang</span></h2>
+
+  <div class="form-container fade-up">
+    <div class="form-title">ZEN|EDGE<span style="color:var(--gold)">|</span>UZ</div>
+    <div class="form-desc">Hisob yarating va premium AI trading vositalaridan foydalaning</div>
+
+    <div id="regForm">
+      <div class="form-group">
+        <label class="form-label">Ismingiz</label>
+        <input class="form-input" type="text" placeholder="To'liq ismingiz" id="regName"/>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Email Manzilingiz</label>
+        <input class="form-input" type="email" placeholder="email@manzil.com" id="regEmail"/>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Tajriba Darajangiz</label>
+        <select class="form-select form-input" id="regLevel">
+          <option value="">Tanlang...</option>
+          <option value="boshlangich">Boshlang'ich (0-6 oy)</option>
+          <option value="orta">O'rta (6 oy - 2 yil)</option>
+          <option value="professional">Professional (2+ yil)</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Reja</label>
+        <select class="form-select form-input" id="regPlan">
+          <option value="free">FREE — $0/oy</option>
+          <option value="pro">PRO — $19/oy</option>
+          <option value="elite">ELITE — $49/oy</option>
+        </select>
+      </div>
+      <button class="form-submit" onclick="handleReg()">BEPUL HISOB YARATISH →</button>
+    </div>
+    <div class="form-success" id="regSuccess">
+      ✅ Tabriklaymiz! Hisobingiz yaratildi.<br>
+      Tez orada siz bilan bog'lanamiz!
+    </div>
+    <div style="text-align:center;margin-top:16px;font-size:12px;color:var(--dim);">
+      Allaqachon hisobingiz bormi? <a href="#" style="color:var(--gold);">Kirish →</a>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-top">
+    <div>
+      <div class="footer-brand">ZEN<span>|</span>EDGE</div>
+      <div class="footer-desc">O'zbekistondagi birinchi institutsional AI trading platformasi. ZEN|EDGE maxsus darsliklari asosida.</div>
+    </div>
+    <div>
+      <div class="footer-col-title">Navigatsiya</div>
+      <ul class="footer-links">
+        <li><a href="#signal">Signal</a></li>
+        <li><a href="#features">Imkoniyatlar</a></li>
+        <li><a href="#darslik">Darsliklar</a></li>
+        <li><a href="#haqimizda">Haqimizda</a></li>
+      </ul>
+    </div>
+    <div>
+      <div class="footer-col-title">Darsliklar</div>
+      <ul class="footer-links">
+        <li><a href="#darslik">Likvidlik</a></li>
+        <li><a href="#darslik">FU Sham</a></li>
+        <li><a href="#darslik">HCS</a></li>
+        <li><a href="#darslik">Imbalance</a></li>
+        <li><a href="#darslik">Risk Menejment</a></li>
+      </ul>
+    </div>
+    <div>
+      <div class="footer-col-title">Bog'lanish</div>
+      <ul class="footer-links">
+        <li><a href="https://t.me/Zenedge_trade" target="_blank">✈ @Zenedge_trade</a></li>
+        <li><a href="login.html">Ro'yxatdan o'tish</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <div class="footer-copy">© 2025 ZEN|EDGE UZ. Barcha huquqlar himoyalangan.</div>
+    <div class="footer-disc">⚠️ ZEN|EDGE tahlillari faqat malumot uchun. Investitsiya maslahati hisoblanmaydi. Savdo xavfli.</div>
+  </div>
+</footer>
+
+<script>
+// CURSOR
+// cursor removed
+
+  el.addEventListener('mouseleave',()=>{});
+});
+
+// ANCHOR SCROLL FIX
+document.querySelectorAll('a[href^="#"]').forEach(a=>{
+  a.addEventListener('click',function(e){
+    const id=this.getAttribute('href').slice(1);
+    const el=document.getElementById(id);
+    if(el){e.preventDefault();const y=el.getBoundingClientRect().top+window.scrollY-80;window.scrollTo({top:y,behavior:'smooth'});}
+  });
+});
+
+// NAV SCROLL
+window.addEventListener('scroll',()=>{
+  document.getElementById('navbar').classList.toggle('scrolled',window.scrollY>60);
+});
+
+// fade-up disabled
+
+// LIVE TIME
+function updateTime(){
+  const n=new Date();
+  const tk=new Date(n.getTime()+n.getTimezoneOffset()*60000+5*3600000);
+  document.getElementById('liveTime').textContent=
+    tk.toLocaleTimeString('uz',{hour:'2-digit',minute:'2-digit',second:'2-digit'})+' (Toshkent)';
+}
+setInterval(updateTime,1000);updateTime();
+
+// LIVE PRICE SIMULATION + REAL API
+let basePrice=3124.50;
+let currentPct=0.28;
+
+async function fetchRealPrice(){
+  try{
+    const r=await fetch('https://api.twelvedata.com/price?symbol=XAU/USD&apikey=1c93dd7752f841eaab0f40642e5c5346');
+    const d=await r.json();
+    const p=parseFloat(d?.price);
+    if(p&&p>2000&&p<8000){basePrice=p;return p;}
+  }catch{}
+  return null;
+}
+
+function updateUI(price,pct){
+  const isUp=pct>=0;
+  const signal=pct<-0.2?'SELL':pct>0.2?'BUY':'NEUTRAL';
+  const sigColor=signal==='BUY'?'var(--buy)':signal==='SELL'?'var(--sell)':'var(--gold)';
+  const tp=(signal==='BUY'?price+38:signal==='SELL'?price-38:price+20).toFixed(2);
+  const sl=(signal==='BUY'?price-22:signal==='SELL'?price+22:price-22).toFixed(2);
+  const entry=`$${(price-3).toFixed(2)}–${(price+3).toFixed(2)}`;
+
+  // Hero
+  document.getElementById('heroPrice').textContent='$'+price.toLocaleString('en',{minimumFractionDigits:2,maximumFractionDigits:2});
+  const chgEl=document.getElementById('heroChg');
+  chgEl.textContent=(isUp?'+':'')+pct.toFixed(2)+'%';
+  chgEl.className='price-chg'+(isUp?'':' neg');
+  const sigEl=document.getElementById('heroSignal');
+  sigEl.textContent=signal;
+  sigEl.style.background=signal==='BUY'?'rgba(77,170,112,0.15)':signal==='SELL'?'rgba(201,64,64,0.15)':'rgba(200,169,110,0.15)';
+  sigEl.style.borderColor=signal==='BUY'?'rgba(77,170,112,0.3)':signal==='SELL'?'rgba(201,64,64,0.3)':'rgba(200,169,110,0.3)';
+  sigEl.style.color=sigColor;
+
+  // Live Signal
+  const lsEl=document.getElementById('liveSignal');
+  lsEl.textContent=signal;
+  lsEl.className='big-signal '+(signal==='BUY'?'buy':signal==='SELL'?'sell':'neutral');
+  document.getElementById('liveEntry').textContent=entry;
+  document.getElementById('liveTp').textContent='$'+tp;
+  document.getElementById('liveSl').textContent='$'+sl;
+
+  // About
+  document.getElementById('aboutTp').textContent='$'+tp;
+  document.getElementById('aboutEntry').textContent=entry;
+  document.getElementById('aboutSl').textContent='$'+sl;
+
+  // Ticker
+  document.getElementById('t1').textContent=price.toFixed(2);
+  const t1c=document.getElementById('t1c');
+  t1c.textContent=(isUp?'+':'')+pct.toFixed(2)+'%';
+  t1c.className='ticker-chg'+(isUp?'':' neg');
+}
+
+async function priceLoop(){
+  const real=await fetchRealPrice();
+  if(real){
+    const open=3100;
+    currentPct=parseFloat(((real-open)/open*100).toFixed(2));
+    updateUI(real,currentPct);
+  } else {
+    basePrice+=((Math.random()-0.5)*0.8);
+    basePrice=parseFloat(basePrice.toFixed(2));
+    currentPct+=((Math.random()-0.5)*0.05);
+    currentPct=parseFloat(currentPct.toFixed(2));
+    updateUI(basePrice,currentPct);
+  }
+  setTimeout(priceLoop,6000);
+}
+priceLoop();
+
+// FORM
+function handleReg(){
+  const name=document.getElementById('regName').value.trim();
+  const email=document.getElementById('regEmail').value.trim();
+  const level=document.getElementById('regLevel').value;
+  if(!name){alert('Ismingizni kiriting');return;}
+  if(!email||!email.includes('@')){alert('To\'gri email kiriting');return;}
+  if(!level){alert('Tajriba darajangizni tanlang');return;}
+  document.getElementById('regForm').style.display='none';
+  document.getElementById('regSuccess').style.display='block';
+}
+</script>
+</body>
+</html>

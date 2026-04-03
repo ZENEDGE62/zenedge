@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>ZEN|EDGE — Kitob</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;600;700&family=Rajdhani:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+<style>
+:root{--bg:#080706;--bg2:#0e0c09;--border:#1e1a12;--gold:#c8a96e;--goldDim:#6b5a38;--text:#e8e2d6;--sec:#8a7e6a;--dim:#3a3228;--buy:#4daa70;}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{background:var(--bg);color:var(--text);font-family:'Rajdhani',sans-serif;min-height:100vh;}
+body::before{content:'';position:fixed;inset:0;background-image:linear-gradient(rgba(200,169,110,0.02) 1px,transparent 1px),linear-gradient(90deg,rgba(200,169,110,0.02) 1px,transparent 1px);background-size:60px 60px;pointer-events:none;z-index:0;}
+.sidebar{position:fixed;left:0;top:0;bottom:0;width:220px;background:var(--bg2);border-right:1px solid var(--border);z-index:100;display:flex;flex-direction:column;}
+.sidebar-logo{padding:24px 20px;border-bottom:1px solid var(--border);font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:700;letter-spacing:2px;}
+.sidebar-logo span{color:var(--gold);}
+.nav-item{display:flex;align-items:center;gap:12px;padding:12px 20px;color:var(--sec);text-decoration:none;font-size:13px;letter-spacing:1px;text-transform:uppercase;transition:all 0.2s;border-left:2px solid transparent;}
+.nav-item.active{color:var(--gold);border-left-color:var(--gold);background:rgba(200,169,110,0.05);}
+.nav-section{padding:16px 20px 8px;font-size:10px;letter-spacing:2px;color:var(--dim);text-transform:uppercase;}
+.sidebar-footer{margin-top:auto;padding:16px 20px;border-top:1px solid var(--border);}
+.logout-btn{width:100%;padding:10px;background:none;border:1px solid var(--border);color:var(--sec);font-family:'Rajdhani',sans-serif;font-size:12px;letter-spacing:2px;text-transform:uppercase;cursor:pointer;}
+.main{margin-left:220px;padding:32px;position:relative;z-index:1;}
+.page-title{font-family:'Cormorant Garamond',serif;font-size:32px;font-weight:700;margin-bottom:8px;}
+.page-title span{color:var(--gold);}
+.page-sub{color:var(--sec);font-size:14px;margin-bottom:32px;}
+.books-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;}
+.book-card{background:var(--bg2);border:1px solid var(--border);overflow:hidden;transition:border-color 0.3s;}
+.book-card:hover{border-color:var(--goldDim);}
+.book-cover{height:160px;display:flex;align-items:center;justify-content:center;font-size:48px;background:linear-gradient(135deg,rgba(200,169,110,0.08),rgba(200,169,110,0.02));border-bottom:1px solid var(--border);}
+.book-body{padding:20px;}
+.book-num{font-size:10px;letter-spacing:2px;color:var(--dim);margin-bottom:6px;}
+.book-title{font-size:16px;font-weight:600;letter-spacing:1px;margin-bottom:8px;color:var(--text);}
+.book-desc{font-size:12px;color:var(--sec);line-height:1.5;margin-bottom:16px;}
+.book-btn{display:block;padding:10px;text-align:center;background:transparent;border:1px solid var(--goldDim);color:var(--gold);font-family:'Rajdhani',sans-serif;font-size:12px;font-weight:600;letter-spacing:2px;text-transform:uppercase;text-decoration:none;transition:all 0.3s;cursor:pointer;width:100%;}
+.book-btn:hover{background:rgba(200,169,110,0.1);border-color:var(--gold);}
+.book-badge{display:inline-block;padding:2px 8px;font-size:10px;letter-spacing:1px;text-transform:uppercase;margin-bottom:8px;background:rgba(77,170,112,0.1);border:1px solid rgba(77,170,112,0.3);color:var(--buy);}
+@media(max-width:768px){
+  .sidebar{width:60px;}
+  .sidebar-logo,.nav-item span,.nav-section,.logout-btn{display:none;}
+  .nav-item{justify-content:center;padding:16px;}
+  .main{margin-left:60px;padding:16px;}
+  .books-grid{grid-template-columns:repeat(2,1fr);}
+}
+</style>
+</head>
+<body>
+<div class="sidebar">
+  <div class="sidebar-logo">ZEN<span>|</span>EDGE</div>
+  <div class="nav-section"><span>Asosiy</span></div>
+  <a href="dashboard.html" class="nav-item"><span>⊞</span><span>Dashboard</span></a>
+  <a href="signal.html" class="nav-item"><span>📡</span><span>Signal</span></a>
+  <a href="aikoz.html" class="nav-item"><span>👁</span><span>AI Ko'z</span></a>
+  <div class="nav-section"><span>Ta'lim</span></div>
+  <a href="kitob.html" class="nav-item active"><span>📚</span><span>Kitob</span></a>
+  <a href="https://t.me/Zenedge_trade" target="_blank" class="nav-item"><span>✈</span><span>Telegram</span></a>
+  <a href="index.html" class="nav-item"><span>🏠</span><span>Landing</span></a>
+  <div class="sidebar-footer">
+    <button class="logout-btn" onclick="localStorage.removeItem('ze_user');window.location.href='login.html'">Chiqish</button>
+  </div>
+</div>
+
+<div class="main">
+  <div class="page-title">ZEN|EDGE <span>Kitoblar</span></div>
+  <div class="page-sub">Maxsus darsliklari — boshlang'ichdan professional darajagacha. O'zbek tilida, bepul.</div>
+
+  <div class="books-grid">
+    <div class="book-card">
+      <div class="book-cover">📖</div>
+      <div class="book-body">
+        <div class="book-num">01-KITOB</div>
+        <span class="book-badge">Bepul</span>
+        <div class="book-title">To'liq Qo'llanma</div>
+        <div class="book-desc">ZEN|EDGE metodologiyasi — FU, HCS, Likvidlik va Imbalance asoslari</div>
+        <a href="zenedge_toliq.html" target="_blank" class="book-btn">Onlayn O'qish →</a>
+      </div>
+    </div>
+    <div class="book-card">
+      <div class="book-cover">📗</div>
+      <div class="book-body">
+        <div class="book-num">02-KITOB</div>
+        <span class="book-badge">Bepul</span>
+        <div class="book-title">Maxsus Kitob</div>
+        <div class="book-desc">Chuqur tahlil — professional trader sifatida savdo qilish sirlari</div>
+        <a href="zenedge_kitob.html" target="_blank" class="book-btn">Onlayn O'qish →</a>
+      </div>
+    </div>
+    <div class="book-card">
+      <div class="book-cover">📥</div>
+      <div class="book-body">
+        <div class="book-num">PDF</div>
+        <span class="book-badge">Yuklab olish</span>
+        <div class="book-title">To'liq PDF</div>
+        <div class="book-desc">PDF formatida — oflayn o'qish uchun qulay</div>
+        <a href="zenedge_toliq.pdf" download class="book-btn">PDF Yuklab Olish →</a>
+      </div>
+    </div>
+    <div class="book-card">
+      <div class="book-cover">📊</div>
+      <div class="book-body">
+        <div class="book-num">03-DARS</div>
+        <span class="book-badge">Bepul</span>
+        <div class="book-title">FU — Fair Value Gap</div>
+        <div class="book-desc">Fair Value Gap qanday aniqlanadi va qanday savdo qilinadi</div>
+        <a href="zenedge_toliq.html#fu" target="_blank" class="book-btn">O'rganish →</a>
+      </div>
+    </div>
+    <div class="book-card">
+      <div class="book-cover">💧</div>
+      <div class="book-body">
+        <div class="book-num">04-DARS</div>
+        <span class="book-badge">Bepul</span>
+        <div class="book-title">Likvidlik Tahlili</div>
+        <div class="book-desc">Buy/Sell side likvidlik — qayerda to'planadi va qanday ishlatiladi</div>
+        <a href="zenedge_toliq.html#likvidlik" target="_blank" class="book-btn">O'rganish →</a>
+      </div>
+    </div>
+    <div class="book-card">
+      <div class="book-cover">🏆</div>
+      <div class="book-body">
+        <div class="book-num">05-DARS</div>
+        <span class="book-badge">Bepul</span>
+        <div class="book-title">HCS Signal</div>
+        <div class="book-desc">High Confidence Setup — eng kuchli signal tuzilmasini aniqlash</div>
+        <a href="zenedge_toliq.html#hcs" target="_blank" class="book-btn">O'rganish →</a>
+      </div>
+    </div>
+  </div>
+</div>
+<script>
+const user=JSON.parse(localStorage.getItem('ze_user')||'null');
+if(!user)window.location.href='login.html';
+</script>
+</body>
+</html>

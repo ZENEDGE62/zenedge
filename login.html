@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>ZEN|EDGE — Kirish</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;600;700&family=Rajdhani:wght@400;500;600;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet"/>
+<style>
+:root{--bg:#080706;--bg2:#0e0c09;--card:#111009;--border:#1e1a12;--gold:#c8a96e;--gold2:#e8c87a;--goldDim:#6b5a38;--text:#e8e2d6;--sec:#8a7e6a;--dim:#3a3228;--buy:#4daa70;--sell:#c94040;}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{background:var(--bg);color:var(--text);font-family:'Rajdhani',sans-serif;min-height:100vh;display:flex;align-items:center;justify-content:center;overflow:hidden;}
+body::before{content:'';position:fixed;inset:0;background-image:linear-gradient(rgba(200,169,110,0.03) 1px,transparent 1px),linear-gradient(90deg,rgba(200,169,110,0.03) 1px,transparent 1px);background-size:60px 60px;pointer-events:none;z-index:0;}
+.container{position:relative;z-index:1;width:100%;max-width:420px;padding:20px;}
+.logo{font-family:'Cormorant Garamond',serif;font-size:32px;font-weight:700;letter-spacing:3px;text-align:center;margin-bottom:8px;}
+.logo span{color:var(--gold);}
+.tagline{text-align:center;font-size:12px;letter-spacing:3px;color:var(--sec);text-transform:uppercase;margin-bottom:48px;}
+.card{background:var(--bg2);border:1px solid var(--border);padding:40px;position:relative;}
+.card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--gold),transparent);}
+.tabs{display:flex;margin-bottom:32px;border-bottom:1px solid var(--border);}
+.tab{flex:1;padding:12px;text-align:center;font-size:13px;letter-spacing:2px;text-transform:uppercase;cursor:pointer;color:var(--sec);border-bottom:2px solid transparent;transition:all 0.3s;background:none;border-top:none;border-left:none;border-right:none;font-family:'Rajdhani',sans-serif;}
+.tab.active{color:var(--gold);border-bottom-color:var(--gold);}
+.form-group{margin-bottom:20px;}
+.form-label{display:block;font-size:11px;letter-spacing:2px;color:var(--sec);text-transform:uppercase;margin-bottom:8px;}
+.form-input{width:100%;background:var(--bg);border:1px solid var(--border);color:var(--text);padding:12px 16px;font-family:'Rajdhani',sans-serif;font-size:15px;outline:none;transition:border-color 0.3s;}
+.form-input:focus{border-color:var(--goldDim);}
+.submit-btn{width:100%;padding:14px;background:linear-gradient(135deg,rgba(200,169,110,0.2),rgba(200,169,110,0.05));border:1px solid var(--goldDim);color:var(--gold);font-family:'Rajdhani',sans-serif;font-size:14px;font-weight:700;letter-spacing:3px;text-transform:uppercase;cursor:pointer;transition:all 0.3s;margin-top:8px;}
+.submit-btn:hover{background:linear-gradient(135deg,rgba(200,169,110,0.3),rgba(200,169,110,0.1));border-color:var(--gold);}
+.divider{text-align:center;margin:24px 0;font-size:12px;color:var(--dim);letter-spacing:1px;}
+.tg-btn{width:100%;padding:12px;background:rgba(41,182,246,0.1);border:1px solid rgba(41,182,246,0.3);color:#29b6f6;font-family:'Rajdhani',sans-serif;font-size:13px;font-weight:600;letter-spacing:2px;text-transform:uppercase;cursor:pointer;transition:all 0.3s;text-decoration:none;display:block;text-align:center;}
+.tg-btn:hover{background:rgba(41,182,246,0.2);}
+.error{background:rgba(201,64,64,0.1);border:1px solid rgba(201,64,64,0.3);color:var(--sell);padding:10px 14px;font-size:13px;margin-bottom:16px;display:none;}
+.panel{display:none;}
+.panel.active{display:block;}
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="logo">ZEN<span>|</span>EDGE</div>
+  <div class="tagline">XAUUSD AI Trading Platformasi</div>
+  <div class="card">
+    <div class="tabs">
+      <button class="tab active" onclick="switchTab('login')">Kirish</button>
+      <button class="tab" onclick="switchTab('register')">Ro'yxat</button>
+    </div>
+    <div id="error" class="error"></div>
+
+    <!-- LOGIN -->
+    <div class="panel active" id="loginPanel">
+      <div class="form-group">
+        <label class="form-label">Foydalanuvchi nomi</label>
+        <input class="form-input" type="text" id="loginUser" placeholder="username"/>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Parol</label>
+        <input class="form-input" type="password" id="loginPass" placeholder="••••••••"/>
+      </div>
+      <button class="submit-btn" onclick="doLogin()">Kirish →</button>
+      <div class="divider">yoki</div>
+      <a href="https://t.me/Zenedge_trade" target="_blank" class="tg-btn">✈ Telegram orqali bog'lanish</a>
+    </div>
+
+    <!-- REGISTER -->
+    <div class="panel" id="registerPanel">
+      <div class="form-group">
+        <label class="form-label">Ismingiz</label>
+        <input class="form-input" type="text" id="regName" placeholder="To'liq ism"/>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Foydalanuvchi nomi</label>
+        <input class="form-input" type="text" id="regUser" placeholder="username"/>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Parol</label>
+        <input class="form-input" type="password" id="regPass" placeholder="••••••••"/>
+      </div>
+      <button class="submit-btn" onclick="doRegister()">Ro'yxatdan O'tish →</button>
+      <div class="divider">Telegram kanaliga qo'shiling</div>
+      <a href="https://t.me/Zenedge_trade" target="_blank" class="tg-btn">✈ @Zenedge_trade</a>
+    </div>
+  </div>
+</div>
+<script>
+function switchTab(tab) {
+  document.querySelectorAll('.tab').forEach((t,i) => t.classList.toggle('active', (tab==='login'&&i===0)||(tab==='register'&&i===1)));
+  document.getElementById('loginPanel').classList.toggle('active', tab==='login');
+  document.getElementById('registerPanel').classList.toggle('active', tab==='register');
+  document.getElementById('error').style.display='none';
+}
+function showError(msg) {
+  const el = document.getElementById('error');
+  el.textContent = msg; el.style.display='block';
+}
+function doLogin() {
+  const user = document.getElementById('loginUser').value.trim();
+  const pass = document.getElementById('loginPass').value;
+  if(!user||!pass){showError('Barcha maydonlarni to\'ldiring');return;}
+  // Demo: admin/admin kirsa dashboard ga
+  const users = JSON.parse(localStorage.getItem('ze_users')||'[]');
+  const found = users.find(u=>u.username===user&&u.password===pass);
+  if(found||( user==='admin'&&pass==='admin123')){
+    localStorage.setItem('ze_user', JSON.stringify(found||{name:'Admin',username:'admin',plan:'elite'}));
+    window.location.href='dashboard.html';
+  } else {
+    showError('Foydalanuvchi nomi yoki parol noto\'g\'ri');
+  }
+}
+function doRegister() {
+  const name = document.getElementById('regName').value.trim();
+  const user = document.getElementById('regUser').value.trim();
+  const pass = document.getElementById('regPass').value;
+  if(!name||!user||!pass){showError('Barcha maydonlarni to\'ldiring');return;}
+  if(pass.length<6){showError('Parol kamida 6 ta belgi bo\'lishi kerak');return;}
+  const users = JSON.parse(localStorage.getItem('ze_users')||'[]');
+  if(users.find(u=>u.username===user)){showError('Bu foydalanuvchi nomi band');return;}
+  users.push({name,username:user,password:pass,plan:'free',joined:new Date().toISOString()});
+  localStorage.setItem('ze_users', JSON.stringify(users));
+  localStorage.setItem('ze_user', JSON.stringify({name,username:user,plan:'free'}));
+  window.location.href='dashboard.html';
+}
+// Enter tugmasi
+document.addEventListener('keydown',e=>{if(e.key==='Enter'){const panel=document.querySelector('.panel.active');if(panel.id==='loginPanel')doLogin();else doRegister();}});
+</script>
+</body>
+</html>
