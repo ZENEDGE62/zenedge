@@ -221,16 +221,32 @@ function updateTime(){
 updateTime();setInterval(updateTime,1000);
 
 // Price simulation
-function updatePrice(){
-  const base=3124.50;const chg=(Math.random()-0.48)*2;const price=base+chg;
-  document.getElementById('xauPrice').textContent='$'+price.toFixed(2);
-  const pct=(chg/base*100).toFixed(2);
-  document.getElementById('xauChg').textContent=(chg>=0?'+':'')+pct+'% bugun';
-  const signal=chg>0?'BUY':'SELL';
-  const sigEl=document.getElementById('currentSignal');
-  sigEl.textContent=signal;sigEl.className='stat-value '+(signal==='BUY'?'buy':'sell');
+async function fetchAndUpdatePrice(){
+  let price=null;
+  try{
+    const r=await fetch('https://cdn.jsdelivr.net/npm/@fawazahmed0/currency-api@latest/v1/currencies/xau.min.json');
+    const d=await r.json();
+    const xau=parseFloat(d?.xau?.usd);
+    if(xau&&xau>0){price=parseFloat((1/xau).toFixed(2));}
+  }catch{}
+  if(!price){
+    try{
+      const r=await fetch('https://data-asg.goldprice.org/dbXRates/USD');
+      const d=await r.json();
+      price=parseFloat(d?.items?.[0]?.xauPrice);
+    }catch{}
+  }
+  if(price&&price>2000&&price<8000){
+    document.getElementById('xauPrice').textContent='$'+price.toLocaleString('en',{minimumFractionDigits:2,maximumFractionDigits:2});
+    const signal=price>3100?'BUY':'SELL';
+    const sigEl=document.getElementById('currentSignal');
+    sigEl.textContent=signal;
+    sigEl.className='stat-value '+(signal==='BUY'?'buy':'sell');
+    document.getElementById('xauChg').textContent='Real vaqt narxi';
+  }
 }
-setInterval(updatePrice,5000);
+fetchAndUpdatePrice();
+setInterval(fetchAndUpdatePrice,30000);
 </script>
 </body>
 </html>
