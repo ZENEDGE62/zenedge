@@ -224,16 +224,18 @@ updateTime();setInterval(updateTime,1000);
 async function fetchAndUpdatePrice(){
   let price=null;
   try{
-    const r=await fetch('https://cdn.jsdelivr.net/npm/@fawazahmed0/currency-api@latest/v1/currencies/xau.min.json');
+    const r=await fetch('https://cdn.jsdelivr.net/npm/@fawazahmed0/currency-api@latest/v1/currencies/xau.min.json',{cache:'no-cache'});
     const d=await r.json();
     const xau=parseFloat(d?.xau?.usd);
     if(xau&&xau>0){price=parseFloat((1/xau).toFixed(2));}
   }catch{}
   if(!price){
     try{
-      const r=await fetch('https://data-asg.goldprice.org/dbXRates/USD');
+      const today=new Date().toISOString().split('T')[0];
+      const r=await fetch(`https://cdn.jsdelivr.net/npm/@fawazahmed0/currency-api@${today}/v1/currencies/xau.min.json`,{cache:'no-cache'});
       const d=await r.json();
-      price=parseFloat(d?.items?.[0]?.xauPrice);
+      const xau=parseFloat(d?.xau?.usd);
+      if(xau&&xau>0){price=parseFloat((1/xau).toFixed(2));}
     }catch{}
   }
   if(price&&price>2000&&price<8000){
@@ -242,7 +244,7 @@ async function fetchAndUpdatePrice(){
     const sigEl=document.getElementById('currentSignal');
     sigEl.textContent=signal;
     sigEl.className='stat-value '+(signal==='BUY'?'buy':'sell');
-    document.getElementById('xauChg').textContent='Real vaqt narxi';
+    document.getElementById('xauChg').textContent='✓ Forex narxi';
   }
 }
 fetchAndUpdatePrice();

@@ -1243,31 +1243,27 @@ let basePrice=3124.50;
 let currentPct=0.28;
 
 async function fetchRealPrice(){
-  // 1-urinish: fawazahmed0 - XAU/USD real forex narx
+  // jsdelivr CDN orqali - CORS yo'q
   try{
-    const r=await fetch('https://cdn.jsdelivr.net/npm/@fawazahmed0/currency-api@latest/v1/currencies/xau.min.json');
+    const r=await fetch('https://cdn.jsdelivr.net/npm/@fawazahmed0/currency-api@latest/v1/currencies/xau.min.json',{cache:'no-cache'});
     const d=await r.json();
-    const xauInUsd=parseFloat(d?.xau?.usd);
-    if(xauInUsd&&xauInUsd>0){
-      // xau = 1 troy ounce, usd qiymati
-      const price=parseFloat((1/xauInUsd).toFixed(2));
+    const xau=parseFloat(d?.xau?.usd);
+    if(xau&&xau>0){
+      const price=parseFloat((1/xau).toFixed(2));
       if(price>2000&&price<8000){basePrice=price;return price;}
     }
-  }catch(e){}
-  // 2-urinish: GoldPrice API
+  }catch(e){console.log('API1 error:',e);}
+  // fallback: today's date API
   try{
-    const r=await fetch('https://data-asg.goldprice.org/dbXRates/USD');
+    const today=new Date().toISOString().split('T')[0];
+    const r=await fetch(`https://cdn.jsdelivr.net/npm/@fawazahmed0/currency-api@${today}/v1/currencies/xau.min.json`,{cache:'no-cache'});
     const d=await r.json();
-    const p=parseFloat(d?.items?.[0]?.xauPrice);
-    if(p&&p>2000&&p<8000){basePrice=p;return p;}
-  }catch(e){}
-  // 3-urinish: metals.live
-  try{
-    const r=await fetch('https://metals.live/api/spot');
-    const d=await r.json();
-    const p=parseFloat(d?.gold);
-    if(p&&p>2000&&p<8000){basePrice=p;return p;}
-  }catch(e){}
+    const xau=parseFloat(d?.xau?.usd);
+    if(xau&&xau>0){
+      const price=parseFloat((1/xau).toFixed(2));
+      if(price>2000&&price<8000){basePrice=price;return price;}
+    }
+  }catch(e){console.log('API2 error:',e);}
   return null;
 }
 
