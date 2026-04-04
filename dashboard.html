@@ -202,28 +202,18 @@ setInterval(updateTime, 1000);
 
 async function loadPrice() {
   var price = null;
-  
-  // 1: websitefortrade proxy
+  var pct = null;
+
+  // Twelve Data API - real XAUUSD
   try {
-    var r = await fetch('https://query1.finance.yahoo.com/v8/finance/chart/GC=F?interval=1m&range=1d', {mode:'cors'});
+    var r = await fetch('https://api.twelvedata.com/quote?symbol=XAU/USD&apikey=1c93dd7752f841eaab0f40642e5c5346');
     var d = await r.json();
-    price = parseFloat(d?.chart?.result?.[0]?.meta?.regularMarketPrice);
+    price = parseFloat(d?.close || d?.price);
+    pct = parseFloat(d?.percent_change);
     if (!(price > 2000 && price < 8000)) price = null;
   } catch(e) {}
 
-  // 2: corsproxy orqali fawaz API
-  if (!price) {
-    try {
-      var url = 'https://cdn.jsdelivr.net/npm/@fawazahmed0/currency-api@latest/v1/currencies/xau.min.json';
-      var r = await fetch('https://corsproxy.io/?' + encodeURIComponent(url));
-      var d = await r.json();
-      var xau = parseFloat(d?.xau?.usd);
-      if (xau > 0) price = parseFloat((1/xau).toFixed(2));
-      if (!(price > 2000 && price < 8000)) price = null;
-    } catch(e) {}
-  }
-
-  // 3: allorigins proxy
+  // Backup: allorigins proxy
   if (!price) {
     try {
       var url = 'https://data-asg.goldprice.org/dbXRates/USD';
@@ -237,13 +227,15 @@ async function loadPrice() {
 
   if (price) {
     document.getElementById('xauPrice').textContent = '$' + price.toLocaleString('en', {minimumFractionDigits: 2, maximumFractionDigits: 2});
-    document.getElementById('xauChg').textContent = '✓ Forex real narx';
+    var pctStr = pct ? (pct >= 0 ? '+' : '') + pct.toFixed(2) + '%' : 'Real narx';
+    document.getElementById('xauChg').textContent = '✓ ' + pctStr;
     document.getElementById('sigEntry').textContent = '$' + (price - 5).toFixed(2);
     document.getElementById('sigTp').textContent = '$' + (price + 26).toFixed(2);
     document.getElementById('sigSl').textContent = '$' + (price - 13).toFixed(2);
     var sig = document.getElementById('currentSignal');
-    sig.textContent = 'BUY';
-    sig.className = 'stat-value buy';
+    var isBuy = pct >= 0;
+    sig.textContent = isBuy ? 'BUY' : 'SELL';
+    sig.className = 'stat-value ' + (isBuy ? 'buy' : 'sell');
   } else {
     document.getElementById('xauPrice').textContent = '$3,310.00';
     document.getElementById('xauChg').textContent = 'Taxminiy narx';
