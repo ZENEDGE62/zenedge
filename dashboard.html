@@ -201,25 +201,52 @@ updateTime();
 setInterval(updateTime, 1000);
 
 async function loadPrice() {
+  var price = null;
+  
+  // 1: websitefortrade proxy
   try {
-    var r = await fetch('https://cdn.jsdelivr.net/npm/@fawazahmed0/currency-api@latest/v1/currencies/xau.min.json');
+    var r = await fetch('https://query1.finance.yahoo.com/v8/finance/chart/GC=F?interval=1m&range=1d', {mode:'cors'});
     var d = await r.json();
-    var xau = parseFloat(d.xau.usd);
-    if (xau > 0) {
-      var price = parseFloat((1 / xau).toFixed(2));
-      if (price > 2000 && price < 8000) {
-        document.getElementById('xauPrice').textContent = '$' + price.toLocaleString('en', {minimumFractionDigits: 2, maximumFractionDigits: 2});
-        document.getElementById('xauChg').textContent = 'Forex real narx';
-        document.getElementById('sigEntry').textContent = '$' + (price - 5).toFixed(2);
-        document.getElementById('sigTp').textContent = '$' + (price + 25).toFixed(2);
-        document.getElementById('sigSl').textContent = '$' + (price - 12).toFixed(2);
-        var sig = document.getElementById('currentSignal');
-        sig.textContent = 'BUY';
-        sig.className = 'stat-value buy';
-      }
-    }
-  } catch(e) {
-    document.getElementById('xauChg').textContent = 'Narx yuklanmadi';
+    price = parseFloat(d?.chart?.result?.[0]?.meta?.regularMarketPrice);
+    if (!(price > 2000 && price < 8000)) price = null;
+  } catch(e) {}
+
+  // 2: corsproxy orqali fawaz API
+  if (!price) {
+    try {
+      var url = 'https://cdn.jsdelivr.net/npm/@fawazahmed0/currency-api@latest/v1/currencies/xau.min.json';
+      var r = await fetch('https://corsproxy.io/?' + encodeURIComponent(url));
+      var d = await r.json();
+      var xau = parseFloat(d?.xau?.usd);
+      if (xau > 0) price = parseFloat((1/xau).toFixed(2));
+      if (!(price > 2000 && price < 8000)) price = null;
+    } catch(e) {}
+  }
+
+  // 3: allorigins proxy
+  if (!price) {
+    try {
+      var url = 'https://data-asg.goldprice.org/dbXRates/USD';
+      var r = await fetch('https://api.allorigins.win/get?url=' + encodeURIComponent(url));
+      var d = await r.json();
+      var parsed = JSON.parse(d.contents);
+      price = parseFloat(parsed?.items?.[0]?.xauPrice);
+      if (!(price > 2000 && price < 8000)) price = null;
+    } catch(e) {}
+  }
+
+  if (price) {
+    document.getElementById('xauPrice').textContent = '$' + price.toLocaleString('en', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+    document.getElementById('xauChg').textContent = '✓ Forex real narx';
+    document.getElementById('sigEntry').textContent = '$' + (price - 5).toFixed(2);
+    document.getElementById('sigTp').textContent = '$' + (price + 26).toFixed(2);
+    document.getElementById('sigSl').textContent = '$' + (price - 13).toFixed(2);
+    var sig = document.getElementById('currentSignal');
+    sig.textContent = 'BUY';
+    sig.className = 'stat-value buy';
+  } else {
+    document.getElementById('xauPrice').textContent = '$3,310.00';
+    document.getElementById('xauChg').textContent = 'Taxminiy narx';
   }
 }
 
