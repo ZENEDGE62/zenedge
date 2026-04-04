@@ -4,13 +4,13 @@
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>ZEN|EDGE — Kirish</title>
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;600;700&family=Rajdhani:wght@400;500;600;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;600;700&family=Rajdhani:wght@400;500;600;700&display=swap" rel="stylesheet"/>
 <style>
-:root{--bg:#080706;--bg2:#0e0c09;--card:#111009;--border:#1e1a12;--gold:#c8a96e;--gold2:#e8c87a;--goldDim:#6b5a38;--text:#e8e2d6;--sec:#8a7e6a;--dim:#3a3228;--buy:#4daa70;--sell:#c94040;}
+:root{--bg:#080706;--bg2:#0e0c09;--border:#1e1a12;--gold:#c8a96e;--goldDim:#6b5a38;--text:#e8e2d6;--sec:#8a7e6a;--dim:#3a3228;--buy:#4daa70;--sell:#c94040;}
 *{margin:0;padding:0;box-sizing:border-box;}
-body{background:var(--bg);color:var(--text);font-family:'Rajdhani',sans-serif;min-height:100vh;display:flex;align-items:center;justify-content:center;overflow:hidden;}
-body::before{content:'';position:fixed;inset:0;background-image:linear-gradient(rgba(200,169,110,0.03) 1px,transparent 1px),linear-gradient(90deg,rgba(200,169,110,0.03) 1px,transparent 1px);background-size:60px 60px;pointer-events:none;z-index:0;}
-.container{position:relative;z-index:1;width:100%;max-width:420px;padding:20px;}
+body{background:var(--bg);color:var(--text);font-family:'Rajdhani',sans-serif;min-height:100vh;display:flex;align-items:center;justify-content:center;}
+body::before{content:'';position:fixed;inset:0;background-image:linear-gradient(rgba(200,169,110,0.03) 1px,transparent 1px),linear-gradient(90deg,rgba(200,169,110,0.03) 1px,transparent 1px);background-size:60px 60px;pointer-events:none;}
+.container{width:100%;max-width:420px;padding:20px;position:relative;z-index:1;}
 .logo{font-family:'Cormorant Garamond',serif;font-size:32px;font-weight:700;letter-spacing:3px;text-align:center;margin-bottom:8px;}
 .logo span{color:var(--gold);}
 .tagline{text-align:center;font-size:12px;letter-spacing:3px;color:var(--sec);text-transform:uppercase;margin-bottom:48px;}
@@ -25,12 +25,13 @@ body::before{content:'';position:fixed;inset:0;background-image:linear-gradient(
 .form-input:focus{border-color:var(--goldDim);}
 .submit-btn{width:100%;padding:14px;background:linear-gradient(135deg,rgba(200,169,110,0.2),rgba(200,169,110,0.05));border:1px solid var(--goldDim);color:var(--gold);font-family:'Rajdhani',sans-serif;font-size:14px;font-weight:700;letter-spacing:3px;text-transform:uppercase;cursor:pointer;transition:all 0.3s;margin-top:8px;}
 .submit-btn:hover{background:linear-gradient(135deg,rgba(200,169,110,0.3),rgba(200,169,110,0.1));border-color:var(--gold);}
-.divider{text-align:center;margin:24px 0;font-size:12px;color:var(--dim);letter-spacing:1px;}
-.tg-btn{width:100%;padding:12px;background:rgba(41,182,246,0.1);border:1px solid rgba(41,182,246,0.3);color:#29b6f6;font-family:'Rajdhani',sans-serif;font-size:13px;font-weight:600;letter-spacing:2px;text-transform:uppercase;cursor:pointer;transition:all 0.3s;text-decoration:none;display:block;text-align:center;}
-.tg-btn:hover{background:rgba(41,182,246,0.2);}
+.submit-btn:disabled{opacity:0.5;cursor:not-allowed;}
 .error{background:rgba(201,64,64,0.1);border:1px solid rgba(201,64,64,0.3);color:var(--sell);padding:10px 14px;font-size:13px;margin-bottom:16px;display:none;}
+.success{background:rgba(77,170,112,0.1);border:1px solid rgba(77,170,112,0.3);color:var(--buy);padding:10px 14px;font-size:13px;margin-bottom:16px;display:none;}
 .panel{display:none;}
 .panel.active{display:block;}
+.divider{text-align:center;margin:20px 0;font-size:12px;color:var(--dim);}
+.tg-btn{width:100%;padding:12px;background:rgba(41,182,246,0.1);border:1px solid rgba(41,182,246,0.3);color:#29b6f6;font-family:'Rajdhani',sans-serif;font-size:13px;font-weight:600;letter-spacing:2px;text-transform:uppercase;cursor:pointer;transition:all 0.3s;text-decoration:none;display:block;text-align:center;}
 </style>
 </head>
 <body>
@@ -43,18 +44,19 @@ body::before{content:'';position:fixed;inset:0;background-image:linear-gradient(
       <button class="tab" onclick="switchTab('register')">Ro'yxat</button>
     </div>
     <div id="error" class="error"></div>
+    <div id="success" class="success"></div>
 
     <!-- LOGIN -->
     <div class="panel active" id="loginPanel">
       <div class="form-group">
-        <label class="form-label">Foydalanuvchi nomi</label>
-        <input class="form-input" type="text" id="loginUser" placeholder="username"/>
+        <label class="form-label">Email</label>
+        <input class="form-input" type="email" id="loginEmail" placeholder="email@manzil.com"/>
       </div>
       <div class="form-group">
         <label class="form-label">Parol</label>
         <input class="form-input" type="password" id="loginPass" placeholder="••••••••"/>
       </div>
-      <button class="submit-btn" onclick="doLogin()">Kirish →</button>
+      <button class="submit-btn" id="loginBtn" onclick="doLogin()">Kirish →</button>
       <div class="divider">yoki</div>
       <a href="https://t.me/Zenedge_trade" target="_blank" class="tg-btn">✈ Telegram orqali bog'lanish</a>
     </div>
@@ -66,59 +68,131 @@ body::before{content:'';position:fixed;inset:0;background-image:linear-gradient(
         <input class="form-input" type="text" id="regName" placeholder="To'liq ism"/>
       </div>
       <div class="form-group">
-        <label class="form-label">Foydalanuvchi nomi</label>
-        <input class="form-input" type="text" id="regUser" placeholder="username"/>
+        <label class="form-label">Email</label>
+        <input class="form-input" type="email" id="regEmail" placeholder="email@manzil.com"/>
       </div>
       <div class="form-group">
-        <label class="form-label">Parol</label>
+        <label class="form-label">Parol (kamida 6 ta belgi)</label>
         <input class="form-input" type="password" id="regPass" placeholder="••••••••"/>
       </div>
-      <button class="submit-btn" onclick="doRegister()">Ro'yxatdan O'tish →</button>
+      <button class="submit-btn" id="registerBtn" onclick="doRegister()">Ro'yxatdan O'tish →</button>
       <div class="divider">Telegram kanaliga qo'shiling</div>
       <a href="https://t.me/Zenedge_trade" target="_blank" class="tg-btn">✈ @Zenedge_trade</a>
     </div>
   </div>
 </div>
-<script>
-function switchTab(tab) {
+
+<!-- Firebase SDK -->
+<script type="module">
+import { initializeApp } from 'https://www.gstatic.com/firebasejs/11.6.0/firebase-app.js';
+import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, updateProfile } from 'https://www.gstatic.com/firebasejs/11.6.0/firebase-auth.js';
+
+const firebaseConfig = {
+  apiKey: "AIzaSyCq77p7l1kmy_caAyhp8QJtEdwkBs4Swys",
+  authDomain: "zenedge-ef438.firebaseapp.com",
+  projectId: "zenedge-ef438",
+  storageBucket: "zenedge-ef438.firebasestorage.app",
+  messagingSenderId: "925329420597",
+  appId: "1:925329420597:web:32d0c69bbe0acc402edc7c"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+
+function showError(msg) {
+  const el = document.getElementById('error');
+  el.textContent = msg;
+  el.style.display = 'block';
+  document.getElementById('success').style.display = 'none';
+}
+
+function showSuccess(msg) {
+  const el = document.getElementById('success');
+  el.textContent = msg;
+  el.style.display = 'block';
+  document.getElementById('error').style.display = 'none';
+}
+
+window.switchTab = function(tab) {
   document.querySelectorAll('.tab').forEach((t,i) => t.classList.toggle('active', (tab==='login'&&i===0)||(tab==='register'&&i===1)));
   document.getElementById('loginPanel').classList.toggle('active', tab==='login');
   document.getElementById('registerPanel').classList.toggle('active', tab==='register');
   document.getElementById('error').style.display='none';
+  document.getElementById('success').style.display='none';
 }
-function showError(msg) {
-  const el = document.getElementById('error');
-  el.textContent = msg; el.style.display='block';
-}
-function doLogin() {
-  const user = document.getElementById('loginUser').value.trim();
+
+window.doLogin = async function() {
+  const email = document.getElementById('loginEmail').value.trim();
   const pass = document.getElementById('loginPass').value;
-  if(!user||!pass){showError('Barcha maydonlarni to\'ldiring');return;}
-  // Demo: admin/admin kirsa dashboard ga
-  const users = JSON.parse(localStorage.getItem('ze_users')||'[]');
-  const found = users.find(u=>u.username===user&&u.password===pass);
-  if(found||( user==='admin'&&pass==='admin123')){
-    localStorage.setItem('ze_user', JSON.stringify(found||{name:'Admin',username:'admin',plan:'elite'}));
-    window.location.href='dashboard.html';
-  } else {
-    showError('Foydalanuvchi nomi yoki parol noto\'g\'ri');
+  if (!email || !pass) { showError("Email va parolni kiriting"); return; }
+  
+  const btn = document.getElementById('loginBtn');
+  btn.disabled = true;
+  btn.textContent = 'Kirilmoqda...';
+  
+  try {
+    const result = await signInWithEmailAndPassword(auth, email, pass);
+    const user = result.user;
+    localStorage.setItem('ze_user', JSON.stringify({
+      name: user.displayName || email.split('@')[0],
+      email: user.email,
+      uid: user.uid,
+      plan: 'free'
+    }));
+    showSuccess("Muvaffaqiyatli kirdingiz!");
+    setTimeout(() => window.location.href = 'dashboard.html', 1000);
+  } catch(e) {
+    let msg = "Xato yuz berdi";
+    if (e.code === 'auth/user-not-found') msg = "Bu email ro'yxatdan o'tmagan";
+    else if (e.code === 'auth/wrong-password') msg = "Parol noto'g'ri";
+    else if (e.code === 'auth/invalid-email') msg = "Email format noto'g'ri";
+    else if (e.code === 'auth/invalid-credential') msg = "Email yoki parol noto'g'ri";
+    showError(msg);
+    btn.disabled = false;
+    btn.textContent = 'Kirish →';
   }
 }
-function doRegister() {
+
+window.doRegister = async function() {
   const name = document.getElementById('regName').value.trim();
-  const user = document.getElementById('regUser').value.trim();
+  const email = document.getElementById('regEmail').value.trim();
   const pass = document.getElementById('regPass').value;
-  if(!name||!user||!pass){showError('Barcha maydonlarni to\'ldiring');return;}
-  if(pass.length<6){showError('Parol kamida 6 ta belgi bo\'lishi kerak');return;}
-  const users = JSON.parse(localStorage.getItem('ze_users')||'[]');
-  if(users.find(u=>u.username===user)){showError('Bu foydalanuvchi nomi band');return;}
-  users.push({name,username:user,password:pass,plan:'free',joined:new Date().toISOString()});
-  localStorage.setItem('ze_users', JSON.stringify(users));
-  localStorage.setItem('ze_user', JSON.stringify({name,username:user,plan:'free'}));
-  window.location.href='dashboard.html';
+  
+  if (!name || !email || !pass) { showError("Barcha maydonlarni to'ldiring"); return; }
+  if (pass.length < 6) { showError("Parol kamida 6 ta belgi bo'lishi kerak"); return; }
+  
+  const btn = document.getElementById('registerBtn');
+  btn.disabled = true;
+  btn.textContent = "Ro'yxatdan o'tilmoqda...";
+  
+  try {
+    const result = await createUserWithEmailAndPassword(auth, email, pass);
+    await updateProfile(result.user, { displayName: name });
+    localStorage.setItem('ze_user', JSON.stringify({
+      name: name,
+      email: email,
+      uid: result.user.uid,
+      plan: 'free'
+    }));
+    showSuccess("Muvaffaqiyatli ro'yxatdan o'tdingiz!");
+    setTimeout(() => window.location.href = 'dashboard.html', 1000);
+  } catch(e) {
+    let msg = "Xato yuz berdi";
+    if (e.code === 'auth/email-already-in-use') msg = "Bu email allaqachon ro'yxatdan o'tgan";
+    else if (e.code === 'auth/invalid-email') msg = "Email format noto'g'ri";
+    else if (e.code === 'auth/weak-password') msg = "Parol juda oddiy";
+    showError(msg);
+    btn.disabled = false;
+    btn.textContent = "Ro'yxatdan O'tish →";
+  }
 }
-// Enter tugmasi
-document.addEventListener('keydown',e=>{if(e.key==='Enter'){const panel=document.querySelector('.panel.active');if(panel.id==='loginPanel')doLogin();else doRegister();}});
+
+document.addEventListener('keydown', e => {
+  if (e.key === 'Enter') {
+    if (document.getElementById('loginPanel').classList.contains('active')) window.doLogin();
+    else window.doRegister();
+  }
+});
 </script>
 </body>
 </html>
