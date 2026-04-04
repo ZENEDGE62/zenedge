@@ -202,48 +202,57 @@ setInterval(updateTime, 1000);
 
 async function loadPrice() {
   var price = null;
-  var pct = null;
+  var prevPrice = null;
 
-  // Twelve Data API - real XAUUSD
+  // 1: Twelve Data - XAUUSD spot (OANDA/MT5 bilan bir xil)
   try {
-    var r = await fetch('https://api.twelvedata.com/quote?symbol=XAU/USD&apikey=1c93dd7752f841eaab0f40642e5c5346');
+    var r = await fetch('https://api.twelvedata.com/price?symbol=XAUUSD&apikey=1c93dd7752f841eaab0f40642e5c5346');
     var d = await r.json();
-    price = parseFloat(d?.close || d?.price);
-    pct = parseFloat(d?.percent_change);
+    price = parseFloat(d?.price);
     if (!(price > 2000 && price < 8000)) price = null;
   } catch(e) {}
 
-  // Backup: allorigins proxy
+  // 2: XAU/USD format
   if (!price) {
     try {
-      var url = 'https://data-asg.goldprice.org/dbXRates/USD';
-      var r = await fetch('https://api.allorigins.win/get?url=' + encodeURIComponent(url));
+      var r = await fetch('https://api.twelvedata.com/time_series?symbol=XAU/USD&interval=1min&outputsize=1&apikey=1c93dd7752f841eaab0f40642e5c5346');
       var d = await r.json();
-      var parsed = JSON.parse(d.contents);
-      price = parseFloat(parsed?.items?.[0]?.xauPrice);
+      price = parseFloat(d?.values?.[0]?.close);
+      if (!(price > 2000 && price < 8000)) price = null;
+    } catch(e) {}
+  }
+
+  // 3: Goldprice.org proxy
+  if (!price) {
+    try {
+      var r = await fetch('https://api.allorigins.win/get?url=' + encodeURIComponent('https://data-asg.goldprice.org/dbXRates/USD'));
+      var d = await r.json();
+      var p = JSON.parse(d.contents);
+      price = parseFloat(p?.items?.[0]?.xauPrice);
       if (!(price > 2000 && price < 8000)) price = null;
     } catch(e) {}
   }
 
   if (price) {
+    var prev = parseFloat(localStorage.getItem('ze_prev_price') || price);
+    var isUp = price >= prev;
+    localStorage.setItem('ze_prev_price', price);
+
     document.getElementById('xauPrice').textContent = '$' + price.toLocaleString('en', {minimumFractionDigits: 2, maximumFractionDigits: 2});
-    var pctStr = pct ? (pct >= 0 ? '+' : '') + pct.toFixed(2) + '%' : 'Real narx';
-    document.getElementById('xauChg').textContent = '✓ ' + pctStr;
-    document.getElementById('sigEntry').textContent = '$' + (price - 5).toFixed(2);
-    document.getElementById('sigTp').textContent = '$' + (price + 26).toFixed(2);
-    document.getElementById('sigSl').textContent = '$' + (price - 13).toFixed(2);
+    document.getElementById('xauChg').textContent = (isUp ? '▲' : '▼') + ' Spot narx (OANDA)';
+    document.getElementById('sigEntry').textContent = '$' + (price - 3).toFixed(2);
+    document.getElementById('sigTp').textContent = '$' + (price + 20).toFixed(2);
+    document.getElementById('sigSl').textContent = '$' + (price - 10).toFixed(2);
     var sig = document.getElementById('currentSignal');
-    var isBuy = pct >= 0;
-    sig.textContent = isBuy ? 'BUY' : 'SELL';
-    sig.className = 'stat-value ' + (isBuy ? 'buy' : 'sell');
+    sig.textContent = isUp ? 'BUY' : 'SELL';
+    sig.className = 'stat-value ' + (isUp ? 'buy' : 'sell');
   } else {
-    document.getElementById('xauPrice').textContent = '$3,310.00';
-    document.getElementById('xauChg').textContent = 'Taxminiy narx';
+    document.getElementById('xauChg').textContent = 'Narx yuklanmadi';
   }
 }
 
 loadPrice();
-setInterval(loadPrice, 60000);
+setInterval(loadPrice, 30000);
 </script>
 </body>
 </html>
