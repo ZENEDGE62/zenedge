@@ -336,11 +336,18 @@ RISK_REWARD: [masalan 1:3.5]
 Javobni O'zbek tilida bering. Aniq narx darajalari ko'rsating.`;
 
   try {
-    const response = await fetch("https://api.anthropic.com/v1/messages", {
+    // corsproxy orqali Anthropic API
+    const proxyUrl = 'https://corsproxy.io/?url=' + encodeURIComponent('https://api.anthropic.com/v1/messages');
+    const response = await fetch(proxyUrl, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: { 
+        "Content-Type": "application/json",
+        "x-api-key": "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",
+        "anthropic-version": "2023-06-01",
+        "anthropic-dangerous-allow-browser": "true"
+      },
       body: JSON.stringify({
-        model: "claude-sonnet-4-20250514",
+        model: "claude-opus-4-5",
         max_tokens: 1000,
         system: systemPrompt,
         messages: [{
@@ -357,12 +364,14 @@ Javobni O'zbek tilida bering. Aniq narx darajalari ko'rsating.`;
     });
 
     const data = await response.json();
+    if (data.error) throw new Error(data.error.message);
     const text = data.content.map(i => i.text || '').join('');
     parseAndDisplay(text);
   } catch (err) {
+    console.error(err);
     document.getElementById('loadingSection').style.display = 'none';
     document.getElementById('analyzeBtn').style.display = 'block';
-    alert('Xato yuz berdi. Qayta urining.');
+    alert('Xato: ' + (err.message || 'Qayta urining'));
   }
 }
 
