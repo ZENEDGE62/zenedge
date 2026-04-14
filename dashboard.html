@@ -234,9 +234,14 @@ async function loadPrice() {
     // 2: GoldPrice proxy
     fetch('https://api.allorigins.win/get?url='+encodeURIComponent('https://data-asg.goldprice.org/dbXRates/USD'),{signal:AbortSignal.timeout(5000)})
       .then(r=>r.json()).then(d=>{var p=JSON.parse(d.contents);var v=parseFloat(p?.items?.[0]?.xauPrice);return(v>2000&&v<8000)?v:null;}).catch(()=>null),
-    // 3: Fawazahmed0
+    // 3: Fawazahmed0 (to'g'ri parsing)
     fetch('https://cdn.jsdelivr.net/npm/@fawazahmed0/currency-api@latest/v1/currencies/xau.min.json',{signal:AbortSignal.timeout(5000)})
-      .then(r=>r.json()).then(d=>{var x=parseFloat(d?.xau?.usd);if(x>0){var p=parseFloat((1/x).toFixed(2));return(p>2000&&p<8000)?p:null;}return null;}).catch(()=>null),
+      .then(r=>r.json()).then(d=>{
+        var x=parseFloat(d?.xau?.usd);
+        if(x>2000&&x<8000) return x; // to'g'ridan-to'g'ri narx
+        if(x>0&&x<1){var p=parseFloat((1/x).toFixed(2));if(p>2000&&p<8000) return p;} // teskari
+        return null;
+      }).catch(()=>null),
   ]);
 
   for(var i=0;i<results.length;i++){

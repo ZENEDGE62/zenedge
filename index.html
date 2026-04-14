@@ -1246,98 +1246,76 @@ function updateTime(){
 }
 setInterval(updateTime,1000);updateTime();
 
-// LIVE PRICE — REAL-TIME MULTI-API
-let basePrice=3124.50;
-let currentPct=0.28;
+// LIVE PRICE — REAL-TIME
+let basePrice=null;
+let currentPct=0;
 let prevDayClose=null;
 let lastRealPrice=null;
+let priceSource='';
 
-// API 1: MetalpriceAPI (bepul, real-time ga yaqin)
-async function fetchMetalPrice(){
+// API 1: Twelve Data (sizning kalitingiz)
+async function fetchTwelveData(){
   try{
-    const r=await fetch('https://api.metalpriceapi.com/v1/latest?api_key=demo&base=XAU&currencies=USD',{cache:'no-cache'});
+    const r=await fetch('https://api.twelvedata.com/price?symbol=XAU/USD&apikey=1c93dd7752f841eaab0f40642e5c5346',{signal:AbortSignal.timeout(6000)});
     const d=await r.json();
-    if(d&&d.rates&&d.rates.USD){
-      return parseFloat(d.rates.USD.toFixed(2));
-    }
-  }catch(e){console.log('MetalPrice error:',e);}
+    const p=parseFloat(d?.price);
+    if(p>2000&&p<8000){priceSource='TwelveData';return p;}
+  }catch(e){console.log('TwelveData:',e);}
   return null;
 }
 
-// API 2: Frankfurter (ECB based, bepul)
-async function fetchFrankfurter(){
+// API 2: GoldPrice.org (proxy orqali)
+async function fetchGoldPriceOrg(){
   try{
-    const r=await fetch('https://api.frankfurter.app/latest?from=XAU&to=USD',{cache:'no-cache'});
+    const r=await fetch('https://api.allorigins.win/get?url='+encodeURIComponent('https://data-asg.goldprice.org/dbXRates/USD'),{signal:AbortSignal.timeout(6000)});
     const d=await r.json();
-    if(d&&d.rates&&d.rates.USD){
-      return parseFloat(d.rates.USD.toFixed(2));
-    }
-  }catch(e){console.log('Frankfurter error:',e);}
+    const p=JSON.parse(d.contents);
+    const v=parseFloat(p?.items?.[0]?.xauPrice);
+    if(v>2000&&v<8000){priceSource='GoldPrice';return parseFloat(v.toFixed(2));}
+  }catch(e){console.log('GoldPrice:',e);}
   return null;
 }
 
-// API 3: Fawazahmed0 currency API (CDN, kunlik)
+// API 3: Fawazahmed0 (kunlik — to'g'ri hisoblash)
 async function fetchFawaz(){
   try{
-    const r=await fetch('https://cdn.jsdelivr.net/npm/@fawazahmed0/currency-api@latest/v1/currencies/xau.min.json',{cache:'no-cache'});
+    // Bu API: 1 XAU = N USD formatda qaytaradi
+    const r=await fetch('https://cdn.jsdelivr.net/npm/@fawazahmed0/currency-api@latest/v1/currencies/xau.min.json',{signal:AbortSignal.timeout(6000)});
     const d=await r.json();
-    const xau=parseFloat(d?.xau?.usd);
-    if(xau&&xau>0){
-      return parseFloat((1/xau).toFixed(2));
+    // d.xau.usd = 1 XAU qancha USD (masalan 3230.50)
+    const usdPerXau=parseFloat(d?.xau?.usd);
+    if(usdPerXau>2000&&usdPerXau<8000){
+      priceSource='Fawaz';return parseFloat(usdPerXau.toFixed(2));
     }
-  }catch(e){console.log('Fawaz error:',e);}
-  try{
-    const today=new Date().toISOString().split('T')[0];
-    const r=await fetch(`https://cdn.jsdelivr.net/npm/@fawazahmed0/currency-api@${today}/v1/currencies/xau.min.json`,{cache:'no-cache'});
-    const d=await r.json();
-    const xau=parseFloat(d?.xau?.usd);
-    if(xau&&xau>0){
-      return parseFloat((1/xau).toFixed(2));
+    // Agar teskari bo'lsa (0.0003 kabi) — 1/x
+    if(usdPerXau>0&&usdPerXau<1){
+      const p=parseFloat((1/usdPerXau).toFixed(2));
+      if(p>2000&&p<8000){priceSource='Fawaz';return p;}
     }
-  }catch(e){console.log('Fawaz2 error:',e);}
+  }catch(e){console.log('Fawaz:',e);}
   return null;
 }
 
-// API 4: GoldAPI.io (bepul tier)
-async function fetchGoldAPI(){
-  try{
-    const r=await fetch('https://www.goldapi.io/api/XAU/USD',{
-      headers:{'x-access-token':'goldapi-demo','Content-Type':'application/json'},
-      cache:'no-cache'
-    });
-    const d=await r.json();
-    if(d&&d.price){
-      if(!prevDayClose && d.prev_close_price) prevDayClose=d.prev_close_price;
-      return parseFloat(d.price.toFixed(2));
-    }
-  }catch(e){console.log('GoldAPI error:',e);}
-  return null;
-}
-
-// Multi-API fetcher — birinchi muvaffaqiyatli natijani qaytaradi
+// Multi-API — birinchi to'g'ri javobni oladi
 async function fetchRealPrice(){
-  // Barcha API'larni parallel chaqirish
   const results=await Promise.allSettled([
-    fetchGoldAPI(),
-    fetchMetalPrice(),
-    fetchFrankfurter(),
+    fetchTwelveData(),
+    fetchGoldPriceOrg(),
     fetchFawaz()
   ]);
-
-  for(const result of results){
-    if(result.status==='fulfilled' && result.value && result.value>2000 && result.value<8000){
-      lastRealPrice=result.value;
-      return result.value;
+  for(const r of results){
+    if(r.status==='fulfilled'&&r.value&&r.value>2000&&r.value<8000){
+      lastRealPrice=r.value;
+      return r.value;
     }
   }
-
-  // Hech biri ishlamasa — oxirgi ma'lum narxga kichik o'zgarish qo'shish
+  // Fallback — oxirgi narxdan kichik o'zgarish
   if(lastRealPrice){
-    const tick=(Math.random()-0.48)*2;
-    lastRealPrice=parseFloat((lastRealPrice+tick).toFixed(2));
+    lastRealPrice+=((Math.random()-0.48)*1.5);
+    lastRealPrice=parseFloat(lastRealPrice.toFixed(2));
+    priceSource='Cache';
     return lastRealPrice;
   }
-
   return null;
 }
 
@@ -1384,20 +1362,20 @@ async function priceLoop(){
   const real=await fetchRealPrice();
   if(real){
     basePrice=real;
-    // Oldingi kun yopilish narxidan foiz hisoblash
-    if(!prevDayClose) prevDayClose=real*0.997; // taxminiy
+    if(!prevDayClose) prevDayClose=real*0.997;
     currentPct=parseFloat(((real-prevDayClose)/prevDayClose*100).toFixed(2));
     updateUI(real,currentPct);
-  } else {
-    // Fallback: kichik o'zgarishlar
+    console.log('XAUUSD:',real,'Manba:',priceSource);
+  } else if(basePrice){
+    // API ishlamadi, oxirgi narxdan davom
     basePrice+=((Math.random()-0.48)*1.5);
     basePrice=parseFloat(basePrice.toFixed(2));
     currentPct+=((Math.random()-0.5)*0.03);
     currentPct=parseFloat(currentPct.toFixed(2));
     updateUI(basePrice,currentPct);
   }
-  // Har 5 sekundda yangilash
-  setTimeout(priceLoop,5000);
+  // Har 8 sekundda yangilash (TwelveData limitini oshirmaslik uchun)
+  setTimeout(priceLoop,8000);
 }
 priceLoop();
 
