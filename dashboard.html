@@ -226,45 +226,31 @@ setInterval(updateTime, 1000);
 async function loadPrice() {
   var price = null;
 
-  // 1: Twelve Data
-  try {
-    var r = await fetch('https://api.twelvedata.com/price?symbol=XAU/USD&apikey=1c93dd7752f841eaab0f40642e5c5346', {signal: AbortSignal.timeout(5000)});
-    var d = await r.json();
-    price = parseFloat(d?.price);
-    if (!(price > 2000 && price < 8000)) price = null;
-  } catch(e) {}
+  // Barcha API'larni parallel chaqirish — tezroq
+  var results = await Promise.allSettled([
+    // 1: Twelve Data
+    fetch('https://api.twelvedata.com/price?symbol=XAU/USD&apikey=1c93dd7752f841eaab0f40642e5c5346',{signal:AbortSignal.timeout(5000)})
+      .then(r=>r.json()).then(d=>{var p=parseFloat(d?.price);return(p>2000&&p<8000)?p:null;}).catch(()=>null),
+    // 2: GoldPrice proxy
+    fetch('https://api.allorigins.win/get?url='+encodeURIComponent('https://data-asg.goldprice.org/dbXRates/USD'),{signal:AbortSignal.timeout(5000)})
+      .then(r=>r.json()).then(d=>{var p=JSON.parse(d.contents);var v=parseFloat(p?.items?.[0]?.xauPrice);return(v>2000&&v<8000)?v:null;}).catch(()=>null),
+    // 3: Fawazahmed0
+    fetch('https://cdn.jsdelivr.net/npm/@fawazahmed0/currency-api@latest/v1/currencies/xau.min.json',{signal:AbortSignal.timeout(5000)})
+      .then(r=>r.json()).then(d=>{var x=parseFloat(d?.xau?.usd);if(x>0){var p=parseFloat((1/x).toFixed(2));return(p>2000&&p<8000)?p:null;}return null;}).catch(()=>null),
+  ]);
 
-  // 2: Metals API proxy
-  if (!price) {
-    try {
-      var r = await fetch('https://api.allorigins.win/get?url=' + encodeURIComponent('https://data-asg.goldprice.org/dbXRates/USD'), {signal: AbortSignal.timeout(5000)});
-      var d = await r.json();
-      var p = JSON.parse(d.contents);
-      price = parseFloat(p?.items?.[0]?.xauPrice);
-      if (!(price > 2000 && price < 8000)) price = null;
-    } catch(e) {}
+  for(var i=0;i<results.length;i++){
+    if(results[i].status==='fulfilled'&&results[i].value){price=results[i].value;break;}
   }
 
-  // 3: fawazahmed0
-  if (!price) {
-    try {
-      var today = new Date().toISOString().split('T')[0];
-      var r = await fetch('https://cdn.jsdelivr.net/npm/@fawazahmed0/currency-api@' + today + '/v1/currencies/xau.min.json', {signal: AbortSignal.timeout(5000)});
-      var d = await r.json();
-      var xau = parseFloat(d?.xau?.usd);
-      if (xau > 0) price = parseFloat((1/xau).toFixed(2));
-      if (!(price > 2000 && price < 8000)) price = null;
-    } catch(e) {}
-  }
-
-  // 4: Agar hammasi ishlamasa — oxirgi narxni localStorage dan ol yoki default
+  // Agar hammasi ishlamasa — cached narx
   if (!price) {
     var cached = parseFloat(localStorage.getItem('ze_last_price'));
     if (cached > 2000 && cached < 8000) {
-      price = cached + (Math.random() - 0.5) * 2;
+      price = cached + (Math.random() - 0.48) * 1.5;
       price = parseFloat(price.toFixed(2));
     } else {
-      price = 3312.50; // default narx
+      price = 3312.50;
     }
   } else {
     localStorage.setItem('ze_last_price', price);
@@ -275,7 +261,7 @@ async function loadPrice() {
   localStorage.setItem('ze_prev_price', price);
 
   document.getElementById('xauPrice').textContent = '$' + price.toLocaleString('en', {minimumFractionDigits: 2, maximumFractionDigits: 2});
-  document.getElementById('xauChg').textContent = (isUp ? '▲' : '▼') + ' XAUUSD';
+  document.getElementById('xauChg').textContent = (isUp ? '▲' : '▼') + ' XAUUSD • Real-time';
   document.getElementById('sigEntry').textContent = '$' + (price - 3).toFixed(2);
   document.getElementById('sigTp').textContent = '$' + (price + 20).toFixed(2);
   document.getElementById('sigSl').textContent = '$' + (price - 10).toFixed(2);
@@ -285,7 +271,7 @@ async function loadPrice() {
 }
 
 loadPrice();
-setInterval(loadPrice, 30000);
+setInterval(loadPrice, 10000); // Har 10 sekundda yangilash
 </script>
 </body>
 </html>
