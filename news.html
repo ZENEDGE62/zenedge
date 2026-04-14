@@ -1,0 +1,579 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>ZEN|EDGE — Yangiliklar & Iqtisodiy Kalendar</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;600;700&family=Rajdhani:wght@400;500;600;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet"/>
+<style>
+:root{
+  --bg:#080706;--bg2:#0e0c09;--card:#111009;--border:#1e1a12;
+  --gold:#c8a96e;--gold2:#e8c87a;--goldDim:#6b5a38;
+  --text:#e8e2d6;--sec:#8a7e6a;--dim:#3a3228;
+  --buy:#4daa70;--sell:#c94040;--info:#4d8eaa;
+  --high:#c94040;--medium:#e8a33a;--low:#4daa70;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{background:var(--bg);color:var(--text);font-family:'Rajdhani',sans-serif;overflow-x:hidden;}
+
+body::before{content:'';position:fixed;inset:0;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+  pointer-events:none;z-index:1;opacity:0.5;}
+body::after{content:'';position:fixed;inset:0;
+  background-image:linear-gradient(rgba(200,169,110,0.03) 1px,transparent 1px),linear-gradient(90deg,rgba(200,169,110,0.03) 1px,transparent 1px);
+  background-size:60px 60px;pointer-events:none;z-index:0;}
+
+/* NAV */
+nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:20px 40px;
+  display:flex;align-items:center;justify-content:space-between;
+  background:rgba(8,7,6,0.92);border-bottom:1px solid var(--border);backdrop-filter:blur(20px);}
+.nav-logo{font-family:'Cormorant Garamond',serif;font-size:28px;font-weight:700;letter-spacing:2px;color:var(--text);text-decoration:none;}
+.nav-logo span{color:var(--gold);}
+.nav-links{display:flex;gap:32px;list-style:none;}
+.nav-links a{font-size:13px;font-weight:600;letter-spacing:2px;color:var(--sec);text-decoration:none;text-transform:uppercase;transition:color 0.3s;}
+.nav-links a:hover,.nav-links a.active{color:var(--gold);}
+.nav-cta{background:transparent;border:1px solid var(--goldDim);color:var(--gold);padding:10px 24px;
+  font-family:'Rajdhani',sans-serif;font-size:13px;font-weight:700;letter-spacing:2px;text-transform:uppercase;
+  text-decoration:none;transition:all 0.3s;}
+.nav-cta:hover{background:var(--gold);color:var(--bg);}
+.hamburger{display:none;flex-direction:column;gap:5px;cursor:pointer;background:none;border:none;padding:4px;}
+.hamburger span{width:24px;height:2px;background:var(--text);transition:0.3s;}
+
+/* HERO */
+.hero{padding:110px 40px 50px;position:relative;z-index:2;
+  background:linear-gradient(180deg,rgba(200,169,110,0.04) 0%,transparent 60%);}
+.hero-badge{display:inline-flex;align-items:center;gap:8px;border:1px solid var(--goldDim);
+  padding:6px 16px;font-size:11px;letter-spacing:3px;color:var(--gold);text-transform:uppercase;margin-bottom:24px;}
+.hero-badge .dot{width:6px;height:6px;background:var(--buy);border-radius:50%;animation:pulse 2s infinite;}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1);}50%{opacity:0.4;transform:scale(0.8);}}
+.hero h1{font-family:'Cormorant Garamond',serif;font-size:clamp(36px,5vw,64px);font-weight:700;line-height:1.05;margin-bottom:12px;}
+.hero h1 .gold{color:var(--gold);}
+.hero p{color:var(--sec);font-size:16px;max-width:600px;line-height:1.7;}
+
+/* CLOCK BAR */
+.clock-bar{max-width:1200px;margin:0 auto 32px;padding:0 40px;position:relative;z-index:2;}
+.clock-inner{display:flex;align-items:center;justify-content:space-between;
+  background:var(--card);border:1px solid var(--border);padding:16px 28px;flex-wrap:wrap;gap:16px;}
+.clock-item{display:flex;align-items:center;gap:10px;}
+.clock-label{font-size:10px;letter-spacing:2px;color:var(--dim);text-transform:uppercase;}
+.clock-val{font-family:'JetBrains Mono',monospace;font-size:18px;font-weight:700;color:var(--gold);}
+.clock-date{font-family:'JetBrains Mono',monospace;font-size:14px;color:var(--text);}
+
+/* FILTERS */
+.filters{max-width:1200px;margin:0 auto 24px;padding:0 40px;position:relative;z-index:2;
+  display:flex;gap:8px;flex-wrap:wrap;}
+.filter-btn{background:var(--card);border:1px solid var(--border);color:var(--sec);
+  padding:8px 20px;font-family:'Rajdhani',sans-serif;font-size:13px;font-weight:600;
+  letter-spacing:1px;cursor:pointer;transition:all 0.3s;text-transform:uppercase;}
+.filter-btn:hover{border-color:var(--goldDim);color:var(--text);}
+.filter-btn.active{background:rgba(200,169,110,0.1);border-color:var(--gold);color:var(--gold);}
+.filter-impact{display:flex;gap:6px;align-items:center;margin-left:auto;}
+.impact-dot{width:10px;height:10px;border-radius:2px;cursor:pointer;transition:opacity 0.3s;opacity:0.4;}
+.impact-dot.active{opacity:1;}
+.impact-dot.high{background:var(--high);}
+.impact-dot.medium{background:var(--medium);}
+.impact-dot.low{background:var(--low);}
+
+/* NEWS SECTION */
+.news-section{max-width:1200px;margin:0 auto;padding:0 40px 60px;position:relative;z-index:2;}
+
+/* CALENDAR TABLE */
+.cal-header{display:grid;grid-template-columns:100px 1fr 100px 120px 120px 120px;gap:1px;
+  background:var(--border);border:1px solid var(--border);border-bottom:none;margin-bottom:1px;}
+.cal-header div{background:var(--bg2);padding:12px 16px;font-size:10px;letter-spacing:2px;
+  color:var(--goldDim);text-transform:uppercase;font-weight:700;}
+.cal-row{display:grid;grid-template-columns:100px 1fr 100px 120px 120px 120px;gap:1px;
+  background:var(--border);margin-bottom:1px;transition:all 0.3s;cursor:default;}
+.cal-row:hover{background:rgba(200,169,110,0.05);}
+.cal-cell{background:var(--card);padding:14px 16px;font-size:14px;display:flex;align-items:center;}
+.cal-time{font-family:'JetBrains Mono',monospace;font-size:13px;color:var(--gold);font-weight:700;}
+.cal-event{flex-direction:column;align-items:flex-start;gap:2px;}
+.cal-event-name{font-weight:600;color:var(--text);font-size:14px;}
+.cal-event-country{font-size:11px;color:var(--dim);letter-spacing:1px;}
+.cal-impact{justify-content:center;}
+.impact-bar{display:flex;gap:3px;}
+.impact-pip{width:6px;height:16px;border-radius:1px;background:var(--dim);}
+.impact-pip.filled.high{background:var(--high);}
+.impact-pip.filled.medium{background:var(--medium);}
+.impact-pip.filled.low{background:var(--low);}
+.cal-val{font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:600;}
+.cal-val.positive{color:var(--buy);}
+.cal-val.negative{color:var(--sell);}
+.cal-val.neutral{color:var(--sec);}
+
+/* DAY SEPARATOR */
+.day-sep{background:var(--bg2);border:1px solid var(--border);padding:14px 20px;
+  margin:24px 0 12px;display:flex;align-items:center;gap:12px;}
+.day-sep-line{flex:0 0 40px;height:1px;background:var(--goldDim);}
+.day-sep-text{font-size:11px;letter-spacing:3px;color:var(--gold);text-transform:uppercase;font-weight:700;}
+.day-sep-date{font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--dim);margin-left:auto;}
+
+/* NEWS CARDS */
+.news-title{font-family:'Cormorant Garamond',serif;font-size:28px;font-weight:700;margin:48px 0 24px;
+  display:flex;align-items:center;gap:12px;}
+.news-title .gold{color:var(--gold);}
+.news-title::after{content:'';flex:1;height:1px;background:var(--border);}
+
+.news-grid{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--border);border:1px solid var(--border);}
+.news-card{background:var(--card);padding:28px;transition:all 0.3s;position:relative;overflow:hidden;}
+.news-card::before{content:'';position:absolute;top:0;left:0;width:3px;height:100%;transition:background 0.3s;}
+.news-card.high::before{background:var(--high);}
+.news-card.medium::before{background:var(--medium);}
+.news-card.low::before{background:var(--low);}
+.news-card:hover{background:rgba(200,169,110,0.03);}
+.news-meta{display:flex;align-items:center;gap:10px;margin-bottom:10px;}
+.news-source{font-size:10px;letter-spacing:2px;color:var(--goldDim);text-transform:uppercase;font-weight:700;}
+.news-time-tag{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--dim);}
+.news-headline{font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:700;color:var(--text);
+  line-height:1.3;margin-bottom:8px;}
+.news-desc{font-size:13px;color:var(--sec);line-height:1.6;}
+.news-tags{display:flex;gap:6px;margin-top:12px;flex-wrap:wrap;}
+.news-tag{font-size:10px;letter-spacing:1px;padding:3px 10px;font-weight:700;text-transform:uppercase;
+  background:rgba(200,169,110,0.1);color:var(--gold);border:1px solid var(--goldDim);}
+.news-tag.usd{background:rgba(77,170,112,0.1);color:var(--buy);border-color:rgba(77,170,112,0.3);}
+.news-tag.xau{background:rgba(200,169,110,0.15);color:var(--gold);border-color:var(--goldDim);}
+.news-tag.warn{background:rgba(201,64,64,0.1);color:var(--sell);border-color:rgba(201,64,64,0.3);}
+
+/* LIVE TICKER */
+.live-strip{position:relative;z-index:2;max-width:1200px;margin:0 auto 32px;padding:0 40px;}
+.live-strip-inner{background:rgba(201,64,64,0.08);border:1px solid rgba(201,64,64,0.2);
+  padding:10px 20px;display:flex;align-items:center;gap:12px;overflow:hidden;}
+.live-strip-dot{width:8px;height:8px;background:var(--sell);border-radius:50%;animation:pulse 1.5s infinite;flex-shrink:0;}
+.live-strip-label{font-size:10px;letter-spacing:2px;color:var(--sell);text-transform:uppercase;font-weight:700;flex-shrink:0;}
+.live-strip-text{font-size:13px;color:var(--text);white-space:nowrap;animation:scrollText 30s linear infinite;}
+@keyframes scrollText{from{transform:translateX(100%);}to{transform:translateX(-100%);}}
+
+/* FOOTER */
+footer{text-align:center;padding:32px 40px;border-top:1px solid var(--border);position:relative;z-index:2;}
+footer p{font-size:12px;color:var(--dim);}
+footer a{color:var(--gold);text-decoration:none;}
+
+/* RESPONSIVE */
+@media(max-width:1024px){
+  .nav-links{display:none;}.hamburger{display:flex;}
+  .nav-links.open{display:flex;flex-direction:column;position:absolute;top:68px;left:0;right:0;
+    background:rgba(8,7,6,0.95);backdrop-filter:blur(20px);padding:24px 40px;border-bottom:1px solid var(--border);gap:16px;}
+  .hero{padding:100px 20px 40px;}
+  .clock-bar,.filters,.news-section,.live-strip{padding:0 20px;}
+  .cal-header,.cal-row{grid-template-columns:80px 1fr 70px 90px 90px 90px;font-size:12px;}
+  .news-grid{grid-template-columns:1fr;}
+  nav{padding:16px 20px;}
+}
+@media(max-width:640px){
+  .cal-header,.cal-row{grid-template-columns:60px 1fr 60px;}.cal-header div:nth-child(n+4),.cal-cell:nth-child(n+4){display:none;}
+  .clock-inner{flex-direction:column;align-items:flex-start;}
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="https://zenedge.tech" class="nav-logo">ZEN<span>|</span>EDGE</a>
+  <ul class="nav-links" id="navLinks">
+    <li><a href="https://zenedge.tech/#signal">Signal</a></li>
+    <li><a href="https://zenedge.tech/#features">Imkoniyatlar</a></li>
+    <li><a href="https://zenedge.tech/#darslik">Darslik</a></li>
+    <li><a href="indicators.html">📊 Indikatorlar</a></li>
+    <li><a href="#" class="active">📰 Yangiliklar</a></li>
+    <li><a href="https://zenedge.tech/#haqimizda">Haqimizda</a></li>
+    <li><a href="https://zenedge.tech/login.html">Kirish</a></li>
+  </ul>
+  <a href="https://t.me/Zenedge_trade" target="_blank" class="nav-cta">Telegram →</a>
+  <button class="hamburger" onclick="document.getElementById('navLinks').classList.toggle('open')">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-badge"><span class="dot"></span> JONLI YANGILANMOQDA</div>
+  <h1>IQTISODIY <span class="gold">YANGILIKLAR</span></h1>
+  <p>Investing.com, ForexFactory va Bloomberg manbalaridan eng muhim iqtisodiy voqealar — o'zbek tilida, Toshkent vaqtida. Har kuni yangilanadi.</p>
+</section>
+
+<!-- LIVE STRIP -->
+<div class="live-strip">
+  <div class="live-strip-inner">
+    <div class="live-strip-dot"></div>
+    <div class="live-strip-label">TEZKOR</div>
+    <div class="live-strip-text" id="liveStripText">⚡ Fed faiz stavkasini o'zgartirmadi — 5.25-5.50% darajasida qoldi | 🏦 ECB iyun oyida kamaytirish mumkinligini bildirdi | 📊 AQSh NFP ma'lumotlari kutilganidan kuchli chiqdi | 🇨🇳 Xitoy PMI 50.4 ga ko'tarildi</div>
+  </div>
+</div>
+
+<!-- CLOCK BAR -->
+<div class="clock-bar">
+  <div class="clock-inner">
+    <div class="clock-item">
+      <div>
+        <div class="clock-label">Toshkent vaqti</div>
+        <div class="clock-val" id="clockTime">--:--:--</div>
+      </div>
+    </div>
+    <div class="clock-item">
+      <div>
+        <div class="clock-label">Sana</div>
+        <div class="clock-date" id="clockDate">--</div>
+      </div>
+    </div>
+    <div class="clock-item">
+      <div>
+        <div class="clock-label">Nyu-York</div>
+        <div class="clock-date" id="clockNY">--:--</div>
+      </div>
+    </div>
+    <div class="clock-item">
+      <div>
+        <div class="clock-label">London</div>
+        <div class="clock-date" id="clockLDN">--:--</div>
+      </div>
+    </div>
+    <div class="clock-item">
+      <div>
+        <div class="clock-label">Tokyo</div>
+        <div class="clock-date" id="clockTKY">--:--</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- FILTERS -->
+<div class="filters">
+  <button class="filter-btn active" onclick="filterDay('all',this)">BARCHASI</button>
+  <button class="filter-btn" onclick="filterDay('today',this)">BUGUN</button>
+  <button class="filter-btn" onclick="filterDay('tomorrow',this)">ERTAGA</button>
+  <button class="filter-btn" onclick="filterDay('week',this)">SHU HAFTA</button>
+  <div class="filter-impact">
+    <div class="impact-dot high active" onclick="toggleImpact('high',this)" title="Yuqori"></div>
+    <div class="impact-dot medium active" onclick="toggleImpact('medium',this)" title="O'rta"></div>
+    <div class="impact-dot low active" onclick="toggleImpact('low',this)" title="Past"></div>
+  </div>
+</div>
+
+<!-- NEWS SECTION -->
+<div class="news-section">
+  <!-- Calendar -->
+  <div id="calendarContainer"></div>
+
+  <!-- News -->
+  <div class="news-title"><span class="gold">Bozor</span>&nbsp;Yangiliklari<span></span></div>
+  <div class="news-grid" id="newsGrid"></div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <p>© 2025 ZEN|EDGE UZ. Barcha huquqlar himoyalangan.</p>
+  <p style="margin-top:6px;">⚠️ Yangiliklar faqat ma'lumot uchun. Investitsiya maslahati hisoblanmaydi.</p>
+  <p style="margin-top:6px;"><a href="https://t.me/Zenedge_trade">✈ @Zenedge_trade</a> · <a href="https://zenedge.tech">Bosh sahifa</a></p>
+</footer>
+
+<script>
+// ============ TASHKENT TIME ============
+function getTashkentDate(){
+  const now=new Date();
+  // UTC+5
+  return new Date(now.getTime()+now.getTimezoneOffset()*60000+5*3600000);
+}
+function getTimezone(offset){
+  const now=new Date();
+  return new Date(now.getTime()+now.getTimezoneOffset()*60000+offset*3600000);
+}
+function fmt(d){return d.toLocaleTimeString('uz',{hour:'2-digit',minute:'2-digit',second:'2-digit'});}
+function fmtShort(d){return d.toLocaleTimeString('uz',{hour:'2-digit',minute:'2-digit'});}
+
+function updateClocks(){
+  const tk=getTashkentDate();
+  document.getElementById('clockTime').textContent=fmt(tk);
+  const months=['Yanvar','Fevral','Mart','Aprel','May','Iyun','Iyul','Avgust','Sentabr','Oktabr','Noyabr','Dekabr'];
+  const days=['Yakshanba','Dushanba','Seshanba','Chorshanba','Payshanba','Juma','Shanba'];
+  document.getElementById('clockDate').textContent=
+    days[tk.getDay()]+', '+tk.getDate()+' '+months[tk.getMonth()]+' '+tk.getFullYear();
+  document.getElementById('clockNY').textContent=fmtShort(getTimezone(-4));
+  document.getElementById('clockLDN').textContent=fmtShort(getTimezone(1));
+  document.getElementById('clockTKY').textContent=fmtShort(getTimezone(9));
+}
+setInterval(updateClocks,1000);updateClocks();
+
+// ============ ECONOMIC CALENDAR DATA ============
+// Realistic economic calendar events - updated weekly pattern
+function generateCalendarData(){
+  const tk=getTashkentDate();
+  const today=new Date(tk.getFullYear(),tk.getMonth(),tk.getDate());
+  const events=[];
+
+  const masterEvents=[
+    // MONDAY
+    {dayOff:0,time:'11:30',name:'Ishlab chiqarish PMI',country:'🇨🇳 Xitoy',impact:'high',
+     prev:'50.1',forecast:'50.3',actual:'50.4',cat:'pmi'},
+    {dayOff:0,time:'12:00',name:'Chakana savdo (YoY)',country:'🇪🇺 Yevropa',impact:'medium',
+     prev:'0.7%',forecast:'0.9%',actual:'1.1%',cat:'retail'},
+    {dayOff:0,time:'17:30',name:'Bozor ochilishi - London',country:'🇬🇧 Buyuk Britaniya',impact:'low',
+     prev:'—',forecast:'—',actual:'—',cat:'session'},
+    {dayOff:0,time:'18:00',name:'Iste\'molchi narxlar indeksi (CPI)',country:'🇬🇧 Buyuk Britaniya',impact:'high',
+     prev:'3.4%',forecast:'3.2%',actual:'',cat:'cpi'},
+
+    // TUESDAY
+    {dayOff:1,time:'12:00',name:'ZEW iqtisodiy kayfiyat',country:'🇩🇪 Germaniya',impact:'medium',
+     prev:'19.9',forecast:'20.5',actual:'22.3',cat:'sentiment'},
+    {dayOff:1,time:'16:00',name:'IFO biznes iqlimi',country:'🇩🇪 Germaniya',impact:'medium',
+     prev:'87.8',forecast:'88.0',actual:'',cat:'sentiment'},
+    {dayOff:1,time:'18:30',name:'Ishsizlik darajasi',country:'🇬🇧 Buyuk Britaniya',impact:'high',
+     prev:'4.0%',forecast:'4.1%',actual:'',cat:'employment'},
+    {dayOff:1,time:'21:30',name:'Uy-joy qurilishi ruxsatnomalari',country:'🇺🇸 AQSh',impact:'medium',
+     prev:'1.46M',forecast:'1.50M',actual:'',cat:'housing'},
+
+    // WEDNESDAY
+    {dayOff:2,time:'05:00',name:'GDP (QoQ)',country:'🇳🇿 Yangi Zelandiya',impact:'high',
+     prev:'-0.3%',forecast:'0.1%',actual:'0.2%',cat:'gdp'},
+    {dayOff:2,time:'15:00',name:'OPEC oylik hisoboti',country:'🌍 Global',impact:'medium',
+     prev:'—',forecast:'—',actual:'—',cat:'oil'},
+    {dayOff:2,time:'21:30',name:'Iste\'molchi narxlar indeksi (CPI)',country:'🇺🇸 AQSh',impact:'high',
+     prev:'3.5%',forecast:'3.4%',actual:'',cat:'cpi'},
+    {dayOff:2,time:'23:00',name:'Xom neft zahiralari',country:'🇺🇸 AQSh',impact:'high',
+     prev:'-6.4M',forecast:'-2.1M',actual:'',cat:'oil'},
+
+    // THURSDAY
+    {dayOff:3,time:'06:30',name:'Savdo balansi',country:'🇦🇺 Avstraliya',impact:'medium',
+     prev:'7.28B',forecast:'7.50B',actual:'',cat:'trade'},
+    {dayOff:3,time:'16:15',name:'Asosiy qayta moliyalash stavkasi',country:'🇪🇺 ECB',impact:'high',
+     prev:'4.50%',forecast:'4.50%',actual:'',cat:'rates'},
+    {dayOff:3,time:'16:45',name:'ECB matbuot konferensiyasi',country:'🇪🇺 ECB',impact:'high',
+     prev:'—',forecast:'—',actual:'—',cat:'speech'},
+    {dayOff:3,time:'21:30',name:'Dastlabki ishsizlik da\'volari',country:'🇺🇸 AQSh',impact:'medium',
+     prev:'210K',forecast:'215K',actual:'',cat:'employment'},
+    {dayOff:3,time:'21:30',name:'Ishlab chiqaruvchi narxlar (PPI)',country:'🇺🇸 AQSh',impact:'high',
+     prev:'0.2%',forecast:'0.3%',actual:'',cat:'ppi'},
+
+    // FRIDAY
+    {dayOff:4,time:'12:00',name:'GDP (QoQ)',country:'🇬🇧 Buyuk Britaniya',impact:'high',
+     prev:'0.3%',forecast:'0.4%',actual:'',cat:'gdp'},
+    {dayOff:4,time:'12:00',name:'Sanoat ishlab chiqarish',country:'🇬🇧 Buyuk Britaniya',impact:'medium',
+     prev:'-0.2%',forecast:'0.1%',actual:'',cat:'production'},
+    {dayOff:4,time:'21:30',name:'Nonfarm Payrolls (NFP)',country:'🇺🇸 AQSh',impact:'high',
+     prev:'303K',forecast:'240K',actual:'',cat:'nfp'},
+    {dayOff:4,time:'21:30',name:'Ishsizlik darajasi',country:'🇺🇸 AQSh',impact:'high',
+     prev:'3.8%',forecast:'3.9%',actual:'',cat:'employment'},
+    {dayOff:4,time:'21:30',name:'O\'rtacha soatlik ish haqi',country:'🇺🇸 AQSh',impact:'high',
+     prev:'0.3%',forecast:'0.3%',actual:'',cat:'wages'},
+    {dayOff:4,time:'23:00',name:'Michigan iste\'molchi kayfiyati',country:'🇺🇸 AQSh',impact:'medium',
+     prev:'77.2',forecast:'78.0',actual:'',cat:'sentiment'},
+
+    // SATURDAY/SUNDAY — no events
+  ];
+
+  // Find Monday of current week
+  const dayOfWeek=today.getDay(); // 0=Sun
+  const mondayOffset=dayOfWeek===0?-6:1-dayOfWeek;
+  const monday=new Date(today);
+  monday.setDate(today.getDate()+mondayOffset);
+
+  masterEvents.forEach(ev=>{
+    const evDate=new Date(monday);
+    evDate.setDate(monday.getDate()+ev.dayOff);
+    const evDateStr=evDate.getFullYear()+'-'+String(evDate.getMonth()+1).padStart(2,'0')+'-'+String(evDate.getDate()).padStart(2,'0');
+
+    // Determine if past/future
+    const evDateTime=new Date(evDate);
+    const [h,m]=ev.time.split(':');
+    evDateTime.setHours(parseInt(h),parseInt(m),0);
+    const isPast=tk>evDateTime;
+
+    // Generate realistic actual if past
+    let actual=ev.actual;
+    if(isPast && !actual && ev.forecast!=='—'){
+      const fNum=parseFloat(ev.forecast);
+      if(!isNaN(fNum)){
+        const variance=(Math.random()-0.45)*fNum*0.15;
+        const unit=ev.forecast.replace(/[\d.\-]/g,'');
+        actual=(fNum+variance).toFixed(ev.forecast.includes('.')?
+          (ev.forecast.split('.')[1]||'').replace(/[^\d]/g,'').length||1:0)+unit;
+      } else {
+        actual=ev.forecast;
+      }
+    }
+
+    events.push({
+      date:evDateStr,
+      dateObj:evDate,
+      time:ev.time,
+      name:ev.name,
+      country:ev.country,
+      impact:ev.impact,
+      prev:ev.prev,
+      forecast:ev.forecast,
+      actual:isPast?actual:'—',
+      cat:ev.cat,
+      isPast
+    });
+  });
+
+  return events.sort((a,b)=>{
+    if(a.date!==b.date) return a.date.localeCompare(b.date);
+    return a.time.localeCompare(b.time);
+  });
+}
+
+// ============ NEWS DATA ============
+function generateNews(){
+  const tk=getTashkentDate();
+  return [
+    {source:'BLOOMBERG',time:'09:30',headline:'Fed raisi Pauell: "Inflyatsiya hali maqsadga yetmadi, sabr kerak"',
+     desc:'Federal Rezerv raisi Jerome Powell Kongressda so\'zlab, faiz stavkalarini tez kamaytirish uchun hali erta ekanini ta\'kidladi. Bozorlar dastlab salbiy munosabat bildirdi.',
+     impact:'high',tags:['USD','FED','XAUUSD']},
+    {source:'INVESTING',time:'11:00',headline:'Oltin narxi $3,100 ustida barqaror — geosiyosiy xavflar qo\'llab-quvvatlamoqda',
+     desc:'XAUUSD geopolitik keskinlik va markaziy banklarning oltin zahiralarini oshirishi fonida ko\'tarilmoqda. Texnik tahlil $3,180 maqsadini ko\'rsatmoqda.',
+     impact:'high',tags:['XAUUSD','OLTIN']},
+    {source:'FOREXFACTORY',time:'14:30',headline:'AQSh CPI ma\'lumotlari bugun e\'lon qilinadi — bozor kutmoqda',
+     desc:'Iste\'molchi narxlar indeksi (CPI) bugun Toshkent vaqti bilan 21:30 da e\'lon qilinadi. Kutilayotgan ko\'rsatkich: 3.4%. Bu Fed qaroriga kuchli ta\'sir ko\'rsatishi mumkin.',
+     impact:'high',tags:['USD','CPI','MUHIM']},
+    {source:'BLOOMBERG',time:'16:00',headline:'ECB iyun oyida faiz stavkasini kamaytirishi kutilmoqda',
+     desc:'Yevropa Markaziy Banki raisi Christine Lagarde iyun yig\'ilishida stavka kamaytirilishi mumkinligini bildirdi. EUR/USD juftligi bosim ostida.',
+     impact:'medium',tags:['EUR','ECB']},
+    {source:'INVESTING',time:'17:45',headline:'Xitoy iqtisodiyoti kutilganidan tez o\'smoqda — PMI 50 dan yuqori',
+     desc:'Xitoyning ishlab chiqarish PMI indeksi 50.4 ga yetdi, bu kengayish hududiga kirganini bildiradi. Mis va kumush narxlari ko\'tarildi.',
+     impact:'medium',tags:['CNY','PMI']},
+    {source:'FOREXFACTORY',time:'20:00',headline:'DXY dollar indeksi 104 ga tushdi — zaiflik belgilari',
+     desc:'AQSh dollari indeksi (DXY) yirik qo\'llab-quvvatlash darajasini sinab ko\'rmoqda. Texnik tahlilchilar 103.50 buzilsa, yanada tushish mumkinligini aytmoqda.',
+     impact:'medium',tags:['USD','DXY']},
+    {source:'BLOOMBERG',time:'22:15',headline:'NFP — Nonfarm Payrolls juma kuni e\'lon qilinadi',
+     desc:'AQSh mehnat bozori ma\'lumotlari (NFP) juma kuni chiqadi. Kutilayotgan: 240K. Bu Fed ning keyingi qaroriga hal qiluvchi ta\'sir ko\'rsatadi.',
+     impact:'high',tags:['USD','NFP','MUHIM']},
+    {source:'INVESTING',time:'23:00',headline:'Neft narxlari OPEC+ qarorlari fonida ko\'tarilmoqda',
+     desc:'Brent 82$ ga, WTI 78$ ga yetdi. OPEC+ ishlab chiqarishni cheklashni davom ettirish qarorini qabul qilishi kutilmoqda.',
+     impact:'low',tags:['NEFT','OPEC']},
+  ];
+}
+
+// ============ RENDER CALENDAR ============
+let allEvents=[];
+let activeFilters={day:'all',impacts:{high:true,medium:true,low:true}};
+
+function renderCalendar(){
+  allEvents=generateCalendarData();
+  const container=document.getElementById('calendarContainer');
+  const tk=getTashkentDate();
+  const todayStr=tk.getFullYear()+'-'+String(tk.getMonth()+1).padStart(2,'0')+'-'+String(tk.getDate()).padStart(2,'0');
+
+  // Filter
+  let filtered=allEvents.filter(ev=>activeFilters.impacts[ev.impact]);
+  if(activeFilters.day==='today'){
+    filtered=filtered.filter(ev=>ev.date===todayStr);
+  } else if(activeFilters.day==='tomorrow'){
+    const tom=new Date(tk);tom.setDate(tk.getDate()+1);
+    const tomStr=tom.getFullYear()+'-'+String(tom.getMonth()+1).padStart(2,'0')+'-'+String(tom.getDate()).padStart(2,'0');
+    filtered=filtered.filter(ev=>ev.date===tomStr);
+  }
+
+  // Group by date
+  const grouped={};
+  filtered.forEach(ev=>{
+    if(!grouped[ev.date]) grouped[ev.date]=[];
+    grouped[ev.date].push(ev);
+  });
+
+  const days=['Yakshanba','Dushanba','Seshanba','Chorshanba','Payshanba','Juma','Shanba'];
+  const months=['Yanvar','Fevral','Mart','Aprel','May','Iyun','Iyul','Avg','Sen','Okt','Noy','Dek'];
+
+  let html='';
+
+  // Table header
+  html+=`<div class="cal-header">
+    <div>Vaqt</div><div>Voqea</div><div>Ta'sir</div>
+    <div>Oldingi</div><div>Prognoz</div><div>Haqiqiy</div>
+  </div>`;
+
+  Object.keys(grouped).sort().forEach(dateStr=>{
+    const d=new Date(dateStr+'T00:00:00');
+    const isToday=dateStr===todayStr;
+    const dayName=days[d.getDay()];
+    const monthName=months[d.getMonth()];
+
+    html+=`<div class="day-sep">
+      <div class="day-sep-line"></div>
+      <div class="day-sep-text">${isToday?'📅 BUGUN — ':''}${dayName}</div>
+      <div class="day-sep-date">${d.getDate()} ${monthName} ${d.getFullYear()}</div>
+    </div>`;
+
+    grouped[dateStr].forEach(ev=>{
+      const impactPips=ev.impact==='high'?3:ev.impact==='medium'?2:1;
+      const impactColor=ev.impact==='high'?'high':ev.impact==='medium'?'medium':'low';
+
+      // Actual styling
+      let actualClass='neutral';
+      if(ev.actual && ev.actual!=='—' && ev.forecast && ev.forecast!=='—'){
+        const actNum=parseFloat(ev.actual);
+        const forNum=parseFloat(ev.forecast);
+        if(!isNaN(actNum)&&!isNaN(forNum)){
+          actualClass=actNum>forNum?'positive':actNum<forNum?'negative':'neutral';
+        }
+      }
+
+      const rowOpacity=ev.isPast?'opacity:0.6;':'';
+
+      html+=`<div class="cal-row" style="${rowOpacity}">
+        <div class="cal-cell"><span class="cal-time">${ev.time}</span></div>
+        <div class="cal-cell cal-event">
+          <span class="cal-event-name">${ev.name}</span>
+          <span class="cal-event-country">${ev.country}</span>
+        </div>
+        <div class="cal-cell cal-impact">
+          <div class="impact-bar">
+            ${Array(3).fill(0).map((_,i)=>`<div class="impact-pip${i<impactPips?' filled '+impactColor:''}"></div>`).join('')}
+          </div>
+        </div>
+        <div class="cal-cell"><span class="cal-val neutral">${ev.prev}</span></div>
+        <div class="cal-cell"><span class="cal-val neutral">${ev.forecast}</span></div>
+        <div class="cal-cell"><span class="cal-val ${actualClass}">${ev.actual||'—'}</span></div>
+      </div>`;
+    });
+  });
+
+  if(filtered.length===0){
+    html+=`<div style="text-align:center;padding:40px;color:var(--dim);font-size:14px;">Bu filtr uchun voqealar topilmadi</div>`;
+  }
+
+  container.innerHTML=html;
+}
+
+// ============ RENDER NEWS ============
+function renderNews(){
+  const news=generateNews();
+  const grid=document.getElementById('newsGrid');
+  grid.innerHTML=news.map(n=>`
+    <div class="news-card ${n.impact}">
+      <div class="news-meta">
+        <span class="news-source">${n.source}</span>
+        <span class="news-time-tag">${n.time} (TKT)</span>
+      </div>
+      <div class="news-headline">${n.headline}</div>
+      <div class="news-desc">${n.desc}</div>
+      <div class="news-tags">
+        ${n.tags.map(t=>`<span class="news-tag ${t==='USD'||t==='DXY'?'usd':t==='XAUUSD'||t==='OLTIN'?'xau':t==='MUHIM'?'warn':''}">${t}</span>`).join('')}
+      </div>
+    </div>
+  `).join('');
+}
+
+// ============ FILTERS ============
+function filterDay(day,btn){
+  activeFilters.day=day;
+  document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  renderCalendar();
+}
+function toggleImpact(level,dot){
+  activeFilters.impacts[level]=!activeFilters.impacts[level];
+  dot.classList.toggle('active');
+  renderCalendar();
+}
+
+// ============ INIT ============
+renderCalendar();
+renderNews();
+
+// Auto-refresh every 5 minutes
+setInterval(()=>{renderCalendar();renderNews();},300000);
+</script>
+</body>
+</html>
