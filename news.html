@@ -121,7 +121,8 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:20px 40px;
 .news-card.high::before{background:var(--high);}
 .news-card.medium::before{background:var(--medium);}
 .news-card.low::before{background:var(--low);}
-.news-card:hover{background:rgba(200,169,110,0.03);}
+.news-card:hover{background:rgba(200,169,110,0.03);transform:translateY(-1px);box-shadow:0 4px 20px rgba(0,0,0,0.3);}
+a.news-card{transition:all 0.3s;}
 .news-meta{display:flex;align-items:center;gap:10px;margin-bottom:10px;}
 .news-source{font-size:10px;letter-spacing:2px;color:var(--goldDim);text-transform:uppercase;font-weight:700;}
 .news-time-tag{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--dim);}
@@ -420,28 +421,36 @@ function generateNews(){
   return [
     {source:'BLOOMBERG',time:'09:30',headline:'Fed raisi Pauell: "Inflyatsiya hali maqsadga yetmadi, sabr kerak"',
      desc:'Federal Rezerv raisi Jerome Powell Kongressda so\'zlab, faiz stavkalarini tez kamaytirish uchun hali erta ekanini ta\'kidladi. Bozorlar dastlab salbiy munosabat bildirdi.',
-     impact:'high',tags:['USD','FED','XAUUSD']},
+     impact:'high',tags:['USD','FED','XAUUSD'],
+     url:'https://www.bloomberg.com/markets/economics'},
     {source:'INVESTING',time:'11:00',headline:'Oltin narxi $3,100 ustida barqaror — geosiyosiy xavflar qo\'llab-quvvatlamoqda',
      desc:'XAUUSD geopolitik keskinlik va markaziy banklarning oltin zahiralarini oshirishi fonida ko\'tarilmoqda. Texnik tahlil $3,180 maqsadini ko\'rsatmoqda.',
-     impact:'high',tags:['XAUUSD','OLTIN']},
+     impact:'high',tags:['XAUUSD','OLTIN'],
+     url:'https://www.investing.com/commodities/gold-news'},
     {source:'FOREXFACTORY',time:'14:30',headline:'AQSh CPI ma\'lumotlari bugun e\'lon qilinadi — bozor kutmoqda',
      desc:'Iste\'molchi narxlar indeksi (CPI) bugun Toshkent vaqti bilan 21:30 da e\'lon qilinadi. Kutilayotgan ko\'rsatkich: 3.4%. Bu Fed qaroriga kuchli ta\'sir ko\'rsatishi mumkin.',
-     impact:'high',tags:['USD','CPI','MUHIM']},
+     impact:'high',tags:['USD','CPI','MUHIM'],
+     url:'https://www.forexfactory.com/calendar'},
     {source:'BLOOMBERG',time:'16:00',headline:'ECB iyun oyida faiz stavkasini kamaytirishi kutilmoqda',
      desc:'Yevropa Markaziy Banki raisi Christine Lagarde iyun yig\'ilishida stavka kamaytirilishi mumkinligini bildirdi. EUR/USD juftligi bosim ostida.',
-     impact:'medium',tags:['EUR','ECB']},
+     impact:'medium',tags:['EUR','ECB'],
+     url:'https://www.bloomberg.com/europe'},
     {source:'INVESTING',time:'17:45',headline:'Xitoy iqtisodiyoti kutilganidan tez o\'smoqda — PMI 50 dan yuqori',
      desc:'Xitoyning ishlab chiqarish PMI indeksi 50.4 ga yetdi, bu kengayish hududiga kirganini bildiradi. Mis va kumush narxlari ko\'tarildi.',
-     impact:'medium',tags:['CNY','PMI']},
+     impact:'medium',tags:['CNY','PMI'],
+     url:'https://www.investing.com/economic-calendar/chinese-manufacturing-pmi-594'},
     {source:'FOREXFACTORY',time:'20:00',headline:'DXY dollar indeksi 104 ga tushdi — zaiflik belgilari',
      desc:'AQSh dollari indeksi (DXY) yirik qo\'llab-quvvatlash darajasini sinab ko\'rmoqda. Texnik tahlilchilar 103.50 buzilsa, yanada tushish mumkinligini aytmoqda.',
-     impact:'medium',tags:['USD','DXY']},
+     impact:'medium',tags:['USD','DXY'],
+     url:'https://www.forexfactory.com/market'},
     {source:'BLOOMBERG',time:'22:15',headline:'NFP — Nonfarm Payrolls juma kuni e\'lon qilinadi',
      desc:'AQSh mehnat bozori ma\'lumotlari (NFP) juma kuni chiqadi. Kutilayotgan: 240K. Bu Fed ning keyingi qaroriga hal qiluvchi ta\'sir ko\'rsatadi.',
-     impact:'high',tags:['USD','NFP','MUHIM']},
+     impact:'high',tags:['USD','NFP','MUHIM'],
+     url:'https://www.bloomberg.com/markets/economics'},
     {source:'INVESTING',time:'23:00',headline:'Neft narxlari OPEC+ qarorlari fonida ko\'tarilmoqda',
      desc:'Brent 82$ ga, WTI 78$ ga yetdi. OPEC+ ishlab chiqarishni cheklashni davom ettirish qarorini qabul qilishi kutilmoqda.',
-     impact:'low',tags:['NEFT','OPEC']},
+     impact:'low',tags:['NEFT','OPEC'],
+     url:'https://www.investing.com/commodities/crude-oil-news'},
   ];
 }
 
@@ -541,17 +550,18 @@ function renderNews(){
   const news=generateNews();
   const grid=document.getElementById('newsGrid');
   grid.innerHTML=news.map(n=>`
-    <div class="news-card ${n.impact}">
+    <a href="${n.url}" target="_blank" rel="noopener" class="news-card ${n.impact}" style="text-decoration:none;color:inherit;display:block;cursor:pointer;">
       <div class="news-meta">
         <span class="news-source">${n.source}</span>
         <span class="news-time-tag">${n.time} (TKT)</span>
+        <span style="margin-left:auto;font-size:11px;color:var(--goldDim);letter-spacing:1px;">↗ MANBAGA O'TISH</span>
       </div>
       <div class="news-headline">${n.headline}</div>
       <div class="news-desc">${n.desc}</div>
       <div class="news-tags">
         ${n.tags.map(t=>`<span class="news-tag ${t==='USD'||t==='DXY'?'usd':t==='XAUUSD'||t==='OLTIN'?'xau':t==='MUHIM'?'warn':''}">${t}</span>`).join('')}
       </div>
-    </div>
+    </a>
   `).join('');
 }
 
