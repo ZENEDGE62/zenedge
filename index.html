@@ -1375,7 +1375,7 @@ async function priceLoop(){
     updateUI(basePrice,currentPct);
   }
   // Har 8 sekundda yangilash (TwelveData limitini oshirmaslik uchun)
-  setTimeout(priceLoop,8000);
+  setTimeout(priceLoop,30000); // 30 sek — bepul rejada limit yetadi
 }
 priceLoop();
 
